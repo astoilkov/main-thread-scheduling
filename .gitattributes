@@ -1,0 +1,3 @@
+# based on Sindre Sorhus `node-module-boilerplate`:
+# https://github.com/sindresorhus/node-module-boilerplate/blob/9b8dc81a35acfbd3b75f7f19c9679e4f83b36df3/.gitattributes
+* text=auto eol=lf

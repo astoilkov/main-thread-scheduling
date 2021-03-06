@@ -1,0 +1,17 @@
+language: node_js
+
+node_js:
+    - '12'
+    - '10'
+
+# everything below is Code Climate setup based on ↓
+# https://github.com/codeclimate/test-reporter/blob/master/examples/javascript_examples.md
+dist: trusty
+addons:
+    chrome: stable
+before_script:
+    - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+    - chmod +x ./cc-test-reporter
+    - ./cc-test-reporter before-build --debug
+after_script:
+    - ./cc-test-reporter after-build --debug --exit-code $TRAVIS_TEST_RESULT

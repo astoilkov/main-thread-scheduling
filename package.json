@@ -1,0 +1,78 @@
+{
+    "name": "main-thread-scheduling",
+    "version": "0.1.0",
+    "description": "Aleays responsive apps while staying on the main thread",
+    "license": "MIT",
+    "repository": "astoilkov/main-thread-scheduling",
+    "author": {
+        "name": "Antonio Stoilkov",
+        "email": "hello@astoilkov.com",
+        "url": "http://astoilkov.com"
+    },
+    "keywords": [
+        "",
+        "scheduling",
+        "main-thread",
+        "event loop"
+    ],
+    "module": "index.js",
+    "jsnext:main": "index.js",
+    "sideEffects": false,
+    "scripts": {
+        "build": "tsc",
+        "size": "yarn run build && size-limit",
+        "lint": "eslint --cache --format=pretty --ext=.ts ./",
+        "test": "yarn run build && yarn run lint && [[ -z $CI ]] && jest --coverage --coverageReporters=text || jest --coverage",
+        "release": "yarn run build && np",
+        "prettier": "prettier --write --config .prettierrc.yaml {*.ts,*.json}"
+    },
+    "engines": {
+        "node": ">=10"
+    },
+    "files": [
+        "index.js",
+        "src/*.js",
+        "index.d.ts",
+        "src/*.d.ts"
+    ],
+    "devDependencies": {
+        "@size-limit/preset-small-lib": "^4.9.2",
+        "@types/jest": "^26.0.14",
+        "@typescript-eslint/eslint-plugin": "^4.11.0",
+        "@typescript-eslint/parser": "^4.11.0",
+        "confusing-browser-globals": "^1.0.10",
+        "eslint": "^7.16.0",
+        "eslint-config-strictest": "^0.3.1",
+        "eslint-formatter-pretty": "^4.0.0",
+        "eslint-plugin-promise": "^4.2.1",
+        "eslint-plugin-unicorn": "^24.0.0",
+        "jest": "^26.6.3",
+        "np": "^7.2.0",
+        "prettier": "^2.0.5",
+        "size-limit": "^4.9.2",
+        "ts-jest": "^26.4.4",
+        "typescript": "^4.1.3"
+    },
+    "size-limit": [
+        {
+            "name": "import *",
+            "path": "es/index.js",
+            "limit": "2 KB",
+            "gzip": false
+        },
+        {
+            "name": "import { useLocalStorageState }",
+            "path": "es/index.js",
+            "import": "{ useLocalStorageState }",
+            "limit": "1.6 KB",
+            "gzip": false
+        },
+        {
+            "name": "import { createLocalStorageState }",
+            "path": "es/index.js",
+            "import": "{ createLocalStorageStateHook }",
+            "limit": "1.6 KB",
+            "gzip": false
+        }
+    ]
+}
