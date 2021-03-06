@@ -1,6 +1,6 @@
 # `main-thread-scheduling`
 
-> Aleays responsive apps while staying on the main thread
+> Always responsive apps while staying on the main thread
 
 ## Install
 
