@@ -10,7 +10,15 @@
         "url": "http://astoilkov.com"
     },
     "keywords": [
-        "",
+        "postTask",
+        "background",
+        "idle",
+        "yield",
+        "defer",
+        "postpone",
+        "thread",
+        "threads",
+        "threading",
         "scheduling",
         "main-thread",
         "event loop"
