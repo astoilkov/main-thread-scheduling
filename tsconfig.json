@@ -25,7 +25,9 @@
         // - 😃 Deno requires "isolatedModules" to be set to `true`
         // - 😃 the stricter version - I always prefer the stricter version
         // - 😃 probably the future
-        "isolatedModules": true
+        "isolatedModules": true,
+
+        "typeRoots": ["./node_modules/@types", "./typings"]
     },
-    "include": ["index.ts"]
+    "include": ["index.ts", "./typings"]
 }

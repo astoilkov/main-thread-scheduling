@@ -3,6 +3,7 @@
 
 *.js
 *.d.ts
+!/typings/*.d.ts
 yarn.lock
 yarn-error.log
 .eslintcache

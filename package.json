@@ -32,7 +32,7 @@
         "lint": "eslint --cache --format=pretty --ext=.ts ./",
         "test": "yarn run build && yarn run lint && [[ -z $CI ]] && jest --coverage --coverageReporters=text || jest --coverage",
         "release": "yarn run build && np",
-        "prettier": "prettier --write --config .prettierrc.yaml {*.ts,*.json}"
+        "prettier": "prettier --write --config .prettierrc.yaml {*.ts,**/*.ts,*.json,**.json}"
     },
     "engines": {
         "node": ">=10"
@@ -82,5 +82,8 @@
             "limit": "1.6 KB",
             "gzip": false
         }
-    ]
+    ],
+    "dependencies": {
+        "@types/requestidlecallback": "^0.3.1"
+    }
 }
