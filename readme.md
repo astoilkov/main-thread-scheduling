@@ -1,6 +1,4 @@
 <div align="center">
-<br>
-<br>
 <img width="200px" src="media/logo.png">
 <br>
 <br>
@@ -21,12 +19,15 @@ Making a responsive app is hard. With time apps get more complex and keeping you
 This library keeps everything on the main thread. This allows for a very small and simple API that can be integrated easily in existing code bases.
 
 Here a few more advantages:
-- API is only 3 functions. All the complexity is hidden behind a single function. The other two functions are for more advanced use cases.
+- Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
+- Utilizes the new `navigator.scheduling.isInputPending()` method (when available). Fallbacks to a good enough alternative otherwise.
 - This isn't a weekend project. I have been working on this solution for months. If you want to dive more deeply read the [design doc]().
 - This is the future. Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis).
 - Aiming for high-quality with [my open-source principles](https://github.com/astoilkov/me/blob/master/essays/My%20open-source%20principles.md)
 
 ## API
+
+Note: If you want to understand how this library works under the hook and some of the details – read the [design doc]().
 
 ### `yieldOrContinue(priority: 'background' | 'user-visible')`
 
@@ -62,8 +63,16 @@ async function doHeavyWork() {
 }
 ```
 
+### Priorities
+
+Currently there are only two priorities available: `background` and `user-visible`:
+- `background` – use this for background tasks. Every background task is run for 5ms – this ensures that the CPU fan of your user won't turn on.
+- `user-visible` – use this for things that needs to display to the user as fast as possible. Every `user-visible` task is run for 50ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
+
+If you have a use case for a third priority see the issue [here]().
+
 ## Alternatives
 
 The problem this library solves isn't new. However, I haven't found a library that can solve this problem in a simple manner. [Open an issue](https://github.com/astoilkov/main-thread-scheduling/issues/new) if there is such a library so I can add it here.
 
-React has an implementation – [react/scheduler](https://github.com/facebook/react/tree/3c7d52c3d6d316d09d5c2479c6851acecccc6325/packages/scheduler). They plan to make it more generic but I don't have a timeline for that.
+React has an implementation for scheduling tasks – [react/scheduler](https://github.com/facebook/react/tree/3c7d52c3d6d316d09d5c2479c6851acecccc6325/packages/scheduler). They plan to make it more generic but I don't know the timeline for this.
