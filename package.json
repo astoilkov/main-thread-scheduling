@@ -21,7 +21,9 @@
         "threading",
         "scheduling",
         "main-thread",
-        "event loop"
+        "event loop",
+        "worker",
+        "web worker"
     ],
     "module": "index.js",
     "jsnext:main": "index.js",

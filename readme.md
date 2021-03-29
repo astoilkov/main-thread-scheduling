@@ -14,7 +14,7 @@ npm install main-thread-scheduling
 
 ## Why
 
-Making a responsive app is hard. With time apps get more complex and keeping your app responsive becomes even harder. It's possible to overcome this by moving a lot of the work out of the main thread but this is technically challenging and it takes a lot of time.
+Making a responsive app is hard. With time apps get more complex and keeping your app responsive becomes even harder. It's possible to overcome this by using Web Workers but if you tried it you know that it's very hard to do in reality.
 
 This library keeps everything on the main thread. This allows for a very small and simple API that can be integrated easily in existing code bases.
 
