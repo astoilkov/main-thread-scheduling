@@ -5,8 +5,6 @@ import { createDeferred, isDeferredLast, removeDeferred } from './deferred'
 export default async function yieldToMainThread(
     priority: 'user-visible' | 'background',
 ): Promise<void> {
-    // yield to the browser main even loop
-
     const deferred = createDeferred(priority)
 
     await requestLastIdleCallback()

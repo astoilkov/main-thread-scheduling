@@ -8,6 +8,10 @@ type Deferred = {
 
 const deferred: Deferred[] = []
 
+/**
+ * Adds a task to the queue and returns the new task.
+ * @param priority {('background' | 'user-visible')} The priority of the new task.
+ */
 export function createDeferred(priority: 'background' | 'user-visible'): Deferred {
     const wr = whenReady()
     const item = { priority, ready: wr.promise, resolve: wr.resolve }
@@ -19,10 +23,19 @@ export function createDeferred(priority: 'background' | 'user-visible'): Deferre
     return item
 }
 
+/**
+ * Checks if the task is last in the queue and it's time to run it.
+ * @param deferredItem {Deferred}
+ */
 export function isDeferredLast(deferredItem: Deferred): boolean {
     return deferredItem === deferred[deferred.length - 1]
 }
 
+/**
+ * Remove the task from the queue. This happens when we execute this task and it's time for the next
+ * one. Call `nextDeferred()` in order to start executing the next task.
+ * @param deferredItem {Deferred}
+ */
 export function removeDeferred(deferredItem: Deferred): void {
     const index = deferred.indexOf(deferredItem)
     if (index !== -1) {
@@ -30,6 +43,10 @@ export function removeDeferred(deferredItem: Deferred): void {
     }
 }
 
+/**
+ * Resolve the last task in the queue. This triggers executing the task by resolving the promise
+ * inside `yieldToMainThread()` function.
+ */
 export function nextDeferred(): void {
     const lastDeferredItem = deferred[deferred.length - 1]
     if (lastDeferredItem !== undefined) {

@@ -3,6 +3,9 @@ export type WhenReady<T> = {
     resolve: (value: T) => void
 }
 
+/**
+ * A simple abstraction that allows to resolve a promise outside of its constructor.
+ */
 export default function whenReady(): WhenReady<void>
 export default function whenReady<T>(): WhenReady<T>
 export default function whenReady<T>(): WhenReady<T> {
