@@ -4,33 +4,53 @@ export type IdlePhase = {
 }
 
 let idlePhase: IdlePhase | undefined
-let requestIdleCallbackId: number | undefined
+// Why the "stop-requested" status?
+// - we request to stop the tracking of IdlePhase becuase later in a microtask we may call
+//   `startTrackingIdlePhase()` again. all the steps below happen in a single browser task (in
+//   multiple brwoser micro tasks):
+//   1. `stopTrackingIdlePhase()` is called
+//   2. Promise for `yieldToMainThread()` resolves
+//   3. `yieldToMainThread()` is called again and `startTrackingIdlePhase()` is called
+// - we don't want to cancel with `cancelIdleCallback()` because this would make us call
+//   `requestIdleCallback()` again — this isn't optimal because we can lose free time left in the
+//   currently running idle callback
+let status: 'running' | 'stopped' | 'stop-requested' = 'stopped'
 
 export function getIdlePhase(): IdlePhase | undefined {
     return idlePhase
 }
 
 export function startTrackingIdlePhase(): void {
-    if (requestIdleCallbackId !== undefined) {
-        throw new Error(`you are probably calling startTrackingIdlePhase() a second time`)
+    if (status === 'running') {
+        throw new Error(`already tracking idle phase. call stopTrackingIdlePhase() first.`)
     }
 
-    requestIdleCallbackId = requestIdleCallback((idleDeadline) => {
-        requestIdleCallbackId = undefined
-        idlePhase = {
-            deadline: idleDeadline,
-            start: performance.now(),
-        }
+    if (status === 'stop-requested') {
+        status = 'running'
+        return
+    }
 
-        startTrackingIdlePhase()
+    requestIdleCallback((idleDeadline) => {
+        if (status === 'stop-requested') {
+            status = 'stopped'
+            idlePhase = undefined
+        } else {
+            idlePhase = {
+                deadline: idleDeadline,
+                start: performance.now(),
+            }
+
+            startTrackingIdlePhase()
+        }
     })
 }
 
 export function stopTrackingIdlePhase(): void {
-    if (requestIdleCallbackId === undefined) {
+    if (status === 'stopped' || status === 'stop-requested') {
         throw new Error(
-            'you are probably calling stopTrackingIdlePhase() without first calling startTrackingIdlePhase()',
+            'tracking idle phase is already stopped. call startTrackingIdlePhase() first',
         )
     }
-    cancelIdleCallback(requestIdleCallbackId)
+
+    status = 'stop-requested'
 }
