@@ -2,18 +2,44 @@
 
 This library is the culmination of a lot of research and hard work.
 
-## How it works
+## `isTimeToYield(priority: 'background' | 'user-visible')`
 
-### `isTimeToYield(priority: 'background' | 'user-visible')`
+This function determines if the currently executing task still has time to do more work or is it time to give back control to the browser so it can render the next frame. This is how it works:
+1. When the queue of tasks isn't empty there is a continuously running `requestIdleCallback()` that tracks time it was last executed. This help us figure out if there is time left to do more work.
+2. The method takes the time the last call to `requestIdleCallback()` was called and determines if there is time to do more work. This behavior is different depending if the `navigator.scheduling.isInputPending()` method is available in the current browser.
+    - If `isInputPending()` is available, the function waits for either `isInputPending()` to return `true` or for the max allowed time for the task to expire. The max allowed time for the task depends on the `priority`.
 
-This function determines if the currently executing task still has time to do more work or is it time to give back control to the browser so it can render the next frame. Here are the things that happen inside the method:
-- 
+## `yieldToMainThread(priority: 'background' | 'user-visible')`
 
-### `yieldToMainThread(priority: 'background' | 'user-visible')`
+## Priorities
 
-## Motivation
+There is currently only two priorities available: `background` and `user-visible`. The priority determine two things: 1) the maximum amount of time the task can run without yielding to the main thread, 2) in what order the task is executed.
 
+The maximum amount of time allowed by priority:
+- `background` – 5ms
+- `user-visible` – 50ms
 
+`user-visible` priority will be executed first. `background` second. Read more about this in the next section.
+
+## Execution order
+
+Execution order is more easily explained with a code example:
+```ts
+(async () => {
+    await yieldToMainThread('user-visible')
+    console.log('2')
+})()
+
+(async () => {
+    await yieldToMainThread('user-visible')
+    console.log('1')
+})()
+
+(async () => {
+    await yieldToMainThread('background')
+    console.log('3')
+})()
+```
 
 ## Resources
 
