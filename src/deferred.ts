@@ -1,4 +1,5 @@
 import whenReady from './whenReady'
+import { startTrackingIdlePhase, stopTrackingIdlePhase } from './idlePhase'
 
 type Deferred = {
     priority: 'background' | 'user-visible'
@@ -20,6 +21,11 @@ export function createDeferred(priority: 'background' | 'user-visible'): Deferre
             ? deferred.length
             : deferred.findIndex((deferred) => deferred.priority === 'user-visible')
     deferred.splice(insertIndex === -1 ? deferred.length : insertIndex, 0, item)
+
+    if (deferred.length === 1) {
+        startTrackingIdlePhase()
+    }
+
     return item
 }
 
@@ -40,6 +46,10 @@ export function removeDeferred(deferredItem: Deferred): void {
     const index = deferred.indexOf(deferredItem)
     if (index !== -1) {
         deferred.splice(index, 1)
+    }
+
+    if (deferred.length === 0) {
+        stopTrackingIdlePhase()
     }
 }
 
