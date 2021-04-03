@@ -21,13 +21,13 @@ This library keeps everything on the main thread. This allows for a very small a
 Here a few more advantages:
 - Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - Utilizes the new `navigator.scheduling.isInputPending()` method (when available). Fallbacks to a good enough alternative otherwise.
-- This isn't a weekend project. I have been working on this solution for months. If you want to dive more deeply read the [design doc]().
+- This isn't a weekend project. I have been working on this code for months. If you want to dive more deeply read the [in-depth](./docs/in-depth.md) doc.
 - This is the future. Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis).
 - Aiming for high-quality with [my open-source principles](https://github.com/astoilkov/me/blob/master/essays/My%20open-source%20principles.md)
 
 ## API
 
-Note: If you want to understand how this library works under the hook and some of the details – read the [design doc]().
+Note: If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth.md) doc.
 
 ### `yieldOrContinue(priority: 'background' | 'user-visible')`
 
