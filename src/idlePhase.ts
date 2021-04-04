@@ -25,11 +25,8 @@ export function startTrackingIdlePhase(): void {
         throw new Error(`already tracking idle phase. call stopTrackingIdlePhase() first.`)
     }
 
-    if (status === 'stop-requested') {
-        status = 'running'
-        return
-    }
-
+    // if status was "stop-requested", it's reset to "running"
+    status = 'running'
     requestIdleCallback((idleDeadline) => {
         if (status === 'stop-requested') {
             status = 'stopped'
@@ -39,6 +36,9 @@ export function startTrackingIdlePhase(): void {
                 deadline: idleDeadline,
                 start: performance.now(),
             }
+
+            // setting status to "stopped" so calling startTrackingIdlePhase() doesn't throw
+            status = 'stopped'
 
             startTrackingIdlePhase()
         }
