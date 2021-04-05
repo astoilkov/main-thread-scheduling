@@ -22,7 +22,7 @@ export function getIdlePhase(): IdlePhase | undefined {
 
 export function startTrackingIdlePhase(): void {
     if (status === 'running') {
-        throw new Error(`already tracking idle phase. call stopTrackingIdlePhase() first.`)
+        throw new Error('Unreachabe code. This is probably a bug – please log an issue.')
     }
 
     // if status was "stop-requested", it's reset to "running"
@@ -47,9 +47,7 @@ export function startTrackingIdlePhase(): void {
 
 export function stopTrackingIdlePhase(): void {
     if (status === 'stopped' || status === 'stop-requested') {
-        throw new Error(
-            'tracking idle phase is already stopped. call startTrackingIdlePhase() first',
-        )
+        throw new Error('Unreachabe code. This is probably a bug – please log an issue.')
     }
 
     status = 'stop-requested'
