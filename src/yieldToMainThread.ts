@@ -12,7 +12,7 @@ export default async function yieldToMainThread(
     if (!isDeferredLast(deferred)) {
         await deferred.ready
 
-        if (!isTimeToYield(priority)) {
+        if (isTimeToYield(priority)) {
             await requestLastIdleCallback()
         }
     }
