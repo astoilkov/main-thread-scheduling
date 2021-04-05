@@ -5,7 +5,11 @@ import { getIdlePhase, IdlePhase } from './idlePhase'
 
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
     const idlePhase = getIdlePhase()
-    return idlePhase === undefined || performance.now() > calculateDeadline(priority, idlePhase)
+    return (
+        idlePhase === undefined ||
+        navigator.scheduling?.isInputPending?.() === true ||
+        performance.now() > calculateDeadline(priority, idlePhase)
+    )
 }
 
 function calculateDeadline(priority: 'background' | 'user-visible', idlePhase: IdlePhase): number {
