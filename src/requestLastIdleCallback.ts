@@ -21,7 +21,7 @@ export default async function requestLastIdleCallback(): Promise<IdleDeadline> {
         queueMicrotask(() => {
             queueMicrotask(() => {
                 requestIdleCallback((deadline) => {
-                    wr?.resolve(deadline)
+                    wr!.resolve(deadline)
 
                     wr = undefined
                 })

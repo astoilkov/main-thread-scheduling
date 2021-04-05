@@ -1,5 +1,5 @@
 import isTimeToYield from './isTimeToYield'
-import requestLastIdleCallback from './requstLastIdleCallback'
+import requestLastIdleCallback from './requestLastIdleCallback'
 import { createDeferred, isDeferredLast, removeDeferred } from './deferred'
 
 export default async function yieldToMainThread(
