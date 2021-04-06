@@ -1,6 +1,6 @@
 # `main-thread-scheduling` in-depth
 
-This library is the culmination of a lot of research and hard work.
+This library is the culmination of a lot of research and hard work. Git history shows just a fraction of the effort because the code was previously in another repository.
 
 ## `yieldToMainThread(priority: 'background' | 'user-visible')`
 
@@ -51,7 +51,7 @@ Execution order is more easily explained with a code example:
 
 ## Resources
 
-Documents associated with implementing scheduling in browsers:
+Documents associated with implementing main thread scheduling in browsers:
 - [WICG/main-thread-scheduling](https://github.com/WICG/main-thread-scheduling) and more specifically [Main Thread Scheduling: Prioritized postTask API](https://github.com/WICG/main-thread-scheduling/blob/646edfc3d735333162fb7a447c845b49b6a11d66/PrioritizedPostTask.md)
 - [Native Web Scheduling MVP: API Proposal](https://docs.google.com/document/d/1xU7HyNsEsbXhTgt0ZnXDbeSXm5-m5FzkLJAT6LTizEI/edit#)
 - [Threading and Tasks in Chrome](https://chromium.googlesource.com/chromium/src/+/refs/tags/62.0.3175.0/docs/threading_and_tasks.md#Posting-a-Parallel-Task)
