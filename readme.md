@@ -1,8 +1,10 @@
+<br>
+<br>
 <div align="center">
 <img width="200px" src="media/logo.png">
-<br>
-<br>
 </div>
+<br>
+<br>
 
 **main-thread-scheduling** — consistently responsive apps while staying on the main thread
 
