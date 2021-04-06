@@ -25,7 +25,11 @@ export function startTrackingIdlePhase(): void {
         throw new Error('Unreachabe code. This is probably a bug – please log an issue.')
     }
 
-    // if status was "stop-requested", it's reset to "running"
+    if (status === 'stop-requested') {
+        status = 'running'
+        return
+    }
+
     status = 'running'
     requestIdleCallback((idleDeadline) => {
         if (status === 'stop-requested') {
