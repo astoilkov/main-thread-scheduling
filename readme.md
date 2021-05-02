@@ -1,8 +1,8 @@
 <br>
+<br>
 <div align="center">
 <img width="400px" src="media/logo-centered.png">
 </div>
-<br>
 
 <h3 align="center">
 <b>main-thread-scheduling</b>
