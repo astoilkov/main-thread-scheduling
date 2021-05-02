@@ -11,6 +11,8 @@
 Consistently responsive apps while staying on the main thread
 </p>
 
+<br>
+
 ## Install
 
 ```shell
