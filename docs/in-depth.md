@@ -6,15 +6,15 @@ This library is the culmination of a lot of research and hard work. Git history 
 
 This is the most complicated method in the library. Here how it works:
 1. A new task is added to the queue
-2. We wait for the next browser idle callback
+2. We wait for the next browser idle callback (using `requestIdleCallback()`)
 3. After the idle callback is resolved we have two options:
-    - If the current task is at the top of the queue, we remove the task from the queue. Done, we exit the function.
-    - If there is some other task that has priority than we wait until the current task is at the top of the queue. After it's at the top, we check if there is time to start executing this task: 1) if yes, we exit the function, 2) if not, we wait for the next browser idle callback to be called.
+    - If the current task is at the top of the queue, we remove the task from the queue and give back control to the user.
+    - If there is some other task that has priority than we wait until the current task is at the top of the queue. After it's at the top, we check if there is time to start executing this task: 1) if yes, give back control to the user, 2) if not, we wait for the next browser idle callback to be called.
 
 ## `isTimeToYield(priority: 'background' | 'user-visible')`
 
 This function determines if the currently executing task still has time to do more work or is it time to give back control to the browser so it can render the next frame. This is how it works:
-1. When the queue of tasks isn't empty there is a continuously running `requestIdleCallback()` that tracks time it was last executed. This help us figure out if there is time left to do more work.
+1. When the queue of tasks isn't empty there is a continuously running `requestIdleCallback()` that tracks the time it was last executed. This help us figure out if there is time left to do more work.
 2. The method takes the time the last call to `requestIdleCallback()` was called and determines if there is time to do more work. This behavior is different depending on the availability of `navigator.scheduling.isInputPending()` method in the current browser.
     - If `isInputPending()` is available, the function waits for either `isInputPending()` to return `true` or for the max allowed time for the task to expire. The max allowed time for the task depends on the `priority`.
     - If `isInputPending()` isn't available, the functions uses the `IdleDeadline` object passed as parameter to the `requestIdleCallback()`. When `IdleDeadline.timeRemaining()` returns `0` the `isTimeToYield()` function will return `true`.
@@ -31,7 +31,7 @@ The maximum amount of time allowed by priority:
 
 ## Execution order
 
-Execution order is more easily explained with a code example:
+Execution order is more easily explained with a code example. The example below will log the values in order `1, 2, 3`. This means that `user-visible` tasks have priority over `background` tasks and that a task that is called later has bigger priority than the earlier called task:
 ```ts
 (async () => {
     await yieldToMainThread('user-visible')
