@@ -1,12 +1,17 @@
 <br>
 <br>
 <div align="center">
-<img width="200px" src="media/logo.png">
+<img width="400px" src="media/logo-centered.png">
 </div>
 <br>
 <br>
 
-**main-thread-scheduling** — consistently responsive apps while staying on the main thread
+<h3 align="center">
+<b>main-thread-scheduling</b>
+</h3>
+<p align="center">
+Consistently responsive apps while staying on the main thread
+</p>
 
 ## Install
 
