@@ -1,6 +1,6 @@
+import { removeDeferred } from './src/deferred'
 import { isTimeToYield, yieldOrContinue, yieldToMainThread } from './index'
 import { startTrackingIdlePhase, stopTrackingIdlePhase } from './src/idlePhase'
-import { removeDeferred } from './src/deferred'
 
 describe('main-thread-scheculing', () => {
     let requestIdleCallbackMock = createRequestIdleCallbackMock()
@@ -87,6 +87,32 @@ describe('main-thread-scheculing', () => {
     })
 
     it(`tasks wait for next idle callback when there is no time left`, async () => {
+        const jestFn = jest.fn()
+
+        const ready = (async () => {
+            await yieldToMainThread('background')
+
+            await yieldToMainThread('background')
+
+            jestFn()
+        })()
+
+        await wait()
+
+        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+
+        const promise = ready
+
+        await wait()
+
+        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+
+        await promise
+
+        expect(jestFn.mock.calls.length).toBe(1)
+    })
+
+    it(`concurrent tasks wait for next idle callback when there is no time left`, async () => {
         const jestFn = jest.fn()
 
         const ready = (async () => {
@@ -231,7 +257,7 @@ async function wait() {
     return new Promise<void>((resolve) => {
         setTimeout(() => {
             resolve()
-        }, 100)
+        }, 30)
     })
 }
 
