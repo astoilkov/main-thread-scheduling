@@ -12,12 +12,16 @@ Consistently responsive apps while staying on the main thread
 </p>
 
 <p align="center">
-
-[![Build Status](https://www.travis-ci.com/astoilkov/main-thread-scheduling.svg?branch=master)](https://travis-ci.org/astoilkov/use-local-storage-state)
-[![Test Coverage](https://img.shields.io/codeclimate/coverage/astoilkov/use-local-storage-state)](https://codeclimate.com/github/astoilkov/use-local-storage-state/test_coverage)
-[![Minified Size](https://badgen.net/bundlephobia/min/main-thread-scheduling)](https://bundlephobia.com/result?p=use-local-storage-state)
+<a href="https://www.travis-ci.com/astoilkov/main-thread-scheduling">
+<img src="https://www.travis-ci.com/astoilkov/main-thread-scheduling.svg?branch=master" alt="Build Status" />
+</a>
+<!-- <a href="https://codeclimate.com/github/astoilkov/main-thread-scheduling/test_coverage">
+<img src="https://img.shields.io/codeclimate/coverage/astoilkov/main-thread-scheduling" alt="Test Coverage" />
+</a> -->
+<a href="https://bundlephobia.com/result?p=use-local-storage-state">
+<img src="https://badgen.net/bundlephobia/min/main-thread-scheduling" alt="Test Coverage" />
+</a>
 <!-- [![Minified Size](https://img.shields.io/npm/dm/main-thread-scheduling)](https://www.npmjs.com/package/use-local-storage-state) -->
-
 <p>
 
 <br>
