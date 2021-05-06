@@ -12,10 +12,12 @@ Consistently responsive apps while staying on the main thread
 </p>
 
 <p align="center">
+
 [![Build Status](https://www.travis-ci.com/astoilkov/main-thread-scheduling.svg?branch=master)](https://travis-ci.org/astoilkov/use-local-storage-state)
 [![Test Coverage](https://img.shields.io/codeclimate/coverage/astoilkov/use-local-storage-state)](https://codeclimate.com/github/astoilkov/use-local-storage-state/test_coverage)
 [![Minified Size](https://badgen.net/bundlephobia/min/main-thread-scheduling)](https://bundlephobia.com/result?p=use-local-storage-state)
 <!-- [![Minified Size](https://img.shields.io/npm/dm/main-thread-scheduling)](https://www.npmjs.com/package/use-local-storage-state) -->
+
 <p>
 
 <br>
