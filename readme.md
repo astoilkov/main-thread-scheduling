@@ -32,18 +32,34 @@ Consistently responsive apps while staying on the main thread
 npm install main-thread-scheduling
 ```
 
+## Overview
+
+The library ensures that:
+- the UI never freezes
+- 
+- the user's computer fans don't spin
+- it can be easily integrated in an existing code base
+
+This is accomplished through multiple strategies:
+- Stops task execution when user interacts with the UI. Using `navigator.scheduling.isInputPending()`. Fallbacks to using [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline)
+- Global tasks queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
+- Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
+- Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX by updating 
+- Considerate about your existing code. Tasks with `background` priority are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
+
+## Use Cases
+
+- You want to turn a synchronous function into a non-blocking asynchronous function. Avoids UI freezes.
+- You want to yield important results first and less urgent ones second. Improves perceived performance.
+- You want to run a background task that doesn't spin the fans. Avoids bad reputation.
+- You want to run multiple backgrounds tasks that don't pile up with time. Prevents death by a thousand cuts.
+
 ## Why
 
-It's hard to make an app responsive. With time apps get more complex and keeping your app responsive becomes even harder. Web Workers can help, but if you have tried it, you know it's a lot of work.
-
-This library keeps everything on the main thread. This allows for a very small and simple API that can be integrated easily in existing code base.
-
-Here a few more advantages:
+Why rely on some open-source library to ensure a good performance for my app?
 - Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
-- Utilizes the new `navigator.scheduling.isInputPending()` method (when available). Fallbacks to a good enough alternative otherwise.
 - Not a weekend project. I have been working on this code for months. If you want to dive deeper, you can read the [in-depth](./docs/in-depth.md) doc.
 - This is the future. Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis).
-- Consistently responsive. You can have hundred of tasks pending but the library will always execute just a single one.
 - Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles)
 
 ## API
@@ -93,6 +109,8 @@ Currently there are only two priorities available: `background` and `user-visibl
 If you have a use case for a third priority, you can write in [this issue](https://github.com/astoilkov/main-thread-scheduling/issues/1).
 
 ## Alternatives
+
+- Web Workers
 
 The problem this library solves isn't new. However, I haven't found a library that can solve this problem in a simple manner. [Open an issue](https://github.com/astoilkov/main-thread-scheduling/issues/new) if there is such a library so I can add it here.
 
