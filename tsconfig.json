@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES2015",
-        "module": "CommonJS",
+        "module": "ES2015",
 
         // From what I understand while reading the docs "classic" was introduced first and "classic" is by
         // default(except when "module": "commonjs") because of backwards compatibility.
