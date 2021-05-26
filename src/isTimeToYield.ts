@@ -1,8 +1,8 @@
+import { getIdlePhase, IdlePhase } from './idlePhase'
+
 /**
  * Determines if it's time to call `yieldToMainThread()`.
  */
-import { getIdlePhase, IdlePhase } from './idlePhase'
-
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
     const idlePhase = getIdlePhase()
     return (
