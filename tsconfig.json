@@ -1,6 +1,9 @@
 {
     "compilerOptions": {
-        "target": "ES2015",
+        // - 😃 otherwise async/await will be transpiled
+        // - 😡 try/catch without an (err) isn't supported in Edge. see:
+        //   https://github.com/astoilkov/use-local-storage-state/issues/7
+        "target": "ES2019",
         "module": "ES2015",
 
         // From what I understand while reading the docs "classic" was introduced first and "classic" is by
