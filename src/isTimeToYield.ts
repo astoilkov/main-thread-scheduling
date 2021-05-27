@@ -1,14 +1,28 @@
 import { getIdlePhase, IdlePhase } from './idlePhase'
 
+// #performance
+// calling `isTimeToYield()` thousand of times is slow. `lastCalls` helps to run logic inside of
+// `isTimeToYield()` at most 1 per millisecond.
+let lastCall = 0
+
 /**
  * Determines if it's time to call `yieldToMainThread()`.
  */
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
+    const now = performance.now()
+
+    if (now - lastCall === 0) {
+        return false
+    }
+
+    lastCall = now
+
     const idlePhase = getIdlePhase()
+
     return (
         idlePhase === undefined ||
-        navigator.scheduling?.isInputPending?.() === true ||
-        performance.now() > calculateDeadline(priority, idlePhase)
+        now > calculateDeadline(priority, idlePhase) ||
+        navigator.scheduling?.isInputPending?.() === true
     )
 }
 
