@@ -1,8 +1,8 @@
-import { getIdlePhase, IdlePhase } from './idlePhase'
-
 // #performance
 // calling `isTimeToYield()` thousand of times is slow. `lastCalls` helps to run logic inside of
 // `isTimeToYield()` at most 1 per millisecond.
+import { getIdlePhase, IdlePhase } from './phaseTracking'
+
 let lastCall = 0
 
 /**

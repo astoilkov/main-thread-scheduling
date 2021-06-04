@@ -1,6 +1,6 @@
 import { removeDeferred } from './src/deferred'
 import { isTimeToYield, yieldOrContinue, yieldToMainThread } from './index'
-import { startTrackingIdlePhase, stopTrackingIdlePhase } from './src/idlePhase'
+import { startTrackingIdlePhase, stopTrackingIdlePhase } from './src/phaseTracking/idlePhaseTracker'
 
 describe('main-thread-scheculing', () => {
     let requestIdleCallbackMock = createRequestIdleCallbackMock()
