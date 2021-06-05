@@ -24,11 +24,12 @@ function request(callback: (deadline: IdleDeadline) => void): void {
                 callbacks = []
 
                 for (const pendingCallback of pendingCallbacks) {
-                    if (navigator?.scheduling?.isInputPending?.() === true) {
-                        callbacks.unshift(pendingCallback)
-                    } else {
-                        pendingCallback(deadline)
-                    }
+                    // if (navigator?.scheduling?.isInputPending?.() === true) {
+                    //     callbacks.unshift(pendingCallback)
+                    // } else {
+                    //     pendingCallback(deadline)
+                    // }
+                    pendingCallback(deadline)
                 }
 
                 requestLaterMicrotask(() => {
