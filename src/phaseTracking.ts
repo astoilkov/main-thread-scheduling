@@ -1,5 +1,3 @@
-import requestEarlyIdleCallback from './requestEarlyIdleCallback'
-
 export type IdlePhase = {
     start: number
     deadline: IdleDeadline
@@ -9,16 +7,7 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
     requestIdleCallback((deadline) => {
         callback({
             deadline,
-            start: performance.now(),
-        })
-    })
-})
-
-const earlyIdlePhaseTracker = createPhaseTracker((callback: (taskPhase: IdlePhase) => void) => {
-    requestEarlyIdleCallback((deadline) => {
-        callback({
-            deadline,
-            start: performance.now(),
+            start: Date.now(),
         })
     })
 })
@@ -87,15 +76,13 @@ function createPhaseTracker<T>(
 }
 
 export function getIdlePhase(): IdlePhase | undefined {
-    return idlePhaseTracker.getPhase() ?? earlyIdlePhaseTracker.getPhase()
+    return idlePhaseTracker.getPhase()
 }
 
 export function startTrackingPhases(): void {
-    earlyIdlePhaseTracker.startTracking()
     idlePhaseTracker.startTracking()
 }
 
 export function stopTrackingPhases(): void {
-    earlyIdlePhaseTracker.stopTracking()
     idlePhaseTracker.stopTracking()
 }

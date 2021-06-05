@@ -2,7 +2,6 @@ import waitCallback from './waitCallback'
 import isTimeToYield from './isTimeToYield'
 import requestLaterMicrotask from './requestLaterMicrotask'
 import { createDeferred, isDeferredLast, removeDeferred } from './deferred'
-import requestEarlyIdleCallback from './requestEarlyIdleCallback'
 
 export default async function yieldToMainThread(
     priority: 'user-visible' | 'background',
@@ -27,26 +26,12 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
         await Promise.race([
             promiseSequantial([
                 (): Promise<void> => waitCallback(requestLaterMicrotask),
-                (): Promise<void> => waitCallback(requestEarlyIdleCallback),
+                (): Promise<void> =>
+                    waitCallback(requestIdleCallback, {
+                        // 60 frames per second
+                        timeout: 1000 / 60,
+                    }),
             ]),
-
-            promiseSequantial([
-                (): Promise<void> => waitCallback(requestLaterMicrotask),
-                (): Promise<void> => waitCallback(requestIdleCallback),
-            ]),
-
-            // promiseSequantial([
-            //     (): Promise<void> => waitCallback(requestLaterMicrotask),
-            //     (): Promise<void> => waitCallback(requestIdleCallback),
-            // ]),
-            //
-            // // not optimal when you are already in requestAnimationFrame(). this is why we have the
-            // // above promise
-            // promiseSequantial([
-            //     (): Promise<void> => waitCallback(requestLaterMicrotask),
-            //     (): Promise<void> => waitCallback(requestAnimationFrame),
-            //     (): Promise<void> => waitCallback(requestIdleCallback, { timeout: 1 }),
-            // ]),
         ])
     } else {
         await promiseSequantial([
