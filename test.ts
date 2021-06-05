@@ -281,6 +281,32 @@ describe('main-thread-scheculing', () => {
         Date.now = orignalDateNow
         ;(navigator as any).scheduling = undefined
     })
+
+    it(`background task isn't called when it's a timeouted idle callback`, async () => {
+        const jestFn = jest.fn()
+
+        ;(async () => {
+            await yieldToMainThread('background')
+
+            jestFn()
+        })()
+
+        await wait()
+
+        requestIdleCallbackMock.callRequestIdleCallback(100, true)
+
+        await wait()
+
+        expect(jestFn.mock.calls.length).toBe(0)
+        expect(isTimeToYieldMocked('background')).toBe(false)
+
+        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+
+        await wait()
+
+        expect(jestFn.mock.calls.length).toBe(1)
+        expect(isTimeToYieldMocked('background')).toBe(false)
+    })
 })
 
 // we use wait because:
@@ -296,16 +322,21 @@ async function wait() {
 }
 
 function createRequestIdleCallbackMock() {
+    let globalCallbackId = 1
+    let callbacks: {
+        id: number
+        func: IdleRequestCallback
+        options: IdleRequestOptions | undefined
+    }[] = []
+
     const originalRequestIdleCallback = window.requestIdleCallback
     const originalCancelIdleCallback = window.cancelIdleCallback
-    const callbacks: { func: IdleRequestCallback; id: number }[] = []
 
-    let id = 1
-    window.requestIdleCallback = (callback) => {
-        const callbackId = id
-        callbacks.push({ func: callback, id: callbackId })
+    window.requestIdleCallback = (callback, options) => {
+        const callbackId = globalCallbackId
+        callbacks.push({ id: callbackId, func: callback, options })
 
-        id += 1
+        globalCallbackId += 1
 
         return callbackId
     }
@@ -320,9 +351,11 @@ function createRequestIdleCallbackMock() {
 
     return {
         callRequestIdleCallback(timeRemaining: number, didTimeout: boolean) {
-            const pendingCallbacks = [...callbacks]
+            const pendingCallbacks = didTimeout
+                ? callbacks.filter((callback) => typeof callback.options?.timeout === 'number')
+                : [...callbacks]
 
-            callbacks.splice(0, callbacks.length)
+            callbacks = callbacks.filter((callback) => !pendingCallbacks.includes(callback))
 
             for (const callback of pendingCallbacks) {
                 callback.func({ timeRemaining: () => timeRemaining, didTimeout })
