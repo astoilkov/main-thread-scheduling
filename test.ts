@@ -210,8 +210,8 @@ describe('main-thread-scheculing', () => {
         const ready = (async () => {
             await yieldToMainThread('user-visible')
 
-            expect(isTimeToYield('user-visible')).toBe(false)
-            expect(isTimeToYield('background')).toBe(false)
+            expect(isTimeToYieldMocked('user-visible')).toBe(false)
+            expect(isTimeToYieldMocked('background')).toBe(false)
 
             jestFn()
         })()
@@ -236,8 +236,8 @@ describe('main-thread-scheculing', () => {
         const ready = (async () => {
             await yieldToMainThread('user-visible')
 
-            expect(isTimeToYield('user-visible')).toBe(true)
-            expect(isTimeToYield('background')).toBe(true)
+            expect(isTimeToYieldMocked('user-visible')).toBe(true)
+            expect(isTimeToYieldMocked('background')).toBe(true)
 
             jestFn()
         })()
@@ -251,8 +251,42 @@ describe('main-thread-scheculing', () => {
         expect(jestFn.mock.calls.length).toBe(1)
         ;(navigator as any).scheduling = undefined
     })
+
+    it('isTimeToYield() logic is called once per milisecond, caches result, return true ', async () => {
+        const promise = yieldToMainThread('user-visible')
+
+        await wait()
+
+        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+
+        await promise
+
+        // mock
+        const orignalDateNow = Date.now
+        Date.now = () => 100
+        ;(navigator as any).scheduling = {
+            isInputPending: () => false,
+        }
+
+        expect(isTimeToYield('user-visible')).toBe(false)
+
+        //
+        ;(navigator as any).scheduling = {
+            isInputPending: () => true,
+        }
+
+        expect(isTimeToYield('user-visible')).toBe(false)
+
+        // unmock
+        Date.now = orignalDateNow
+        ;(navigator as any).scheduling = undefined
+    })
 })
 
+// we use wait because:
+// - we call `requestLaterMicrotask()` inside of `yieldToMainThread()` that makes
+//   `requestIdleCallback()` to not be called immediately. this way we are sure
+//   `requestIdleCallback()` has been called
 async function wait() {
     return new Promise<void>((resolve) => {
         setTimeout(() => {
@@ -300,4 +334,16 @@ function createRequestIdleCallbackMock() {
             window.requestIdleCallback = originalRequestIdleCallback
         },
     }
+}
+
+function isTimeToYieldMocked(priority: 'background' | 'user-visible'): boolean {
+    const originalDateNow = Date.now
+
+    Date.now = () => Math.random()
+
+    const result = isTimeToYield(priority)
+
+    Date.now = originalDateNow
+
+    return result
 }
