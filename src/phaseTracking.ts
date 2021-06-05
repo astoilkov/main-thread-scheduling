@@ -4,12 +4,19 @@ export type IdlePhase = {
 }
 
 const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) => void) => {
-    requestIdleCallback((deadline) => {
-        callback({
-            deadline,
-            start: Date.now(),
-        })
-    })
+    requestIdleCallback(
+        (deadline) => {
+            callback({
+                deadline,
+                start: Date.now(),
+            })
+        },
+        {
+            // #connection 2021-06-05T3:07:18+03:00
+            // 60 frames per second
+            timeout: 1000 / 60,
+        },
+    )
 })
 
 type PhaseTracker<T> = {
