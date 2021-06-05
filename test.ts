@@ -1,6 +1,6 @@
 import { removeDeferred } from './src/deferred'
 import { isTimeToYield, yieldOrContinue, yieldToMainThread } from './index'
-import { startTrackingIdlePhase, stopTrackingIdlePhase } from './src/phaseTracking/idlePhaseTracker'
+import { startTrackingPhases, stopTrackingPhases } from './src/phaseTracking'
 
 describe('main-thread-scheculing', () => {
     let requestIdleCallbackMock = createRequestIdleCallbackMock()
@@ -177,17 +177,17 @@ describe('main-thread-scheculing', () => {
         expect(jestFn.mock.calls.length).toBe(1)
     })
 
-    it('calling startTrackingIdlePhase() twice throws an error', () => {
-        expect(() => startTrackingIdlePhase()).not.toThrow()
+    it('calling startTrackingPhases() twice throws an error', () => {
+        expect(() => startTrackingPhases()).not.toThrow()
 
-        expect(() => startTrackingIdlePhase()).toThrow()
+        expect(() => startTrackingPhases()).toThrow()
 
         // reset state
-        stopTrackingIdlePhase()
+        stopTrackingPhases()
     })
 
-    it('cover the case that stopTrackingIdlePhase() can throw an unreachable code error', () => {
-        expect(() => stopTrackingIdlePhase()).toThrow()
+    it('cover the case that stopTrackingPhases() can throw an unreachable code error', () => {
+        expect(() => stopTrackingPhases()).toThrow()
     })
 
     it('cover the case that removeDeferred() can throw an unreachable code error', () => {
@@ -267,11 +267,7 @@ function createRequestIdleCallbackMock() {
     const callbacks: { func: IdleRequestCallback; id: number }[] = []
 
     let id = 1
-    window.requestIdleCallback = (callback, options) => {
-        if (options !== undefined) {
-            throw new Error(`mock doesn't support passing the second parameter "options"`)
-        }
-
+    window.requestIdleCallback = (callback) => {
         const callbackId = id
         callbacks.push({ func: callback, id: callbackId })
 
