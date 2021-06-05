@@ -4,26 +4,27 @@
 import { getIdlePhase, IdlePhase } from './phaseTracking'
 
 let lastCall = 0
+let lastResult = false
 
 /**
  * Determines if it's time to call `yieldToMainThread()`.
  */
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
-    const now = performance.now()
+    const now = Date.now()
 
     if (now - lastCall === 0) {
-        return false
+        return lastResult
     }
-
-    lastCall = now
 
     const idlePhase = getIdlePhase()
 
-    return (
+    lastCall = now
+    lastResult =
         idlePhase === undefined ||
-        now > calculateDeadline(priority, idlePhase) ||
+        now >= calculateDeadline(priority, idlePhase) ||
         navigator.scheduling?.isInputPending?.() === true
-    )
+
+    return lastResult
 }
 
 function calculateDeadline(priority: 'background' | 'user-visible', idlePhase: IdlePhase): number {
