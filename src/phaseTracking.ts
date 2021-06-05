@@ -1,4 +1,4 @@
-import requestEarlyIdleCallback from './requestFastIdle'
+import requestEarlyIdleCallback from './requestEarlyIdleCallback'
 
 export type IdlePhase = {
     start: number
