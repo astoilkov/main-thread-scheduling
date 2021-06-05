@@ -1,4 +1,3 @@
-import whenReady from './whenReady'
 import { startTrackingPhases, stopTrackingPhases } from './phaseTracking'
 
 type Deferred = {
@@ -64,5 +63,25 @@ export function nextDeferred(): void {
     const lastDeferredItem = deferred[deferred.length - 1]
     if (lastDeferredItem !== undefined) {
         lastDeferredItem.resolve()
+    }
+}
+
+type WhenReady<T> = {
+    promise: Promise<T>
+    resolve: (value: T) => void
+}
+/**
+ * A simple abstraction that allows to resolve a promise outside of its constructor.
+ */
+function whenReady(): WhenReady<void>
+function whenReady<T>(): WhenReady<T>
+function whenReady<T>(): WhenReady<T> {
+    let promiseResolve: (value: T) => void
+
+    const promise = new Promise<T>((resolve) => (promiseResolve = resolve))
+
+    return {
+        promise,
+        resolve: promiseResolve!,
     }
 }
