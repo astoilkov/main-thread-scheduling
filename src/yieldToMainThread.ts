@@ -28,8 +28,7 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
             (): Promise<void> =>
                 waitCallback(requestIdleCallback, {
                     // #connection 2021-06-05T3:07:18+03:00
-                    // 60 frames per second
-                    timeout: 1000 / 60,
+                    timeout: 100,
                 }),
         ])
     } else {

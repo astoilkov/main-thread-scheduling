@@ -13,8 +13,7 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
         },
         {
             // #connection 2021-06-05T3:07:18+03:00
-            // 60 frames per second
-            timeout: 1000 / 60,
+            timeout: 100,
         },
     )
 })
