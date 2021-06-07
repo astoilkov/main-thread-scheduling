@@ -3,20 +3,43 @@ export type IdlePhase = {
     deadline: IdleDeadline
 }
 
+// #hack
+let shouldRequestAnimationFrame = false
 const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) => void) => {
-    requestIdleCallback(
-        (deadline) => {
+    const handleIdleCallback = (): void => {
+        requestIdleCallback((deadline) => {
+            shouldRequestAnimationFrame = true
+
+            performance.mark(deadline.didTimeout.toString())
             callback({
                 deadline,
                 start: Date.now(),
             })
-        },
-        {
-            // #connection 2021-06-05T3:07:18+03:00
-            timeout: 100,
-        },
-    )
+
+            shouldRequestAnimationFrame = false
+        })
+    }
+
+    if (shouldRequestAnimationFrame) {
+        requestAnimationFrame(() => {
+            handleIdleCallback()
+        })
+    } else {
+        handleIdleCallback()
+    }
 })
+
+export type AnimationPhase = {
+    start: number
+}
+
+const animationFrameTracker = createPhaseTracker(
+    (callback: (animationPhase: AnimationPhase) => void) => {
+        requestAnimationFrame(() => {
+            callback({ start: Date.now() })
+        })
+    },
+)
 
 type PhaseTracker<T> = {
     getPhase: () => T | undefined
@@ -82,13 +105,18 @@ function createPhaseTracker<T>(
 }
 
 export function getIdlePhase(): IdlePhase | undefined {
-    return idlePhaseTracker.getPhase()
+    const start = animationFrameTracker.getPhase()?.start ?? idlePhaseTracker.getPhase()?.start
+    const deadline = idlePhaseTracker.getPhase()?.deadline
+
+    return start === undefined || deadline === undefined ? undefined : { start, deadline }
 }
 
 export function startTrackingPhases(): void {
     idlePhaseTracker.startTracking()
+    animationFrameTracker.startTracking()
 }
 
 export function stopTrackingPhases(): void {
     idlePhaseTracker.stopTracking()
+    animationFrameTracker.stopTracking()
 }
