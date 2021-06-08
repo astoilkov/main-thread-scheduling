@@ -10,7 +10,6 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
         requestIdleCallback((deadline) => {
             shouldRequestAnimationFrame = true
 
-            performance.mark(deadline.didTimeout.toString())
             callback({
                 deadline,
                 start: Date.now(),
