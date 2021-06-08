@@ -104,7 +104,9 @@ function createPhaseTracker<T>(
 }
 
 export function getIdlePhase(): IdlePhase | undefined {
-    const start = animationFrameTracker.getPhase()?.start ?? idlePhaseTracker.getPhase()?.start
+    const idlePhaseStart = idlePhaseTracker.getPhase()?.start
+    const animationFramePhaseStart = animationFrameTracker.getPhase()?.start
+    const start = animationFramePhaseStart ?? idlePhaseStart
     const deadline = idlePhaseTracker.getPhase()?.deadline
 
     return start === undefined || deadline === undefined ? undefined : { start, deadline }

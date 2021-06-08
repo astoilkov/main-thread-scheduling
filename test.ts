@@ -4,17 +4,26 @@ import { startTrackingPhases, stopTrackingPhases } from './src/phaseTracking'
 
 describe('main-thread-scheculing', () => {
     let requestIdleCallbackMock = createRequestIdleCallbackMock()
+    let requestAnimationFrameMock = createRequestAnimationFrameMock()
+
+    function callAnimationAndIdleFrames(timeRemaining: number, didTimeout: boolean): void {
+        requestAnimationFrameMock.callRequestAnimationFrame()
+
+        requestIdleCallbackMock.callRequestIdleCallback(timeRemaining, didTimeout)
+    }
 
     beforeEach(async () => {
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await wait()
 
         requestIdleCallbackMock.mockRestore()
+        requestAnimationFrameMock.mockRestore()
 
         requestIdleCallbackMock = createRequestIdleCallbackMock()
+        requestAnimationFrameMock = createRequestAnimationFrameMock()
     })
 
     it(`calling yieldOrContinue() for the first time should yield to the main thread`, async () => {
@@ -28,7 +37,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await ready
 
@@ -48,7 +57,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await ready
 
@@ -76,7 +85,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await ready
 
@@ -99,13 +108,13 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         const promise = ready
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await promise
 
@@ -123,11 +132,11 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await ready
 
@@ -148,7 +157,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(1000, false)
+        callAnimationAndIdleFrames(1000, false)
 
         await ready
 
@@ -166,11 +175,11 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await ready
 
@@ -218,7 +227,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await ready
 
@@ -244,7 +253,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await ready
 
@@ -257,7 +266,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await promise
 
@@ -293,19 +302,37 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, true)
+        callAnimationAndIdleFrames(100, true)
 
         await wait()
 
         expect(jestFn.mock.calls.length).toBe(0)
-        expect(isTimeToYieldMocked('background')).toBe(false)
+        // expect(isTimeToYieldMocked('background')).toBe(false)
+
+        callAnimationAndIdleFrames(100, false)
+
+        await wait()
+
+        expect(jestFn.mock.calls.length).toBe(1)
+        // expect(isTimeToYieldMocked('background')).toBe(false)
+    })
+
+    it('requestIdleCallback is called without requestAnimationFrame before it', async () => {
+        const jestFn = jest.fn()
+
+        ;(async () => {
+            await yieldToMainThread('background')
+
+            jestFn()
+        })()
+
+        await wait()
 
         requestIdleCallbackMock.callRequestIdleCallback(100, false)
 
         await wait()
 
         expect(jestFn.mock.calls.length).toBe(1)
-        expect(isTimeToYieldMocked('background')).toBe(false)
     })
 })
 
@@ -328,6 +355,7 @@ function createRequestIdleCallbackMock() {
         func: IdleRequestCallback
         options: IdleRequestOptions | undefined
     }[] = []
+    let animationFrameCallbacks: { id: number; func: FrameRequestCallback }[] = []
 
     const originalRequestIdleCallback = window.requestIdleCallback
     const originalCancelIdleCallback = window.cancelIdleCallback
@@ -351,6 +379,17 @@ function createRequestIdleCallbackMock() {
 
     return {
         callRequestIdleCallback(timeRemaining: number, didTimeout: boolean) {
+            // call requestAnimationFrame() callbacks
+            {
+                const pendingAnimationFrameCallbacks = [...animationFrameCallbacks]
+
+                animationFrameCallbacks = []
+
+                for (const pending of pendingAnimationFrameCallbacks) {
+                    pending.func(performance.now())
+                }
+            }
+
             const pendingCallbacks = didTimeout
                 ? callbacks.filter((callback) => typeof callback.options?.timeout === 'number')
                 : [...callbacks]
@@ -365,6 +404,48 @@ function createRequestIdleCallbackMock() {
         mockRestore() {
             window.cancelIdleCallback = originalCancelIdleCallback
             window.requestIdleCallback = originalRequestIdleCallback
+        },
+    }
+}
+
+function createRequestAnimationFrameMock() {
+    let globalCallbackId = 1
+    let callbacks: { id: number; func: FrameRequestCallback }[] = []
+
+    const originalRequestAnimationFrame = window.requestAnimationFrame
+    const originalCancelAnimationFrame = window.cancelAnimationFrame
+
+    window.requestAnimationFrame = (callback) => {
+        const callbackId = globalCallbackId
+        callbacks.push({ id: callbackId, func: callback })
+
+        globalCallbackId += 1
+
+        return callbackId
+    }
+
+    window.cancelAnimationFrame = (id: number) => {
+        const index = callbacks.findIndex((callback) => callback.id === id)
+
+        if (index !== -1) {
+            callbacks.splice(index, 1)
+        }
+    }
+
+    return {
+        callRequestAnimationFrame() {
+            const pendingCallbacks = [...callbacks]
+
+            callbacks = []
+
+            for (const pending of pendingCallbacks) {
+                pending.func(performance.now())
+            }
+        },
+
+        mockRestore() {
+            window.requestAnimationFrame = originalRequestAnimationFrame
+            window.cancelAnimationFrame = originalCancelAnimationFrame
         },
     }
 }
