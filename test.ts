@@ -1,20 +1,29 @@
 import { removeDeferred } from './src/deferred'
 import { isTimeToYield, yieldOrContinue, yieldToMainThread } from './index'
-import { startTrackingIdlePhase, stopTrackingIdlePhase } from './src/idlePhase'
+import { startTrackingPhases, stopTrackingPhases } from './src/phaseTracking'
 
 describe('main-thread-scheculing', () => {
     let requestIdleCallbackMock = createRequestIdleCallbackMock()
+    let requestAnimationFrameMock = createRequestAnimationFrameMock()
+
+    function callAnimationAndIdleFrames(timeRemaining: number, didTimeout: boolean): void {
+        requestAnimationFrameMock.callRequestAnimationFrame()
+
+        requestIdleCallbackMock.callRequestIdleCallback(timeRemaining, didTimeout)
+    }
 
     beforeEach(async () => {
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await wait()
 
         requestIdleCallbackMock.mockRestore()
+        requestAnimationFrameMock.mockRestore()
 
         requestIdleCallbackMock = createRequestIdleCallbackMock()
+        requestAnimationFrameMock = createRequestAnimationFrameMock()
     })
 
     it(`calling yieldOrContinue() for the first time should yield to the main thread`, async () => {
@@ -28,7 +37,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await ready
 
@@ -48,7 +57,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await ready
 
@@ -76,7 +85,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await ready
 
@@ -99,13 +108,13 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         const promise = ready
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await promise
 
@@ -123,11 +132,11 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await ready
 
@@ -148,7 +157,7 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(1000, false)
+        callAnimationAndIdleFrames(1000, false)
 
         await ready
 
@@ -166,28 +175,28 @@ describe('main-thread-scheculing', () => {
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(0, false)
+        callAnimationAndIdleFrames(0, false)
 
         await ready
 
         expect(jestFn.mock.calls.length).toBe(1)
     })
 
-    it('calling startTrackingIdlePhase() twice throws an error', () => {
-        expect(() => startTrackingIdlePhase()).not.toThrow()
+    it('calling startTrackingPhases() twice throws an error', () => {
+        expect(() => startTrackingPhases()).not.toThrow()
 
-        expect(() => startTrackingIdlePhase()).toThrow()
+        expect(() => startTrackingPhases()).toThrow()
 
         // reset state
-        stopTrackingIdlePhase()
+        stopTrackingPhases()
     })
 
-    it('cover the case that stopTrackingIdlePhase() can throw an unreachable code error', () => {
-        expect(() => stopTrackingIdlePhase()).toThrow()
+    it('cover the case that stopTrackingPhases() can throw an unreachable code error', () => {
+        expect(() => stopTrackingPhases()).toThrow()
     })
 
     it('cover the case that removeDeferred() can throw an unreachable code error', () => {
@@ -210,15 +219,15 @@ describe('main-thread-scheculing', () => {
         const ready = (async () => {
             await yieldToMainThread('user-visible')
 
-            expect(isTimeToYield('user-visible')).toBe(false)
-            expect(isTimeToYield('background')).toBe(false)
+            expect(isTimeToYieldMocked('user-visible')).toBe(false)
+            expect(isTimeToYieldMocked('background')).toBe(false)
 
             jestFn()
         })()
 
         await wait()
 
-        requestIdleCallbackMock.callRequestIdleCallback(100, false)
+        callAnimationAndIdleFrames(100, false)
 
         await ready
 
@@ -236,8 +245,83 @@ describe('main-thread-scheculing', () => {
         const ready = (async () => {
             await yieldToMainThread('user-visible')
 
-            expect(isTimeToYield('user-visible')).toBe(true)
-            expect(isTimeToYield('background')).toBe(true)
+            expect(isTimeToYieldMocked('user-visible')).toBe(true)
+            expect(isTimeToYieldMocked('background')).toBe(true)
+
+            jestFn()
+        })()
+
+        await wait()
+
+        callAnimationAndIdleFrames(100, false)
+
+        await ready
+
+        expect(jestFn.mock.calls.length).toBe(1)
+        ;(navigator as any).scheduling = undefined
+    })
+
+    it('isTimeToYield() logic is called once per milisecond, caches result, return true ', async () => {
+        const promise = yieldToMainThread('user-visible')
+
+        await wait()
+
+        callAnimationAndIdleFrames(100, false)
+
+        await promise
+
+        // mock
+        const orignalDateNow = Date.now
+        Date.now = () => 100
+        ;(navigator as any).scheduling = {
+            isInputPending: () => false,
+        }
+
+        expect(isTimeToYield('user-visible')).toBe(false)
+
+        //
+        ;(navigator as any).scheduling = {
+            isInputPending: () => true,
+        }
+
+        expect(isTimeToYield('user-visible')).toBe(false)
+
+        // unmock
+        Date.now = orignalDateNow
+        ;(navigator as any).scheduling = undefined
+    })
+
+    it(`background task isn't called when it's a timeouted idle callback`, async () => {
+        const jestFn = jest.fn()
+
+        ;(async () => {
+            await yieldToMainThread('background')
+
+            jestFn()
+        })()
+
+        await wait()
+
+        callAnimationAndIdleFrames(100, true)
+
+        await wait()
+
+        expect(jestFn.mock.calls.length).toBe(0)
+        // expect(isTimeToYieldMocked('background')).toBe(false)
+
+        callAnimationAndIdleFrames(100, false)
+
+        await wait()
+
+        expect(jestFn.mock.calls.length).toBe(1)
+        // expect(isTimeToYieldMocked('background')).toBe(false)
+    })
+
+    it('requestIdleCallback is called without requestAnimationFrame before it', async () => {
+        const jestFn = jest.fn()
+
+        ;(async () => {
+            await yieldToMainThread('background')
 
             jestFn()
         })()
@@ -246,13 +330,16 @@ describe('main-thread-scheculing', () => {
 
         requestIdleCallbackMock.callRequestIdleCallback(100, false)
 
-        await ready
+        await wait()
 
         expect(jestFn.mock.calls.length).toBe(1)
-        ;(navigator as any).scheduling = undefined
     })
 })
 
+// we use wait because:
+// - we call `requestLaterMicrotask()` inside of `yieldToMainThread()` that makes
+//   `requestIdleCallback()` to not be called immediately. this way we are sure
+//   `requestIdleCallback()` has been called
 async function wait() {
     return new Promise<void>((resolve) => {
         setTimeout(() => {
@@ -262,20 +349,22 @@ async function wait() {
 }
 
 function createRequestIdleCallbackMock() {
+    let globalCallbackId = 1
+    let callbacks: {
+        id: number
+        func: IdleRequestCallback
+        options: IdleRequestOptions | undefined
+    }[] = []
+    let animationFrameCallbacks: { id: number; func: FrameRequestCallback }[] = []
+
     const originalRequestIdleCallback = window.requestIdleCallback
     const originalCancelIdleCallback = window.cancelIdleCallback
-    const callbacks: { func: IdleRequestCallback; id: number }[] = []
 
-    let id = 1
     window.requestIdleCallback = (callback, options) => {
-        if (options !== undefined) {
-            throw new Error(`mock doesn't support passing the second parameter "options"`)
-        }
+        const callbackId = globalCallbackId
+        callbacks.push({ id: callbackId, func: callback, options })
 
-        const callbackId = id
-        callbacks.push({ func: callback, id: callbackId })
-
-        id += 1
+        globalCallbackId += 1
 
         return callbackId
     }
@@ -290,9 +379,22 @@ function createRequestIdleCallbackMock() {
 
     return {
         callRequestIdleCallback(timeRemaining: number, didTimeout: boolean) {
-            const pendingCallbacks = [...callbacks]
+            // call requestAnimationFrame() callbacks
+            {
+                const pendingAnimationFrameCallbacks = [...animationFrameCallbacks]
 
-            callbacks.splice(0, callbacks.length)
+                animationFrameCallbacks = []
+
+                for (const pending of pendingAnimationFrameCallbacks) {
+                    pending.func(performance.now())
+                }
+            }
+
+            const pendingCallbacks = didTimeout
+                ? callbacks.filter((callback) => typeof callback.options?.timeout === 'number')
+                : [...callbacks]
+
+            callbacks = callbacks.filter((callback) => !pendingCallbacks.includes(callback))
 
             for (const callback of pendingCallbacks) {
                 callback.func({ timeRemaining: () => timeRemaining, didTimeout })
@@ -304,4 +406,58 @@ function createRequestIdleCallbackMock() {
             window.requestIdleCallback = originalRequestIdleCallback
         },
     }
+}
+
+function createRequestAnimationFrameMock() {
+    let globalCallbackId = 1
+    let callbacks: { id: number; func: FrameRequestCallback }[] = []
+
+    const originalRequestAnimationFrame = window.requestAnimationFrame
+    const originalCancelAnimationFrame = window.cancelAnimationFrame
+
+    window.requestAnimationFrame = (callback) => {
+        const callbackId = globalCallbackId
+        callbacks.push({ id: callbackId, func: callback })
+
+        globalCallbackId += 1
+
+        return callbackId
+    }
+
+    window.cancelAnimationFrame = (id: number) => {
+        const index = callbacks.findIndex((callback) => callback.id === id)
+
+        if (index !== -1) {
+            callbacks.splice(index, 1)
+        }
+    }
+
+    return {
+        callRequestAnimationFrame() {
+            const pendingCallbacks = [...callbacks]
+
+            callbacks = []
+
+            for (const pending of pendingCallbacks) {
+                pending.func(performance.now())
+            }
+        },
+
+        mockRestore() {
+            window.requestAnimationFrame = originalRequestAnimationFrame
+            window.cancelAnimationFrame = originalCancelAnimationFrame
+        },
+    }
+}
+
+function isTimeToYieldMocked(priority: 'background' | 'user-visible'): boolean {
+    const originalDateNow = Date.now
+
+    Date.now = () => Math.random()
+
+    const result = isTimeToYield(priority)
+
+    Date.now = originalDateNow
+
+    return result
 }

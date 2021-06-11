@@ -1,3 +1,5 @@
+import requestLaterMicrotask from './requestLaterMicrotask'
+
 let globalId = 0
 
 const running = new Set<number>()
@@ -12,13 +14,11 @@ export function requestPromiseEscape(callback: () => void): number {
 
     running.add(id)
 
-    queueMicrotask(() => {
-        queueMicrotask(() => {
-            if (running.has(id)) {
-                callback()
-                running.delete(id)
-            }
-        })
+    requestLaterMicrotask(() => {
+        if (running.has(id)) {
+            callback()
+            running.delete(id)
+        }
     })
 
     globalId += 1

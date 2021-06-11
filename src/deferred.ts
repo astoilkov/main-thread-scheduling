@@ -1,5 +1,4 @@
-import whenReady from './whenReady'
-import { startTrackingIdlePhase, stopTrackingIdlePhase } from './idlePhase'
+import { startTrackingPhases, stopTrackingPhases } from './phaseTracking'
 
 type Deferred = {
     priority: 'background' | 'user-visible'
@@ -23,7 +22,7 @@ export function createDeferred(priority: 'background' | 'user-visible'): Deferre
     deferred.splice(insertIndex === -1 ? deferred.length : insertIndex, 0, item)
 
     if (deferred.length === 1) {
-        startTrackingIdlePhase()
+        startTrackingPhases()
     }
 
     return item
@@ -52,7 +51,7 @@ export function removeDeferred(deferredItem: Deferred): void {
     deferred.splice(index, 1)
 
     if (deferred.length === 0) {
-        stopTrackingIdlePhase()
+        stopTrackingPhases()
     }
 }
 
@@ -64,5 +63,25 @@ export function nextDeferred(): void {
     const lastDeferredItem = deferred[deferred.length - 1]
     if (lastDeferredItem !== undefined) {
         lastDeferredItem.resolve()
+    }
+}
+
+type WhenReady<T> = {
+    promise: Promise<T>
+    resolve: (value: T) => void
+}
+/**
+ * A simple abstraction that allows to resolve a promise outside of its constructor.
+ */
+function whenReady(): WhenReady<void>
+function whenReady<T>(): WhenReady<T>
+function whenReady<T>(): WhenReady<T> {
+    let promiseResolve: (value: T) => void
+
+    const promise = new Promise<T>((resolve) => (promiseResolve = resolve))
+
+    return {
+        promise,
+        resolve: promiseResolve!,
     }
 }
