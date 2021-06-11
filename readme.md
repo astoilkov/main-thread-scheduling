@@ -40,7 +40,7 @@ The library ensures that:
 - it can be easily integrated in an existing code base
 
 This is accomplished through multiple strategies:
-- Stops task execution when user interacts with the UI. Using `navigator.scheduling.isInputPending()`. Fallbacks to using [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline)
+- Stops task execution when user interacts with the UI. Using `navigator.scheduling.isInputPending()`. Fallbacks to using [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline).
 - Global tasks queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
 - Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX by updating 
