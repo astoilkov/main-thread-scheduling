@@ -27,8 +27,11 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
             (): Promise<void> => waitCallback(requestLaterMicrotask),
             (): Promise<void> =>
                 waitCallback(requestIdleCallback, {
+                    // #WET 2021-06-05T3:07:18+03:00
                     // #connection 2021-06-05T3:07:18+03:00
-                    timeout: 100,
+                    // call at least once per frame
+                    // asuming 60 fps, 1000/60 = 16.667
+                    timeout: 16,
                 }),
         ])
     } else {

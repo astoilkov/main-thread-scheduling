@@ -5,18 +5,28 @@ export type IdlePhase = {
 
 // #hack
 let shouldRequestAnimationFrame = false
+
 const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) => void) => {
     const handleIdleCallback = (): void => {
-        requestIdleCallback((deadline) => {
-            shouldRequestAnimationFrame = true
+        requestIdleCallback(
+            (deadline) => {
+                shouldRequestAnimationFrame = true
 
-            callback({
-                deadline,
-                start: Date.now(),
-            })
+                callback({
+                    deadline,
+                    start: Date.now(),
+                })
 
-            shouldRequestAnimationFrame = false
-        })
+                shouldRequestAnimationFrame = false
+            },
+            {
+                // #WET 2021-06-05T3:07:18+03:00
+                // #connection 2021-06-05T3:07:18+03:00
+                // call at least once per frame
+                // asuming 60 fps, 1000/60 = 16.667
+                timeout: 16,
+            },
+        )
     }
 
     if (shouldRequestAnimationFrame) {
