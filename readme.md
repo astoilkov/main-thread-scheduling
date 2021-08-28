@@ -35,7 +35,7 @@ npm install main-thread-scheduling
 ## Overview
 
 The library ensures that:
-- the UI never freezes
+- the UI doesn't freeze
 - the user's computer fan doesn't spin
 - it can be easily integrated in an existing code base
 
