@@ -36,14 +36,14 @@ npm install main-thread-scheduling
 
 The library ensures that:
 - the UI never freezes
-- the user's computer fans don't spin
+- the user's computer fan doesn't spin
 - it can be easily integrated in an existing code base
 
 This is accomplished through multiple strategies:
-- Stops task execution when user interacts with the UI. Using `navigator.scheduling.isInputPending()`. Fallbacks to using [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline).
-- Global tasks queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
+- Stops task execution when user interacts with the UI. Uses `navigator.scheduling.isInputPending()` and fallbacks to [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline).
+- Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
-- Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX by updating 
+- Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX.
 - Considerate about your existing code. Tasks with `background` priority are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
 
 ## Use Cases
@@ -59,7 +59,7 @@ Why rely on some open-source library to ensure a good performance for my app?
 - Not a weekend project. I have been working on this code for months. If you want to dive deeper, you can read the [in-depth](./docs/in-depth.md) doc.
 - This is the future. Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis).
 - Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
-- Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles)
+- Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
 ## API
 
