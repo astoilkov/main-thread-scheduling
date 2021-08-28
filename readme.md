@@ -56,9 +56,9 @@ This is accomplished through multiple strategies:
 ## Why
 
 Why rely on some open-source library to ensure a good performance for my app?
-- Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - Not a weekend project. I have been working on this code for months. If you want to dive deeper, you can read the [in-depth](./docs/in-depth.md) doc.
 - This is the future. Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis).
+- Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles)
 
 ## API
