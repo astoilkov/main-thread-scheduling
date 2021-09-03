@@ -4,6 +4,7 @@
     "description": "Consistently responsive apps while staying on the main thread",
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
+    "funding": "https://github.com/sponsors/astoilkov",
     "author": {
         "name": "Antonio Stoilkov",
         "email": "hello@astoilkov.com",
