@@ -113,8 +113,8 @@ If you have a use case for a third priority, you can write in [this issue](https
 
 ## Alternatives
 
-- Web Workers
-
 The problem this library solves isn't new. However, I haven't found a library that can solve this problem in a simple manner. [Open an issue](https://github.com/astoilkov/main-thread-scheduling/issues/new) if there is such a library so I can add it here.
+
+Web Workers are a possible alternative. However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads.
 
 React has an implementation for scheduling tasks – [react/scheduler](https://github.com/facebook/react/tree/3c7d52c3d6d316d09d5c2479c6851acecccc6325/packages/scheduler). They plan to make it more generic but I don't know their timeline.
