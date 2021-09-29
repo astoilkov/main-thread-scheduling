@@ -61,6 +61,10 @@ Why rely on some open-source library to ensure a good performance for my app?
 - Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
+## Example
+
+You can see the library in action in [this CodeSandbox](https://codesandbox.io/s/main-thread-scheduling-example-qqef6?file=/src/App.js:1188-1361). Try to remove the call to `yieldToContinue()` and then type in the input to see the difference.
+
 ## API
 
 Note: If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth.md) doc.
