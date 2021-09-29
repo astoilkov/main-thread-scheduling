@@ -48,10 +48,10 @@ This is accomplished through multiple strategies:
 
 ## Use Cases
 
-- You want to turn a synchronous function into a non-blocking asynchronous function. Avoids UI freezes.
-- You want to yield important results first and less urgent ones second. Improves perceived performance.
-- You want to run a background task that doesn't spin the fans. Avoids bad reputation.
-- You want to run multiple backgrounds tasks that don't pile up with time. Prevents death by a thousand cuts.
+- You want to turn a synchronous function into a non-blocking asynchronous function. **Avoids UI freezes.**
+- You want to yield important results first and less urgent ones second. **Improves perceived performance.**
+- You want to run a background task that doesn't spin the fans. **Avoids bad reputation.**
+- You want to run multiple backgrounds tasks that don't pile up with time. **Prevents death by a thousand cuts.**
 
 ## Why
 
