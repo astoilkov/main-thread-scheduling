@@ -2,6 +2,8 @@
 
 This library is the culmination of a lot of research and hard work. Git history shows just a fraction of the effort because the code was previously in another repository.
 
+This document is an overview of the library implementation. If you are looking at the code while reading this code, it may be easier to understand.
+
 ## `yieldToMainThread(priority: 'background' | 'user-visible')`
 
 This is the most complicated method in the library. Here how it works:
