@@ -7,7 +7,7 @@ let lastCall = 0
 let lastResult = false
 
 /**
- * Determines if it's time to call `yieldToMainThread()`.
+ * Determines if it's time to call `yieldControl()`.
  */
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
     const now = Date.now()

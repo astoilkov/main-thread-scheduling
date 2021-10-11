@@ -66,8 +66,8 @@ function createPhaseTracker<T>(
     //   `startTrackingIdlePhase()` again. all the steps below happen in a single browser task (in
     //   multiple brwoser micro tasks):
     //   1. `stopTrackingIdlePhase()` is called
-    //   2. Promise for `yieldToMainThread()` resolves
-    //   3. `yieldToMainThread()` is called again and `startTrackingIdlePhase()` is called
+    //   2. Promise for `yieldControl()` resolves
+    //   3. `yieldControl()` is called again and `startTrackingIdlePhase()` is called
     // - we don't want to cancel with `cancelIdleCallback()` because this would make us call
     //   `requestIdleCallback()` again — this isn't optimal because we can lose free time left in the
     //   currently running idle callback

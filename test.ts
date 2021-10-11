@@ -1,5 +1,5 @@
 import { removeDeferred } from './src/deferred'
-import { isTimeToYield, yieldOrContinue, yieldToMainThread } from './index'
+import { isTimeToYield, yieldOrContinue, yieldControl } from './index'
 import { startTrackingPhases, stopTrackingPhases } from './src/phaseTracking'
 
 describe('main-thread-scheculing', () => {
@@ -71,12 +71,12 @@ describe('main-thread-scheculing', () => {
         const ready = (async () => {
             await Promise.all([
                 (async () => {
-                    await yieldToMainThread('user-visible')
+                    await yieldControl('user-visible')
 
                     userVisibleTaskDone()
                 })(),
                 (async () => {
-                    await yieldToMainThread('background')
+                    await yieldControl('background')
 
                     backgroundTaskDone()
                 })(),
@@ -99,9 +99,9 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         const ready = (async () => {
-            await yieldToMainThread('background')
+            await yieldControl('background')
 
-            await yieldToMainThread('background')
+            await yieldControl('background')
 
             jestFn()
         })()
@@ -125,7 +125,7 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         const ready = (async () => {
-            await Promise.all([yieldToMainThread('background'), yieldToMainThread('background')])
+            await Promise.all([yieldControl('background'), yieldControl('background')])
 
             jestFn()
         })()
@@ -147,10 +147,7 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         const ready = (async () => {
-            await Promise.all([
-                yieldToMainThread('user-visible'),
-                yieldToMainThread('user-visible'),
-            ])
+            await Promise.all([yieldControl('user-visible'), yieldControl('user-visible')])
 
             jestFn()
         })()
@@ -168,7 +165,7 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         const ready = (async () => {
-            await yieldToMainThread('user-visible')
+            await yieldControl('user-visible')
 
             jestFn()
         })()
@@ -217,7 +214,7 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         const ready = (async () => {
-            await yieldToMainThread('user-visible')
+            await yieldControl('user-visible')
 
             expect(isTimeToYieldMocked('user-visible')).toBe(false)
             expect(isTimeToYieldMocked('background')).toBe(false)
@@ -243,7 +240,7 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         const ready = (async () => {
-            await yieldToMainThread('user-visible')
+            await yieldControl('user-visible')
 
             expect(isTimeToYieldMocked('user-visible')).toBe(true)
             expect(isTimeToYieldMocked('background')).toBe(true)
@@ -262,7 +259,7 @@ describe('main-thread-scheculing', () => {
     })
 
     it('isTimeToYield() logic is called once per milisecond, caches result, return true ', async () => {
-        const promise = yieldToMainThread('user-visible')
+        const promise = yieldControl('user-visible')
 
         await wait()
 
@@ -295,7 +292,7 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         ;(async () => {
-            await yieldToMainThread('background')
+            await yieldControl('background')
 
             jestFn()
         })()
@@ -321,7 +318,7 @@ describe('main-thread-scheculing', () => {
         const jestFn = jest.fn()
 
         ;(async () => {
-            await yieldToMainThread('background')
+            await yieldControl('background')
 
             jestFn()
         })()
@@ -337,7 +334,7 @@ describe('main-thread-scheculing', () => {
 })
 
 // we use wait because:
-// - we call `requestLaterMicrotask()` inside of `yieldToMainThread()` that makes
+// - we call `requestLaterMicrotask()` inside of `yieldControl()` that makes
 //   `requestIdleCallback()` to not be called immediately. this way we are sure
 //   `requestIdleCallback()` has been called
 async function wait() {

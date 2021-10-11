@@ -4,7 +4,7 @@ This library is the culmination of a lot of research and hard work. Git history 
 
 This document is an overview of the library implementation. If you are looking at the code while reading this code, it may be easier to understand.
 
-## `yieldToMainThread(priority: 'background' | 'user-visible')`
+## `yieldControl(priority: 'background' | 'user-visible')`
 
 This is the most complicated method in the library. Here how it works:
 1. A new task is added to the queue
@@ -36,17 +36,17 @@ The maximum amount of time allowed by priority:
 Execution order is more easily explained with a code example. The example below will log the values in order `1, 2, 3`. This means that `user-visible` tasks have priority over `background` tasks and that a task that is called later has bigger priority than the earlier called task:
 ```ts
 (async () => {
-    await yieldToMainThread('user-visible')
+    await yieldControl('user-visible')
     console.log('2')
 })()
 
 (async () => {
-    await yieldToMainThread('user-visible')
+    await yieldControl('user-visible')
     console.log('1')
 })()
 
 (async () => {
-    await yieldToMainThread('background')
+    await yieldControl('background')
     console.log('3')
 })()
 ```

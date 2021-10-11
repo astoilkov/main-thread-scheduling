@@ -3,9 +3,7 @@ import isTimeToYield from './isTimeToYield'
 import requestLaterMicrotask from './requestLaterMicrotask'
 import { createDeferred, isDeferredLast, removeDeferred } from './deferred'
 
-export default async function yieldToMainThread(
-    priority: 'user-visible' | 'background',
-): Promise<void> {
+export default async function yieldControl(priority: 'user-visible' | 'background'): Promise<void> {
     const deferred = createDeferred(priority)
 
     await schedule(priority)

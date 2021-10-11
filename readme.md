@@ -88,7 +88,7 @@ async function findInFiles(query: string) {
 ### More complex scenarios
 
 The library has two more functions available:
-- `yieldToMainThread(priority: 'background' | 'user-visible')`
+- `yieldControl(priority: 'background' | 'user-visible')`
 - `isTimeToYield(priority: 'background' | 'user-visible')`
 
 These two functions are used together to handle more advanced use cases.
@@ -99,7 +99,7 @@ async function doHeavyWork() {
     for (const value of values) {
         if (isTimeToYield('user-visible')) {
             render()
-            await yieldToMainThread('user-visible')
+            await yieldControl('user-visible')
         }
         
         computeHeavyWorkOnValue(value)

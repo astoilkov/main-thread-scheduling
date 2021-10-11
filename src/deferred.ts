@@ -57,7 +57,7 @@ export function removeDeferred(deferredItem: Deferred): void {
 
 /**
  * Resolve the last task in the queue. This triggers executing the task by resolving the promise
- * inside `yieldToMainThread()` function.
+ * inside `yieldControl()` function.
  */
 export function nextDeferred(): void {
     const lastDeferredItem = deferred[deferred.length - 1]
