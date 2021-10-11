@@ -49,9 +49,9 @@ This is accomplished through multiple strategies:
 ## Use Cases
 
 - You want to turn a synchronous function into a non-blocking asynchronous function. **Avoids UI freezes.**
-- You want to yield important results first and less urgent ones second. **Improves perceived performance.**
-- You want to run a background task that doesn't spin the fans. **Avoids bad reputation.**
-- You want to run multiple backgrounds tasks that don't pile up with time. **Prevents death by a thousand cuts.**
+- You want to render important elements first and less urgent ones second. **Improves perceived performance.**
+- You want to run a long background task that doesn't spin the fans after a while. **Avoids bad reputation.**
+- You want to run multiple backgrounds tasks that don't degrade your app performance with time. **Prevents death by a thousand cuts.**
 
 ## Why
 
@@ -87,7 +87,11 @@ async function findInFiles(query: string) {
 
 ### More complex scenarios
 
-The library has two more functions available: `yieldToMainThread(priority: 'background' | 'user-visible')` and `isTimeToYield(priority: 'background' | 'user-visible')`. These two functions are used together to handle more advanced use cases.
+The library has two more functions available:
+- `yieldToMainThread(priority: 'background' | 'user-visible')`
+- `isTimeToYield(priority: 'background' | 'user-visible')`
+
+These two functions are used together to handle more advanced use cases.
 
 A simple use case where you will need those two functions is when you want to render your view before yielding back control to the browser to continue its work:
 ```ts
@@ -107,7 +111,7 @@ async function doHeavyWork() {
 
 Currently there are only two priorities available: `background` and `user-visible`:
 - `background` – use this for background tasks. Every background task is run for 5ms.
-- `user-visible` – use this for things that need to display to the user as fast as possible. Every `user-visible` task is run for 50ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
+- `user-visible` – use this for things that need to display to the user as fast as possible. Every `user-visible` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
 
 If you have a use case for a third priority, you can write in [this issue](https://github.com/astoilkov/main-thread-scheduling/issues/1).
 
@@ -115,6 +119,6 @@ If you have a use case for a third priority, you can write in [this issue](https
 
 The problem this library solves isn't new. However, I haven't found a library that can solve this problem in a simple manner. [Open an issue](https://github.com/astoilkov/main-thread-scheduling/issues/new) if there is such a library so I can add it here.
 
-Web Workers are a possible alternative. However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads.
+Web Workers are a possible alternative. However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language.
 
-React has an implementation for scheduling tasks – [react/scheduler](https://github.com/facebook/react/tree/3c7d52c3d6d316d09d5c2479c6851acecccc6325/packages/scheduler). They plan to make it more generic but I don't know their timeline.
+React has an implementation for scheduling tasks – [react/scheduler](https://github.com/facebook/react/tree/3c7d52c3d6d316d09d5c2479c6851acecccc6325/packages/scheduler). They plan to make it more generic but there doesn't seem to be a public roadmap for that.
