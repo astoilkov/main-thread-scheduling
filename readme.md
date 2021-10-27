@@ -48,7 +48,7 @@ The library lets you run computationally heavy tasks on the main thread while en
 
 ## How It Works
 
-An in-depth overview is available [here](./docs/in-depth.md). These are the main things the library does to do it's magic:
+An in-depth overview is available [here](./docs/in-depth-overview.md). These are the main things the library does to do it's magic:
 - Stops task execution when user interacts with the UI. Uses `navigator.scheduling.isInputPending()` and fallbacks to [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline).
 - Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
@@ -58,7 +58,7 @@ An in-depth overview is available [here](./docs/in-depth.md). These are the main
 ## Why
 
 Why rely on some open-source library to ensure a good performance for my app?
-- Not a weekend project. I have been working on this code for months. If you want to dive deeper, you can read the [in-depth](./docs/in-depth.md) doc.
+- Not a weekend project. I have been working on this code for months. If you want to dive deeper, you can read the [in-depth](./docs/in-depth-overview.md) doc.
 - This is the future. Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis).
 - Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
@@ -69,7 +69,7 @@ You can see the library in action in [this CodeSandbox](https://codesandbox.io/s
 
 ## API
 
-Note: If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth.md) doc.
+Note: If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth-overview.md) doc.
 
 ### `yieldOrContinue(priority: 'background' | 'user-visible')`
 

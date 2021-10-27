@@ -1,4 +1,4 @@
-# `main-thread-scheduling` in-depth
+# `main-thread-scheduling` In-Depth Overview
 
 This library is the culmination of a lot of research and hard work. Git history shows just a fraction of the effort because the code was previously in another repository.
 
