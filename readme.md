@@ -58,9 +58,9 @@ An in-depth overview is available [here](./docs/in-depth-overview.md). These are
 ## Why
 
 Why rely on some open-source library to ensure a good performance for my app?
-- Not a weekend project. I have been working on this code for months. If you want to dive deeper, you can read the [in-depth](./docs/in-depth-overview.md) doc.
-- This is the future. Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis).
-- Simple. 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
+- **Not a weekend project.** I've already been using it for a year in two of my products — [Nota](https://nota.md) and [iBar](https://ibar.app). If you want to dive deeper, you can read the [in-depth](./docs/in-depth-overview.md) doc.
+- **This is the future.** Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis). This library will still be relevant in the future because it provides an easier API to work with.
+- **Simple.** 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
 ## Example
