@@ -71,7 +71,7 @@ You can see the library in action in [this CodeSandbox](https://codesandbox.io/s
 
 Note: If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth-overview.md) doc.
 
-### `yieldOrContinue(priority: 'background' | 'user-visible')`
+#### `yieldOrContinue(priority: 'background' | 'user-visible')`
 
 The complexity of the entire library is hidden behind this method. You can have great app performance by calling a single method.
 
