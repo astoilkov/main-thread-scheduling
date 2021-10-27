@@ -34,17 +34,10 @@ npm install main-thread-scheduling
 
 ## Overview
 
-The library ensures that:
-- the UI doesn't freeze
-- the user's computer fan doesn't spin
-- it can be easily integrated in an existing code base
-
-This is accomplished through multiple strategies:
-- Stops task execution when user interacts with the UI. Uses `navigator.scheduling.isInputPending()` and fallbacks to [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline).
-- Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
-- Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
-- Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX.
-- Considerate about your existing code. Tasks with `background` priority are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
+The library lets you run computationally heavy tasks on the main thread while:
+- Your app's UI doesn't freeze.
+- Your users' computer fan doesn't spin.
+- It can be easily integrated into your existing codebase.
 
 ## Use Cases
 
@@ -52,6 +45,15 @@ This is accomplished through multiple strategies:
 - You want to render important elements first and less urgent ones second. **Improves perceived performance.**
 - You want to run a long background task that doesn't spin the fans after a while. **Avoids bad reputation.**
 - You want to run multiple backgrounds tasks that don't degrade your app performance with time. **Prevents death by a thousand cuts.**
+
+## How It Works
+
+An in-depth overview is available [here](./docs/in-depth.md). These are the main things the library does to do it's magic:
+- Stops task execution when user interacts with the UI. Uses `navigator.scheduling.isInputPending()` and fallbacks to [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline).
+- Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
+- Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
+- Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX.
+- Considerate about your existing code. Tasks with `background` priority are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
 
 ## Why
 
@@ -63,7 +65,7 @@ Why rely on some open-source library to ensure a good performance for my app?
 
 ## Example
 
-You can see the library in action in [this CodeSandbox](https://codesandbox.io/s/main-thread-scheduling-example-qqef6?file=/src/App.js:1188-1361). Try to remove the call to `yieldToContinue()` and then type in the input to see the difference.
+You can see the library in action in [this CodeSandbox](https://codesandbox.io/s/main-thread-scheduling-example-qqef6?file=/src/App.js:1188-1361). Try removing the call to `yieldToContinue()` and then type in the input to see the difference.
 
 ## API
 
