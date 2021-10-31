@@ -69,7 +69,7 @@ You can see the library in action in [this CodeSandbox](https://codesandbox.io/s
 
 ## API
 
-Note: If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth-overview.md) doc.
+If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth-overview.md) doc.
 
 #### `yieldOrContinue(priority: 'background' | 'user-visible')`
 
