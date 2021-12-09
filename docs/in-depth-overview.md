@@ -64,7 +64,7 @@ Articles that talk about scheduling tasks in the browser:
 - [Sneak Peek: Beyond React 16 – React Blog](https://reactjs.org/blog/2018/03/01/sneak-peek-beyond-react-16.html)
 - [Scheduling in React](https://philippspiess.com/scheduling-in-react/)
 
-In depth look of some concepts talked in the document:
+In-depth overview for some of the concepts talked in the document:
 - [`queueMicrotask()`](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)
 - [The `requestAnimationFrame()` guide](https://flaviocopes.com/requestanimationframe/)
 - [JavaScript Event Loop vs Node JS Event Loop](https://blog.insiderattack.net/javascript-event-loop-vs-node-js-event-loop-aea2b1b85f5c)
