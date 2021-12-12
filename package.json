@@ -5,6 +5,7 @@
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
     "funding": "https://github.com/sponsors/astoilkov",
+    "homepage": "https://github.com/astoilkov/main-thread-scheduling",
     "author": {
         "name": "Antonio Stoilkov",
         "email": "hello@astoilkov.com",
