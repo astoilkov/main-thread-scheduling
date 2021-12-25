@@ -21,27 +21,18 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
     if (priority === 'user-visible') {
-        await promiseSequantial([
-            (): Promise<void> => waitCallback(requestLaterMicrotask),
-            (): Promise<void> =>
-                waitCallback(requestIdleCallback, {
-                    // #WET 2021-06-05T3:07:18+03:00
-                    // #connection 2021-06-05T3:07:18+03:00
-                    // call at least once per frame
-                    // asuming 60 fps, 1000/60 = 16.667
-                    timeout: 16,
-                }),
-        ])
-    } else {
-        await promiseSequantial([
-            (): Promise<void> => waitCallback(requestLaterMicrotask),
-            (): Promise<void> => waitCallback(requestIdleCallback),
-        ])
-    }
-}
+        await waitCallback(requestLaterMicrotask)
 
-async function promiseSequantial(getPromises: (() => Promise<unknown>)[]): Promise<void> {
-    for (const getPromise of getPromises) {
-        await getPromise()
+        await waitCallback(requestIdleCallback, {
+            // #WET 2021-06-05T3:07:18+03:00
+            // #connection 2021-06-05T3:07:18+03:00
+            // call at least once per frame
+            // assuming 60 fps, 1000/60 = 16.667
+            timeout: 16,
+        })
+    } else {
+        await waitCallback(requestLaterMicrotask)
+
+        await waitCallback(requestIdleCallback)
     }
 }
