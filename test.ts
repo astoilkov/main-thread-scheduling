@@ -2,7 +2,7 @@ import { removeDeferred } from './src/deferred'
 import { isTimeToYield, yieldOrContinue, yieldControl } from './index'
 import { startTrackingPhases, stopTrackingPhases } from './src/phaseTracking'
 
-describe('main-thread-scheculing', () => {
+describe('main-thread-scheduling', () => {
     let requestIdleCallbackMock = createRequestIdleCallbackMock()
     let requestAnimationFrameMock = createRequestAnimationFrameMock()
 
