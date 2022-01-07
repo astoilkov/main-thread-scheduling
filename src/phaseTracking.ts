@@ -7,6 +7,10 @@ export type IdlePhase = {
 let shouldRequestAnimationFrame = false
 
 const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) => void) => {
+    if (typeof requestIdleCallback === 'undefined') {
+        return
+    }
+
     const handleIdleCallback = (): void => {
         requestIdleCallback(
             (deadline) => {

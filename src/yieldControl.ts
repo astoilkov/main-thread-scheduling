@@ -1,3 +1,4 @@
+import nextTask from './nextTask'
 import waitCallback from './waitCallback'
 import isTimeToYield from './isTimeToYield'
 import requestLaterMicrotask from './requestLaterMicrotask'
@@ -20,7 +21,11 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 }
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
-    if (priority === 'user-visible') {
+    if (typeof requestIdleCallback === 'undefined') {
+        await waitCallback(requestAnimationFrame)
+
+        await waitCallback(nextTask)
+    } else if (priority === 'user-visible') {
         await waitCallback(requestLaterMicrotask)
 
         await waitCallback(requestIdleCallback, {

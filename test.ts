@@ -331,6 +331,38 @@ describe('main-thread-scheduling', () => {
 
         expect(jestFn.mock.calls.length).toBe(1)
     })
+
+    it(`use MessageChannel when requstIdleCallback isn't available`, async () => {
+        const original = window.requestIdleCallback
+        // @ts-ignore
+        window.requestIdleCallback = undefined
+
+        const mock = createMessageChannelMock()
+
+        const jestFn = jest.fn()
+
+        ;(async () => {
+            await yieldControl('background')
+
+            jestFn()
+        })()
+
+        await wait()
+
+        requestAnimationFrameMock.callRequestAnimationFrame()
+
+        await wait()
+
+        mock.callMessage()
+
+        await wait()
+
+        expect(jestFn.mock.calls.length).toBe(1)
+
+        mock.mockRestore()
+
+        window.requestIdleCallback = original
+    })
 })
 
 // we use wait because:
@@ -443,6 +475,36 @@ function createRequestAnimationFrameMock() {
         mockRestore() {
             window.requestAnimationFrame = originalRequestAnimationFrame
             window.cancelAnimationFrame = originalCancelAnimationFrame
+        },
+    }
+}
+
+function createMessageChannelMock() {
+    const messageChannels: MessageChannelMock[] = []
+
+    class MessageChannelMock {
+        port1: {
+            onmessage?: () => void
+        } = {}
+        port2 = {
+            postMessage() {},
+        }
+        constructor() {
+            messageChannels.push(this)
+        }
+    }
+
+    ;(global as any).MessageChannel = MessageChannelMock
+
+    return {
+        callMessage() {
+            for (const channel of messageChannels) {
+                channel.port1.onmessage?.()
+            }
+        },
+
+        mockRestore() {
+            ;(global as any).MessageChannel = undefined
         },
     }
 }
