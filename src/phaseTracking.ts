@@ -15,7 +15,7 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
                 shouldRequestAnimationFrame = true
 
                 const start = Date.now()
-                const deadline = start + 16
+                const deadline = start + 32
                 callback({
                     start: start,
                     deadline: {
