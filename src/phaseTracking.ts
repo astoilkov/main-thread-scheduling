@@ -1,3 +1,5 @@
+import nextTask from './nextTask'
+
 export type IdlePhase = {
     start: number
     deadline: IdleDeadline
@@ -7,30 +9,45 @@ export type IdlePhase = {
 let shouldRequestAnimationFrame = false
 
 const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) => void) => {
-    if (typeof requestIdleCallback === 'undefined') {
-        return
-    }
-
     const handleIdleCallback = (): void => {
-        requestIdleCallback(
-            (deadline) => {
+        if (typeof requestIdleCallback === 'undefined') {
+            nextTask(() => {
                 shouldRequestAnimationFrame = true
 
+                const start = Date.now()
                 callback({
-                    deadline,
-                    start: Date.now(),
+                    start: start,
+                    deadline: {
+                        timeRemaining(): DOMHighResTimeStamp {
+                            return Math.max(Date.now() - (start + 16), 0)
+                        },
+                        didTimeout: false,
+                    },
                 })
 
                 shouldRequestAnimationFrame = false
-            },
-            {
-                // #WET 2021-06-05T3:07:18+03:00
-                // #connection 2021-06-05T3:07:18+03:00
-                // call at least once per frame
-                // asuming 60 fps, 1000/60 = 16.667
-                timeout: 16,
-            },
-        )
+            })
+        } else {
+            requestIdleCallback(
+                (deadline) => {
+                    shouldRequestAnimationFrame = true
+
+                    callback({
+                        deadline,
+                        start: Date.now(),
+                    })
+
+                    shouldRequestAnimationFrame = false
+                },
+                {
+                    // #WET 2021-06-05T3:07:18+03:00
+                    // #connection 2021-06-05T3:07:18+03:00
+                    // call at least once per frame
+                    // asuming 60 fps, 1000/60 = 16.667
+                    timeout: 16,
+                },
+            )
+        }
     }
 
     if (shouldRequestAnimationFrame) {

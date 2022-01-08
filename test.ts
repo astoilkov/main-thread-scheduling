@@ -3,6 +3,7 @@ import { isTimeToYield, yieldOrContinue, yieldControl } from './index'
 import { startTrackingPhases, stopTrackingPhases } from './src/phaseTracking'
 
 describe('main-thread-scheduling', () => {
+    let messageChannelMock = createMessageChannelMock()
     let requestIdleCallbackMock = createRequestIdleCallbackMock()
     let requestAnimationFrameMock = createRequestAnimationFrameMock()
 
@@ -19,9 +20,11 @@ describe('main-thread-scheduling', () => {
 
         await wait()
 
+        messageChannelMock.mockRestore()
         requestIdleCallbackMock.mockRestore()
         requestAnimationFrameMock.mockRestore()
 
+        messageChannelMock = createMessageChannelMock()
         requestIdleCallbackMock = createRequestIdleCallbackMock()
         requestAnimationFrameMock = createRequestAnimationFrameMock()
     })
@@ -332,17 +335,17 @@ describe('main-thread-scheduling', () => {
         expect(jestFn.mock.calls.length).toBe(1)
     })
 
-    it(`use MessageChannel when requstIdleCallback isn't available`, async () => {
+    it(`use MessageChannel when requestIdleCallback isn't available`, async () => {
         const original = window.requestIdleCallback
         // @ts-ignore
         window.requestIdleCallback = undefined
-
-        const mock = createMessageChannelMock()
 
         const jestFn = jest.fn()
 
         ;(async () => {
             await yieldControl('background')
+
+            expect(isTimeToYield('background')).toBe(true)
 
             jestFn()
         })()
@@ -353,13 +356,11 @@ describe('main-thread-scheduling', () => {
 
         await wait()
 
-        mock.callMessage()
+        messageChannelMock.callMessage()
 
         await wait()
 
         expect(jestFn.mock.calls.length).toBe(1)
-
-        mock.mockRestore()
 
         window.requestIdleCallback = original
     })
