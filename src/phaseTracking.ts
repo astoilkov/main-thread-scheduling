@@ -44,7 +44,7 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
                     // #WET 2021-06-05T3:07:18+03:00
                     // #connection 2021-06-05T3:07:18+03:00
                     // call at least once per frame
-                    // asuming 60 fps, 1000/60 = 16.667
+                    // assuming 60 fps, 1000/60 = 16.667
                     timeout: 16,
                 },
             )
