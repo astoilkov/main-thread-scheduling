@@ -17,12 +17,12 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
                 const start = Date.now()
                 const deadline = start + 32
                 callback({
-                    start: start,
+                    start,
                     deadline: {
+                        didTimeout: false,
                         timeRemaining(): DOMHighResTimeStamp {
                             return Math.max(deadline - Date.now(), 0)
                         },
-                        didTimeout: false,
                     },
                 })
 
