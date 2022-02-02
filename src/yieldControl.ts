@@ -24,6 +24,8 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
     if (typeof requestIdleCallback === 'undefined') {
         await waitCallback(requestAnimationFrame)
 
+        await waitCallback(requestLaterMicrotask)
+
         await waitCallback(nextTask)
     } else if (priority === 'user-visible') {
         await waitCallback(requestLaterMicrotask)
