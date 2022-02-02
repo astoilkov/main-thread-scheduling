@@ -34,9 +34,9 @@ function calculateDeadline(priority: 'background' | 'user-visible', idlePhase: I
             : // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
               83
     return navigator.scheduling?.isInputPending === undefined
-        ? // if `isInputPending()` isn't supported, don't go spend more than the idle dealine is
-          // suggesting. otherwise the app couldn't ensure reponsiveness
+        ? // if `isInputPending()` isn't supported, don't go spend more than the idle deadline is
+          // suggesting. otherwise, the app couldn't ensure responsiveness
           idlePhase.start + Math.min(idlePhase.deadline.timeRemaining(), maxTime)
-        : // if `isInputPending()` is supported, just give the time it needs based onthe priority
+        : // if `isInputPending()` is supported, just give the time it needs based on the priority
           idlePhase.start + maxTime
 }
