@@ -19,7 +19,7 @@ Consistently responsive apps while staying on the main thread
 <img src="https://img.shields.io/codeclimate/coverage/astoilkov/main-thread-scheduling" alt="Test Coverage" />
 </a>
 <a href="https://bundlephobia.com/result?p=main-thread-scheduling">
-<img src="https://badgen.net/bundlephobia/min/main-thread-scheduling" alt="Test Coverage" />
+<img src="https://badgen.net/bundlephobia/min/main-thread-scheduling" alt="Minified Size" />
 </a>
 <p>
 
