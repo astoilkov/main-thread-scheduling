@@ -15,12 +15,13 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
                 shouldRequestAnimationFrame = true
 
                 const start = Date.now()
-                const deadline = start + 32
+                let deadline: number | undefined
                 callback({
                     start,
                     deadline: {
                         didTimeout: false,
                         timeRemaining(): DOMHighResTimeStamp {
+                            deadline = deadline ?? Date.now() + 16
                             return Math.max(deadline - Date.now(), 0)
                         },
                     },
