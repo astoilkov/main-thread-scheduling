@@ -18,10 +18,9 @@ Consistently responsive apps while staying on the main thread
 <a href="https://codeclimate.com/github/astoilkov/main-thread-scheduling/test_coverage">
 <img src="https://img.shields.io/codeclimate/coverage/astoilkov/main-thread-scheduling" alt="Test Coverage" />
 </a>
-<a href="https://bundlephobia.com/result?p=use-local-storage-state">
+<a href="https://bundlephobia.com/result?p=main-thread-scheduling">
 <img src="https://badgen.net/bundlephobia/min/main-thread-scheduling" alt="Test Coverage" />
 </a>
-<!-- [![Minified Size](https://img.shields.io/npm/dm/main-thread-scheduling)](https://www.npmjs.com/package/use-local-storage-state) -->
 <p>
 
 <br>
