@@ -345,7 +345,7 @@ describe('main-thread-scheduling', () => {
         ;(async () => {
             await yieldControl('background')
 
-            expect(isTimeToYield('background')).toBe(true)
+            expect(isTimeToYield('background')).toBe(false)
 
             jestFn()
         })()
