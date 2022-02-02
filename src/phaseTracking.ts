@@ -14,17 +14,14 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
             nextTask(() => {
                 shouldRequestAnimationFrame = true
 
-                let start: number | undefined
+                const start = Date.now()
+                const deadline = start + 16
                 callback({
-                    get start() {
-                        start = start ?? Date.now()
-                        return start
-                    },
+                    start,
                     deadline: {
                         didTimeout: false,
                         timeRemaining(): DOMHighResTimeStamp {
-                            start = start ?? Date.now()
-                            return Math.max(start + 16 - Date.now(), 0)
+                            return Math.max(deadline - Date.now(), 0)
                         },
                     },
                 })
@@ -142,7 +139,10 @@ export function getIdlePhase(): IdlePhase | undefined {
     const deadline = idlePhaseTracker.getPhase()?.deadline
     const idlePhaseStart = idlePhaseTracker.getPhase()?.start
     const animationFramePhaseStart = animationFrameTracker.getPhase()?.start
-    const start = animationFramePhaseStart ?? idlePhaseStart
+    const start =
+        typeof requestIdleCallback === 'undefined'
+            ? idlePhaseStart
+            : animationFramePhaseStart ?? idlePhaseStart
 
     return start === undefined || deadline === undefined ? undefined : { start, deadline }
 }
