@@ -1,6 +1,6 @@
 {
     "name": "main-thread-scheduling",
-    "version": "4.0.2",
+    "version": "4.0.3",
     "description": "Consistently responsive apps while staying on the main thread",
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
