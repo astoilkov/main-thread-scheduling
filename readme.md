@@ -48,7 +48,7 @@ The library lets you run computationally heavy tasks on the main thread while en
 ## How It Works
 
 An in-depth overview is available [here](./docs/in-depth-overview.md). These are the main things the library does to do it's magic:
-- Stops task execution when user interacts with the UI. Uses `navigator.scheduling.isInputPending()` and fallbacks to [IdleDeadline](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline).
+- Stops task execution when user interacts with the UI. Uses `navigator.scheduling.isInputPending()` and fallbacks either [`IdleDeadline`](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline) or [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel).
 - Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
 - Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX.
