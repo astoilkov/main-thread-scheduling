@@ -499,7 +499,11 @@ function createMessageChannelMock() {
 
     return {
         callMessage() {
-            for (const channel of messageChannels) {
+            const pendingChannels = [...messageChannels]
+
+            messageChannels.splice(0, messageChannels.length)
+
+            for (const channel of pendingChannels) {
                 channel.port1.onmessage?.()
             }
         },
