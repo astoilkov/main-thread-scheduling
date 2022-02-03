@@ -12,8 +12,6 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
     const handleIdleCallback = (): void => {
         if (typeof requestIdleCallback === 'undefined') {
             nextTask(() => {
-                shouldRequestAnimationFrame = true
-
                 const start = Date.now()
                 const deadline = start + 16
                 callback({
@@ -25,8 +23,6 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
                         },
                     },
                 })
-
-                shouldRequestAnimationFrame = false
             })
         } else {
             requestIdleCallback(
