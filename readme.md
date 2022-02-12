@@ -12,14 +12,14 @@ Consistently responsive apps while staying on the main thread
 </p>
 
 <p align="center">
-<a href="https://www.travis-ci.com/astoilkov/main-thread-scheduling">
-<img src="https://www.travis-ci.com/astoilkov/main-thread-scheduling.svg?branch=master" alt="Build Status" />
+<a href="https://bundlephobia.com/result?p=main-thread-scheduling">
+<img src="https://badgen.net/bundlephobia/minzip/main-thread-scheduling" alt="Gzipped Size" />
 </a>
 <a href="https://codeclimate.com/github/astoilkov/main-thread-scheduling/test_coverage">
 <img src="https://img.shields.io/codeclimate/coverage/astoilkov/main-thread-scheduling" alt="Test Coverage" />
 </a>
-<a href="https://bundlephobia.com/result?p=main-thread-scheduling">
-<img src="https://badgen.net/bundlephobia/min/main-thread-scheduling" alt="Minified Size" />
+<a href="https://www.travis-ci.com/astoilkov/main-thread-scheduling">
+<img src="https://www.travis-ci.com/astoilkov/main-thread-scheduling.svg?branch=master" alt="Build Status" />
 </a>
 <p>
 
@@ -60,7 +60,7 @@ Why rely on some open-source library to ensure a good performance for my app?
 - **Not a weekend project.** I've already been using it for a year in two of my products — [Nota](https://nota.md) and [iBar](https://ibar.app). If you want to dive deeper, you can read the [in-depth](./docs/in-depth-overview.md) doc.
 - **This is the future.** Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis). This library will still be relevant in the future because it provides an easier API.
 - **Simple.** 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
-- Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
+- **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
 ## Example
 
