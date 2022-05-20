@@ -39,9 +39,13 @@ const idlePhaseTracker = createPhaseTracker((callback: (idlePhase: IdlePhase) =>
                 {
                     // #WET 2021-06-05T3:07:18+03:00
                     // #connection 2021-06-05T3:07:18+03:00
-                    // call at least once per frame
-                    // assuming 60 fps, 1000/60 = 16.667
-                    timeout: 16,
+                    // - call at least once per frame
+                    // - assuming 60 fps, 1000/60 = 16.667 = 16.7
+                    // - the browser uses around 6ms. the user is left with 10ms:
+                    //   https://developer.mozilla.org/en-US/docs/Web/Performance/How_long_is_too_long#:~:text=The%2016.7%20milliseconds%20includes%20scripting%2C%20reflow%2C%20and%20repaint.%20Realize%20a%20document%20takes%20about%206ms%20to%20render%20a%20frame%2C%20leaving%20about%2010ms%20for%20the%20rest.
+                    // - because 9*2 is equal to 18, we are sure the idle callback won't be called more than
+                    //   once per frame
+                    timeout: 9,
                 },
             )
         }
