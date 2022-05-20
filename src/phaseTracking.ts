@@ -80,9 +80,9 @@ function createPhaseTracker<T>(
     let globalPhase: T | undefined
 
     // Why the "stop-requested" status?
-    // - we request to stop the tracking of IdlePhase becuase later in a microtask we may call
+    // - we request to stop the tracking of IdlePhase because later in a microtask we may call
     //   `startTrackingIdlePhase()` again. all the steps below happen in a single browser task (in
-    //   multiple brwoser micro tasks):
+    //   multiple browser micro tasks):
     //   1. `stopTrackingIdlePhase()` is called
     //   2. Promise for `yieldControl()` resolves
     //   3. `yieldControl()` is called again and `startTrackingIdlePhase()` is called

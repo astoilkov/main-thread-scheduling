@@ -5,7 +5,7 @@ let globalId = 0
 const running = new Set<number>()
 
 /**
- * If called at the end of an async method, it will wait for the the async to get resolved in the
+ * If called at the end of an async method, it will wait for the async to get resolved in the
  * parent method that called it and will execute the provided callback in the next microtask.
  * @param callback {Function} The callback that will be executed.
  */
