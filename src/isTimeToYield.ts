@@ -1,9 +1,12 @@
-// #performance
-// calling `isTimeToYield()` thousand of times is slow. `lastCalls` helps to run logic inside of
-// `isTimeToYield()` at most 1 per millisecond.
-import { getIdlePhase, IdlePhase } from './phaseTracking'
+import { getLastAnimationFrameTime } from './animationFrameTracking'
 
-let lastCall = 0
+const isInputPending = navigator.scheduling?.isInputPending
+const isFramePending = navigator.scheduling?.isFramePending
+
+// #performance
+// calling `isTimeToYield()` thousand of times is slow. `lastCall` helps to run logic inside of
+// `isTimeToYield()` at most 1 per millisecond.
+let lastCallTime = 0
 let lastResult = false
 
 /**
@@ -12,31 +15,33 @@ let lastResult = false
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
     const now = Date.now()
 
-    if (now - lastCall === 0) {
+    if (now - lastCallTime === 0) {
         return lastResult
     }
 
-    const idlePhase = getIdlePhase()
-
-    lastCall = now
+    lastCallTime = now
     lastResult =
-        idlePhase === undefined ||
-        now >= calculateDeadline(priority, idlePhase) ||
-        navigator.scheduling?.isInputPending?.() === true
+        now >= calculateDeadline(priority) ||
+        isInputPending?.() === true ||
+        (priority === 'background' && isFramePending?.() === true)
 
     return lastResult
 }
 
-function calculateDeadline(priority: 'background' | 'user-visible', idlePhase: IdlePhase): number {
-    const maxTime =
-        priority === 'background'
-            ? 5
-            : // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
-              83
-    return navigator.scheduling?.isInputPending === undefined
-        ? // if `isInputPending()` isn't supported, don't go spend more than the idle deadline is
-          // suggesting. otherwise, the app couldn't ensure responsiveness
-          idlePhase.start + Math.min(idlePhase.deadline.timeRemaining(), maxTime)
-        : // if `isInputPending()` is supported, just give the time it needs based on the priority
-          idlePhase.start + maxTime
+function calculateDeadline(priority: 'background' | 'user-visible'): number {
+    const lastYieldTime = 0
+
+    switch (priority) {
+        case 'user-visible': {
+            const lastAnimationFrameTime = getLastAnimationFrameTime()
+            return lastAnimationFrameTime === undefined
+                ? lastYieldTime + 50
+                : // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
+                  lastAnimationFrameTime + 83
+        }
+        case 'background':
+            return lastYieldTime + 5
+        default:
+            throw new Error('Unreachable code')
+    }
 }

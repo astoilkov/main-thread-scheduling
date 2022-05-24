@@ -1,4 +1,4 @@
-import { startTrackingPhases, stopTrackingPhases } from './phaseTracking'
+import { startTrackingAnimationFrames, stopTrackingAnimationFrames } from './animationFrameTracking'
 
 type Deferred = {
     priority: 'background' | 'user-visible'
@@ -22,7 +22,7 @@ export function createDeferred(priority: 'background' | 'user-visible'): Deferre
     deferred.splice(insertIndex === -1 ? deferred.length : insertIndex, 0, item)
 
     if (deferred.length === 1) {
-        startTrackingPhases()
+        startTrackingAnimationFrames()
     }
 
     return item
@@ -51,7 +51,7 @@ export function removeDeferred(deferredItem: Deferred): void {
     deferred.splice(index, 1)
 
     if (deferred.length === 0) {
-        stopTrackingPhases()
+        stopTrackingAnimationFrames()
     }
 }
 

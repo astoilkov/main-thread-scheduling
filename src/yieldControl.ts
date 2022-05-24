@@ -2,9 +2,24 @@ import nextTask from './nextTask'
 import waitCallback from './waitCallback'
 import isTimeToYield from './isTimeToYield'
 import requestLaterMicrotask from './requestLaterMicrotask'
-import { createDeferred, isDeferredLast, removeDeferred } from './deferred'
+import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
+import { createDeferred, isDeferredLast, nextDeferred, removeDeferred } from './deferred'
 
+let promiseEscapeId: number | undefined
+
+/**
+ * Waits for the browser to become idle again in order to resume work. Calling `yieldControl()`
+ * multiple times will create a LIFO(last in, first out) queue – the last call to
+ * `yieldControl()` will get resolved first.
+ *
+ * @param priority {('user-visible' | 'background')} The priority of the task being run.
+ * `user-visible` priority will always be resolved first. `background` priority will always be
+ * resolved second.
+ * @returns {Promise<void>} The promise that will be resolved when the queue
+ */
 export default async function yieldControl(priority: 'user-visible' | 'background'): Promise<void> {
+    cancelPromiseEscape(promiseEscapeId)
+
     const deferred = createDeferred(priority)
 
     await schedule(priority)
@@ -18,29 +33,19 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
     }
 
     removeDeferred(deferred)
+
+    cancelPromiseEscape(promiseEscapeId)
+
+    promiseEscapeId = requestPromiseEscape(() => {
+        nextDeferred()
+    })
 }
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
-    if (typeof requestIdleCallback === 'undefined') {
-        await waitCallback(requestAnimationFrame)
-
+    if (priority === 'user-visible') {
         await waitCallback(requestLaterMicrotask)
 
         await waitCallback(nextTask)
-    } else if (priority === 'user-visible') {
-        await waitCallback(requestLaterMicrotask)
-
-        await waitCallback(requestIdleCallback, {
-            // #WET 2021-06-05T3:07:18+03:00
-            // #connection 2021-06-05T3:07:18+03:00
-            // - call at least once per frame
-            // - assuming 60 fps, 1000/60 = 16.667 = 16.7
-            // - the browser uses around 6ms. the user is left with 10ms:
-            //   https://developer.mozilla.org/en-US/docs/Web/Performance/How_long_is_too_long#:~:text=The%2016.7%20milliseconds%20includes%20scripting%2C%20reflow%2C%20and%20repaint.%20Realize%20a%20document%20takes%20about%206ms%20to%20render%20a%20frame%2C%20leaving%20about%2010ms%20for%20the%20rest.
-            // - because 9*2 is equal to 18, we are sure the idle callback won't be called more than
-            //   once per frame
-            timeout: 9,
-        })
     } else {
         await waitCallback(requestLaterMicrotask)
 

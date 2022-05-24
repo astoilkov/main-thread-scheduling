@@ -1,6 +1,9 @@
 import { removeDeferred } from './src/deferred'
 import { isTimeToYield, yieldOrContinue, yieldControl } from './index'
-import { startTrackingPhases, stopTrackingPhases } from './src/phaseTracking'
+import {
+    startTrackingAnimationFrames,
+    stopTrackingAnimationFrames,
+} from './src/animationFrameTracking'
 
 describe('main-thread-scheduling', () => {
     let messageChannelMock = createMessageChannelMock()
@@ -187,16 +190,16 @@ describe('main-thread-scheduling', () => {
     })
 
     it('calling startTrackingPhases() twice throws an error', () => {
-        expect(() => startTrackingPhases()).not.toThrow()
+        expect(() => startTrackingAnimationFrames()).not.toThrow()
 
-        expect(() => startTrackingPhases()).toThrow()
+        expect(() => startTrackingAnimationFrames()).toThrow()
 
         // reset state
-        stopTrackingPhases()
+        stopTrackingAnimationFrames()
     })
 
     it('cover the case that stopTrackingPhases() can throw an unreachable code error', () => {
-        expect(() => stopTrackingPhases()).toThrow()
+        expect(() => stopTrackingAnimationFrames()).toThrow()
     })
 
     it('cover the case that removeDeferred() can throw an unreachable code error', () => {
