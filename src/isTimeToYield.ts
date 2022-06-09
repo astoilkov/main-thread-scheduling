@@ -45,7 +45,9 @@ function calculateDeadline(priority: 'background' | 'user-visible'): number {
             const lastIdleDeadline = getLastIdleDeadline()
             return lastIdleDeadline === undefined
                 ? lastYieldTime + 5
-                : lastYieldTime + lastIdleDeadline.timeRemaining()
+                : lastIdleDeadline.timeRemaining() === 0
+                ? 0
+                : Number.MAX_SAFE_INTEGER
         }
         default:
             throw new Error('Unreachable code')
