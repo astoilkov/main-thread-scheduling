@@ -1,4 +1,5 @@
 import { getLastAnimationFrameTime } from './animationFrameTracking'
+import { getLastIdleDeadline } from './idleFrameTracking'
 
 const isInputPending = navigator.scheduling?.isInputPending
 const isFramePending = navigator.scheduling?.isFramePending
@@ -39,8 +40,12 @@ function calculateDeadline(priority: 'background' | 'user-visible'): number {
                 : // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
                   lastAnimationFrameTime + 83
         }
-        case 'background':
-            return lastYieldTime + 5
+        case 'background': {
+            const lastIdleDeadline = getLastIdleDeadline()
+            return lastIdleDeadline === undefined
+                ? lastYieldTime + 5
+                : lastYieldTime + lastIdleDeadline.timeRemaining()
+        }
         default:
             throw new Error('Unreachable code')
     }

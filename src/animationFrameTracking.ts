@@ -1,22 +1,34 @@
-let animationFrameId: number | undefined
 let lastAnimationFrameTime: number | undefined
+let status: 'looping' | 'stopped' | 'stopping' = 'stopped'
 
 export function startTrackingAnimationFrames(): void {
-    if (animationFrameId === undefined) {
-        const loop = (): void => {
-            animationFrameId = requestAnimationFrame(() => {
-                lastAnimationFrameTime = Date.now()
-                animationFrameId = requestAnimationFrame(loop)
-            })
-        }
-        loop()
+    if (status === 'looping') {
+        // silentError()
+        return
     }
+
+    if (status === 'stopping') {
+        status = 'looping'
+        return
+    }
+
+    const loop = (): void => {
+        requestAnimationFrame(() => {
+            if (status === 'stopping') {
+                status = 'stopped'
+                lastAnimationFrameTime = undefined
+            } else {
+                requestAnimationFrame(loop)
+                lastAnimationFrameTime = Date.now()
+            }
+        })
+    }
+
+    loop()
 }
 
 export function stopTrackingAnimationFrames(): void {
-    cancelAnimationFrame(animationFrameId)
-
-    animationFrameId = undefined
+    status = 'stopping'
 }
 
 export function getLastAnimationFrameTime(): number | undefined {
