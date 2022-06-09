@@ -3,7 +3,6 @@ import { getLastIdleDeadline } from './idleFrameTracking'
 import { getLastAnimationFrameTime } from './animationFrameTracking'
 
 const isInputPending = navigator.scheduling?.isInputPending
-const isFramePending = navigator.scheduling?.isFramePending
 
 // #performance
 // calling `isTimeToYield()` thousand of times is slow. `lastCall` helps to run logic inside of
@@ -22,10 +21,7 @@ export default function isTimeToYield(priority: 'background' | 'user-visible'): 
     }
 
     lastCallTime = now
-    lastResult =
-        now >= calculateDeadline(priority) ||
-        isInputPending?.() === true ||
-        (priority === 'background' && isFramePending?.() === true)
+    lastResult = now >= calculateDeadline(priority) || isInputPending?.() === true
 
     return lastResult
 }
