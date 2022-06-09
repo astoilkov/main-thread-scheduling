@@ -31,20 +31,20 @@ export default function isTimeToYield(priority: 'background' | 'user-visible'): 
 }
 
 function calculateDeadline(priority: 'background' | 'user-visible'): number {
-    const lastYieldTime = 0
+    const startTime = getStartTime()
 
     switch (priority) {
         case 'user-visible': {
             const lastAnimationFrameTime = getLastAnimationFrameTime()
             return lastAnimationFrameTime === undefined
-                ? lastYieldTime + 50
+                ? startTime + 50
                 : // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
                   lastAnimationFrameTime + 83
         }
         case 'background': {
             const lastIdleDeadline = getLastIdleDeadline()
             return lastIdleDeadline === undefined
-                ? lastYieldTime + 5
+                ? startTime + 5
                 : lastIdleDeadline.timeRemaining() === 0
                 ? 0
                 : Number.MAX_SAFE_INTEGER

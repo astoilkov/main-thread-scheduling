@@ -1,6 +1,7 @@
 import nextTask from './nextTask'
 import waitCallback from './waitCallback'
 import isTimeToYield from './isTimeToYield'
+import { updateStartTime } from './startTime'
 import requestLaterMicrotask from './requestLaterMicrotask'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
 import { createDeferred, isDeferredLast, nextDeferred, removeDeferred } from './deferred'
@@ -51,4 +52,6 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
 
         await waitCallback(requestIdleCallback)
     }
+
+    updateStartTime()
 }
