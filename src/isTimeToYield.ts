@@ -1,5 +1,6 @@
-import { getLastAnimationFrameTime } from './animationFrameTracking'
+import { getStartTime } from './startTime'
 import { getLastIdleDeadline } from './idleFrameTracking'
+import { getLastAnimationFrameTime } from './animationFrameTracking'
 
 const isInputPending = navigator.scheduling?.isInputPending
 const isFramePending = navigator.scheduling?.isFramePending
