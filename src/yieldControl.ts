@@ -1,5 +1,4 @@
 import nextTask from './nextTask'
-import waitCallback from './waitCallback'
 import isTimeToYield from './isTimeToYield'
 import requestLaterMicrotask from './requestLaterMicrotask'
 import { notifyFirstScheduleComplete } from './animationFrameTracking'
@@ -54,4 +53,15 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
 
         await waitCallback(requestIdleCallback)
     }
+}
+
+async function waitCallback<T>(
+    callback: (callback: () => void, ...args: T[]) => void,
+    ...args: T[]
+): Promise<void> {
+    return new Promise<void>((resolve) => {
+        callback(() => {
+            resolve()
+        }, ...args)
+    })
 }
