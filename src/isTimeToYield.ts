@@ -1,5 +1,5 @@
 import { getLastIdleDeadline } from './idleFrameTracking'
-import { getLastAnimationFrameTime, getTrackingStartTime } from './animationFrameTracking'
+import { getLastAnimationFrameTime, getStartTimeFallback } from './animationFrameTracking'
 
 const isInputPending = navigator.scheduling?.isInputPending
 
@@ -26,9 +26,9 @@ export default function isTimeToYield(priority: 'background' | 'user-visible'): 
 }
 
 function calculateDeadline(priority: 'background' | 'user-visible'): number {
-    const trackingStartTime = getTrackingStartTime()
+    const startTimeFallback = getStartTimeFallback()
 
-    if (trackingStartTime === undefined) {
+    if (startTimeFallback === undefined) {
         // silentError()
         return -1
     }
@@ -37,14 +37,14 @@ function calculateDeadline(priority: 'background' | 'user-visible'): number {
         case 'user-visible': {
             const lastAnimationFrameTime = getLastAnimationFrameTime()
             return lastAnimationFrameTime === undefined
-                ? trackingStartTime + 50
+                ? startTimeFallback + 50
                 : // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
                   lastAnimationFrameTime + 83
         }
         case 'background': {
             const lastIdleDeadline = getLastIdleDeadline()
             return lastIdleDeadline === undefined
-                ? trackingStartTime + 5
+                ? startTimeFallback + 5
                 : lastIdleDeadline.timeRemaining() === 0
                 ? -1
                 : Number.MAX_SAFE_INTEGER

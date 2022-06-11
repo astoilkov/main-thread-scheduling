@@ -1,4 +1,4 @@
-let trackingStartTime: number | undefined
+let startTimeFallback: number | undefined
 let lastAnimationFrameTime: number | undefined
 let status: 'looping' | 'stopped' | 'stopping' = 'stopped'
 
@@ -13,13 +13,11 @@ export function startTrackingAnimationFrames(): void {
         return
     }
 
-    trackingStartTime = performance.now()
-
     const loop = (): void => {
         requestAnimationFrame(() => {
             if (status === 'stopping') {
                 status = 'stopped'
-                trackingStartTime = undefined
+                startTimeFallback = undefined
                 lastAnimationFrameTime = undefined
             } else {
                 requestAnimationFrame(loop)
@@ -39,6 +37,12 @@ export function getLastAnimationFrameTime(): number | undefined {
     return lastAnimationFrameTime
 }
 
-export function getTrackingStartTime(): number | undefined {
-    return trackingStartTime
+export function notifyFirstScheduleComplete(): void {
+    if (startTimeFallback === undefined) {
+        startTimeFallback = performance.now()
+    }
+}
+
+export function getStartTimeFallback(): number | undefined {
+    return startTimeFallback
 }
