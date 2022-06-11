@@ -1,7 +1,7 @@
 import nextTask from './nextTask'
 import isTimeToYield from './isTimeToYield'
 import requestLaterMicrotask from './requestLaterMicrotask'
-import { notifyFirstScheduleComplete } from './animationFrameTracking'
+import { notifyScheduleComplete } from './animationFrameTracking'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
 import { createDeferred, isDeferredLast, nextDeferred, removeDeferred } from './deferred'
 
@@ -24,7 +24,7 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 
     await schedule(priority)
 
-    notifyFirstScheduleComplete()
+    notifyScheduleComplete()
 
     if (!isDeferredLast(deferred)) {
         await deferred.ready
