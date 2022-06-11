@@ -19,6 +19,7 @@ export function startTrackingAnimationFrames(): void {
         requestAnimationFrame(() => {
             if (status === 'stopping') {
                 status = 'stopped'
+                trackingStartTime = undefined
                 lastAnimationFrameTime = undefined
             } else {
                 requestAnimationFrame(loop)
