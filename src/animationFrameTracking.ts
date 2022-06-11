@@ -1,3 +1,4 @@
+let trackingStartTime: number | undefined
 let lastAnimationFrameTime: number | undefined
 let status: 'looping' | 'stopped' | 'stopping' = 'stopped'
 
@@ -12,6 +13,8 @@ export function startTrackingAnimationFrames(): void {
         return
     }
 
+    trackingStartTime = performance.now()
+
     const loop = (): void => {
         requestAnimationFrame(() => {
             if (status === 'stopping') {
@@ -19,7 +22,7 @@ export function startTrackingAnimationFrames(): void {
                 lastAnimationFrameTime = undefined
             } else {
                 requestAnimationFrame(loop)
-                lastAnimationFrameTime = Date.now()
+                lastAnimationFrameTime = performance.now()
             }
         })
     }
@@ -33,4 +36,8 @@ export function stopTrackingAnimationFrames(): void {
 
 export function getLastAnimationFrameTime(): number | undefined {
     return lastAnimationFrameTime
+}
+
+export function getTrackingStartTime(): number | undefined {
+    return trackingStartTime
 }
