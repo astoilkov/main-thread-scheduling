@@ -1,4 +1,5 @@
 const callbacks: (() => void)[] = []
+
 export default function nextTask(callback: () => void): void {
     if (callbacks.length === 0) {
         const channel = new MessageChannel()
