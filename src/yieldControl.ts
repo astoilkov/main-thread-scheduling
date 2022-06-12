@@ -44,7 +44,7 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 }
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
-    if (priority === 'user-visible') {
+    if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
         await waitCallback(requestLaterMicrotask)
 
         await waitCallback(nextTask)
