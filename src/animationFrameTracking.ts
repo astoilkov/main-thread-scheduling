@@ -33,7 +33,7 @@ export function stopTrackingAnimationFrames(): void {
 
 export function notifyScheduleComplete(): void {
     if (perFrameScheduleStartTime === undefined) {
-        perFrameScheduleStartTime = performance.now()
+        perFrameScheduleStartTime = Date.now()
     }
 }
 
