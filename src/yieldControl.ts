@@ -45,9 +45,15 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
     if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
-        await waitCallback(requestLaterMicrotask)
+        while (true) {
+            await waitCallback(requestLaterMicrotask)
 
-        await waitCallback(nextTask)
+            await waitCallback(nextTask)
+
+            if (!isTimeToYield(priority)) {
+                break
+            }
+        }
     } else {
         await waitCallback(requestLaterMicrotask)
 
