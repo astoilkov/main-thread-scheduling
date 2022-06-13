@@ -24,8 +24,6 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 
     await schedule(priority)
 
-    notifyScheduleComplete()
-
     if (!isDeferredLast(deferred)) {
         await deferred.ready
 
@@ -45,10 +43,12 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
     if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
-        while (true) {
-            await waitCallback(requestLaterMicrotask)
+        await waitCallback(requestLaterMicrotask)
 
+        while (true) {
             await waitCallback(nextTask)
+
+            notifyScheduleComplete()
 
             if (!isTimeToYield(priority)) {
                 break
