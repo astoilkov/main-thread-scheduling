@@ -58,6 +58,8 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
         await waitCallback(requestLaterMicrotask)
 
         await waitCallback(requestIdleCallback)
+
+        notifyScheduleComplete()
     }
 }
 
