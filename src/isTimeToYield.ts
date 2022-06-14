@@ -11,6 +11,8 @@ let lastResult = false
  * Determines if it's time to call `yieldControl()`.
  */
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
+    // #performance, `performance.now()` is around 40% slower. also `Date.now()` is accurate enough
+    // for our use case
     const now = Date.now()
 
     if (now - lastCallTime === 0) {
