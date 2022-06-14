@@ -63,13 +63,10 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
     }
 }
 
-async function waitCallback<T>(
-    callback: (callback: () => void, ...args: T[]) => void,
-    ...args: T[]
-): Promise<void> {
+async function waitCallback(callback: (callback: () => void) => void): Promise<void> {
     return new Promise<void>((resolve) => {
         callback(() => {
             resolve()
-        }, ...args)
+        })
     })
 }
