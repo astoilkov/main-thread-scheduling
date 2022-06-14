@@ -64,7 +64,7 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
 }
 
 async function waitCallback(callback: (callback: () => void) => void): Promise<void> {
-    return new Promise<void>((resolve) => {
+    return await new Promise<void>((resolve) => {
         callback(() => {
             resolve()
         })
