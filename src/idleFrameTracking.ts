@@ -2,6 +2,11 @@ let lastIdleDeadline: IdleDeadline | undefined
 let status: 'looping' | 'stopped' | 'stopping' = 'stopped'
 
 export function startTrackingIdleFrames(): void {
+    // support Safari
+    if (typeof requestIdleCallback === 'undefined') {
+        return
+    }
+
     if (status === 'looping') {
         // silentError()
         return
