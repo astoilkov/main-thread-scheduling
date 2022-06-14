@@ -41,11 +41,11 @@ function calculateDeadline(priority: 'background' | 'user-visible'): number {
         }
         case 'background': {
             const lastIdleDeadline = getLastIdleDeadline()
-            return lastIdleDeadline === undefined
-                ? perFrameScheduleStartTime + 5
-                : lastIdleDeadline.timeRemaining() === 0
-                ? -1
-                : Number.MAX_SAFE_INTEGER
+            const idleDeadline =
+                lastIdleDeadline === undefined
+                    ? Number.MAX_SAFE_INTEGER
+                    : Date.now() + lastIdleDeadline.timeRemaining()
+            return Math.min(perFrameScheduleStartTime + 5, idleDeadline)
         }
         default:
             throw new Error('Unreachable code')
