@@ -27,7 +27,7 @@ Consistently responsive apps while staying on the main thread
 
 ## Install
 
-```shell
+```bash
 npm install main-thread-scheduling
 ```
 
