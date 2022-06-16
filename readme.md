@@ -47,6 +47,7 @@ The library lets you run computationally heavy tasks on the main thread while en
 
 ## How It Works
 
+- Uses `MessageChannel.postMessage()` and `requestIdleCallback()` for scheduling.
 - Stops task execution when user interacts with the UI (if `navigator.scheduling.isInputPending()` API is available).
 - Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
@@ -118,4 +119,4 @@ If you have a use case for a third priority, you can write in [this issue](https
 
 **React scheduler** is a similar implementation. They plan to make it more generic (for use outside of React) but there doesn't seem to be a public roadmap for that.
 
-**[`scheduler.yield()`](https://github.com/WICG/scheduling-apis/blob/main/explainers/yield-and-continuation.md)** will probably land in browsers at some point. However, is `scheduler.yield()` enough? The spec isn't very clear on how it will work so I'm not sure. My guess is that it would be possible go without this library but you will need extra code to do so. That's because you will need to reimplement the `isTimeToYield()` method for which I don't see an alternative in the `scheduling` spec.
+**[`scheduler.yield()`](https://github.com/WICG/scheduling-apis/blob/main/explainers/yield-and-continuation.md)** will probably land in browsers at some point. However, is `scheduler.yield()` enough? The spec isn't very clear on how it will work exactly so I'm not sure. My guess is that it would be possible go without this library but you will need extra code to do so. That's because you will need to reimplement the `isTimeToYield()` method for which I don't see an alternative in the [spec](https://github.com/WICG/scheduling-apis).

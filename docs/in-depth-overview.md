@@ -63,6 +63,7 @@ Articles that talk about scheduling tasks in the browser:
 - [The hidden magic of Main Thread Scheduling](https://medium.com/nmc-techblog/the-hidden-magic-of-main-thread-scheduling-5f20b7803293)
 - [Sneak Peek: Beyond React 16 – React Blog](https://reactjs.org/blog/2018/03/01/sneak-peek-beyond-react-16.html)
 - [Scheduling in React](https://philippspiess.com/scheduling-in-react/)
+- [Building a faster web experience with the postTask scheduler](https://medium.com/airbnb-engineering/building-a-faster-web-experience-with-the-posttask-scheduler-276b83454e91)
 
 In-depth overview for some of the concepts talked in the document:
 - [`queueMicrotask()`](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide)
