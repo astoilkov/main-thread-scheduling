@@ -47,6 +47,7 @@ function calculateDeadline(priority: 'background' | 'user-visible'): number {
                     : Date.now() + lastIdleDeadline.timeRemaining()
             return Math.min(perFrameScheduleStartTime + 5, idleDeadline)
         }
+        // istanbul ignore next
         default:
             throw new Error('Unreachable code')
     }

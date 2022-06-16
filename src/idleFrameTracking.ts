@@ -7,6 +7,7 @@ export function startTrackingIdleFrames(): void {
         return
     }
 
+    // istanbul ignore next
     if (status === 'looping') {
         // silentError()
         return
@@ -33,6 +34,11 @@ export function startTrackingIdleFrames(): void {
 }
 
 export function stopTrackingIdleFrames(): void {
+    // support Safari
+    if (typeof requestIdleCallback === 'undefined') {
+        return
+    }
+
     status = 'stopping'
 }
 

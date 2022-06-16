@@ -46,11 +46,12 @@ export function isDeferredLast(deferredItem: Deferred): boolean {
 export function removeDeferred(deferredItem: Deferred): void {
     const index = deferred.indexOf(deferredItem)
 
+    // istanbul ignore if
     if (index === -1) {
-        throw new Error('Unreachabe code. This is probably a bug – please log an issue.')
+        // silentError()
+    } else {
+        deferred.splice(index, 1)
     }
-
-    deferred.splice(index, 1)
 
     if (deferred.length === 0) {
         stopTrackingIdleFrames()

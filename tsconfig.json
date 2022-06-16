@@ -30,6 +30,8 @@
         // - 😃 probably the future
         "isolatedModules": true,
 
+        "esModuleInterop": true,
+
         "typeRoots": ["./node_modules/@types", "./typings"]
     },
     "include": ["index.ts", "./typings"]

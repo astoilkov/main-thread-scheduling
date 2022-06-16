@@ -2,6 +2,7 @@ let perFrameScheduleStartTime: number | undefined
 let status: 'looping' | 'stopped' | 'stopping' = 'stopped'
 
 export function startTrackingAnimationFrames(): void {
+    // istanbul ignore next
     if (status === 'looping') {
         // silentError()
         return
