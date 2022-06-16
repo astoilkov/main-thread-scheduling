@@ -1,0 +1,39 @@
+name: CI
+on:
+    - push
+    - pull_request
+jobs:
+    test:
+        name: Node.js ${{ matrix.node-version }}
+        runs-on: ubuntu-latest
+        strategy:
+            # `fail-fast` is set to `false` because we won't know which Node versions are failing and which are passing
+            fail-fast: false
+            matrix:
+                node-version:
+                    - 18
+                    - 16
+                    - 14
+                    - 12
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - run: yarn install
+            - run: yarn test
+    coverage:
+        needs: [test]
+        name: Code Coverage
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: 16
+            - run: yarn install
+            - uses: paambaati/codeclimate-action@v3.0.0
+              env:
+                  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+              with:
+                  coverageCommand: yarn test
