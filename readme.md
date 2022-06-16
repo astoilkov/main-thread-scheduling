@@ -47,17 +47,15 @@ The library lets you run computationally heavy tasks on the main thread while en
 
 ## How It Works
 
-An in-depth overview is available [here](./docs/in-depth-overview.md). These are the main things the library does to do it's magic:
-- Stops task execution when user interacts with the UI. Uses `navigator.scheduling.isInputPending()` and fallbacks to using either [`IdleDeadline`](https://developer.mozilla.org/en-US/docs/Web/API/IdleDeadline) or [`MessageChannel`](https://developer.mozilla.org/en-US/docs/Web/API/MessageChannel).
+- Stops task execution when user interacts with the UI (if `navigator.scheduling.isInputPending()` API is available).
 - Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
-- Urgent UI changes are given highest priority possible. Tasks with `user-visible` priority are optimized to deliver smooth UX.
 - Considerate about your existing code. Tasks with `background` priority are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
 
 ## Why
 
 Why rely on some open-source library to ensure a good performance for my app?
-- **Not a weekend project.** I've already been using it for over a year in the core of two of my products — [Nota](https://nota.md) and [iBar](https://ibar.app). If you want to dive deeper, you can read the [in-depth](./docs/in-depth-overview.md) doc.
+- **Not a weekend project.** I've already been using it for over a year in the core of two of my products — [Nota](https://nota.md) and [iBar](https://ibar.app).
 - **This is the future.** Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis). This library will still be relevant in the future because it provides an easier API.
 - **Simple.** 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
@@ -67,8 +65,6 @@ Why rely on some open-source library to ensure a good performance for my app?
 You can see the library in action in [this CodeSandbox](https://codesandbox.io/s/main-thread-scheduling-example-qqef6?file=/src/App.js:1188-1361). Try removing the call to `yieldToContinue()` and then type in the input to see the difference.
 
 ## API
-
-If you want to understand how this library works under the hook and some of the details – read the [in-depth](./docs/in-depth-overview.md) doc.
 
 #### `yieldOrContinue(priority: 'background' | 'user-visible')`
 
@@ -118,8 +114,8 @@ If you have a use case for a third priority, you can write in [this issue](https
 
 ## Alternatives
 
-The problem this library solves isn't new. However, I haven't found a library that can solve this problem in a simple manner. [Open an issue](https://github.com/astoilkov/main-thread-scheduling/issues/new) if there is such a library so I can add it here.
+**Web Workers** are a great alternative if you have: 1) heavy code (e.g. image processing), 2) something that isn't a task but a process (runs through a big time of the app lifecycle). However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language. This library can be used as a gateway before transitioning to Web Workers. In reality, a lot of the times, you would discover the doing it on the main thread is good enough.
 
-Web Workers are a possible alternative. However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language.
+**React scheduler** is a similar implementation. They plan to make it more generic (for use outside of React) but there doesn't seem to be a public roadmap for that.
 
-React has an implementation for scheduling tasks – [react/scheduler](https://github.com/facebook/react/tree/3c7d52c3d6d316d09d5c2479c6851acecccc6325/packages/scheduler). They plan to make it more generic but there doesn't seem to be a public roadmap for that.
+**[`scheduler.yield()`](https://github.com/WICG/scheduling-apis/blob/main/explainers/yield-and-continuation.md)** will probably land in browsers at some point. However, is `scheduler.yield()` enough? The spec isn't very clear on how it will work so I'm not sure. My guess is that it would be possible go without this library but you will need extra code to do so. That's because you will need to reimplement the `isTimeToYield()` method for which I don't see an alternative in the `scheduling` spec.
