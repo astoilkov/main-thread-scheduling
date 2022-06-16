@@ -117,6 +117,6 @@ If you have a use case for a third priority, you can write in [this issue](https
 
 **Web Workers** are a great alternative if you have: 1) heavy code (e.g. image processing), 2) something that isn't a task but a process (runs through a big time of the app lifecycle). However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language. This library can be used as a gateway before transitioning to Web Workers. In reality, a lot of the times, you would discover the doing it on the main thread is good enough.
 
-**[React scheduler](https://github.com/facebook/react/blob/main/packages/scheduler/README.md)** is a similar implementation. They plan to make it more generic (for use outside of React) but there doesn't seem to be a public roadmap for that.
-
 **[`scheduler.yield()`](https://github.com/WICG/scheduling-apis/blob/main/explainers/yield-and-continuation.md)** will probably land in browsers at some point. However, is `scheduler.yield()` enough? The spec isn't very clear on how it will work exactly so I'm not sure. My guess is that it would be possible go without this library but you will need extra code to do so. That's because you will need to reimplement the `isTimeToYield()` method for which I don't see an alternative in the [spec](https://github.com/WICG/scheduling-apis).
+
+**[React scheduler](https://github.com/facebook/react/blob/main/packages/scheduler/README.md)** is a similar implementation. They plan to make it more generic (for use outside of React) but there doesn't seem to be a public roadmap for that.
