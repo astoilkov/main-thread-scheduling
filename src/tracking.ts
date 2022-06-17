@@ -1,7 +1,8 @@
+let lastIdleDeadline: IdleDeadline | undefined
 let perFrameScheduleStartTime: number | undefined
 let status: 'looping' | 'stopped' | 'stopping' = 'stopped'
 
-export function startTrackingAnimationFrames(): void {
+export function startTracking(): void {
     // istanbul ignore next
     if (status === 'looping') {
         // silentError()
@@ -28,7 +29,7 @@ export function startTrackingAnimationFrames(): void {
     loop()
 }
 
-export function stopTrackingAnimationFrames(): void {
+export function stopTracking(): void {
     status = 'stopping'
 }
 
@@ -40,4 +41,12 @@ export function notifyScheduleComplete(): void {
 
 export function getPerFrameScheduleStartTime(): number | undefined {
     return perFrameScheduleStartTime
+}
+
+export function notifyIdleCallback(idleDeadline: IdleDeadline): void {
+    lastIdleDeadline = idleDeadline
+}
+
+export function getLastIdleDeadline(): IdleDeadline | undefined {
+    return lastIdleDeadline
 }

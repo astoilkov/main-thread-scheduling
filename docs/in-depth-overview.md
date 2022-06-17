@@ -16,7 +16,7 @@ This is the most complicated method in the library. Here how it works:
 ## `isTimeToYield(priority: 'background' | 'user-visible')`
 
 This function determines if the currently executing task still has time to do more work or is it time to give back control to the browser so it can render the next frame. This is how it works:
-1. When the queue of tasks isn't empty there is a continuously running `requestIdleCallback()` and `requestAnimationFrame()` that tracks the last time each callback has executed (see `animationFrameTracking.ts`). This help us figure out if there is time left to do more work.
+1. When the queue of tasks isn't empty there is a continuously running `requestIdleCallback()` and `requestAnimationFrame()` that tracks the last time each callback has executed (see `tracking.ts`). This help us figure out if there is time left to do more work.
 2. The method takes the time the last call to `requestIdleCallback()` was called and determines if there is time to do more work. This behavior is different depending on the availability of `navigator.scheduling.isInputPending()` method in the current browser.
     - If `isInputPending()` is available, the function waits for either `isInputPending()` to return `true` or for the max allowed time for the task to expire. The max allowed time for the task depends on the `priority`.
     - If `isInputPending()` isn't available, the functions uses the `IdleDeadline` object passed as parameter to the `requestIdleCallback()`. When `IdleDeadline.timeRemaining()` returns `0` the `isTimeToYield()` function will return `true`.

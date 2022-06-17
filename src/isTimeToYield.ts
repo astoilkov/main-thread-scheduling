@@ -1,5 +1,4 @@
-import { getLastIdleDeadline } from './idleFrameTracking'
-import { getPerFrameScheduleStartTime } from './animationFrameTracking'
+import { getLastIdleDeadline, getPerFrameScheduleStartTime } from './tracking'
 
 // #performance
 // calling `isTimeToYield()` thousand of times is slow. `lastCall` helps to run logic inside of

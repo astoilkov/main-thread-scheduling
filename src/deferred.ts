@@ -1,5 +1,4 @@
-import { startTrackingIdleFrames, stopTrackingIdleFrames } from './idleFrameTracking'
-import { startTrackingAnimationFrames, stopTrackingAnimationFrames } from './animationFrameTracking'
+import { startTracking, stopTracking } from './tracking'
 
 type Deferred = {
     priority: 'background' | 'user-visible'
@@ -23,8 +22,7 @@ export function createDeferred(priority: 'background' | 'user-visible'): Deferre
     deferred.splice(insertIndex === -1 ? deferred.length : insertIndex, 0, item)
 
     if (deferred.length === 1) {
-        startTrackingIdleFrames()
-        startTrackingAnimationFrames()
+        startTracking()
     }
 
     return item
@@ -54,8 +52,7 @@ export function removeDeferred(deferredItem: Deferred): void {
     }
 
     if (deferred.length === 0) {
-        stopTrackingIdleFrames()
-        stopTrackingAnimationFrames()
+        stopTracking()
     }
 }
 

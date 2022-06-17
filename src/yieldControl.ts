@@ -1,7 +1,7 @@
 import nextTask from './nextTask'
 import isTimeToYield from './isTimeToYield'
 import requestLaterMicrotask from './requestLaterMicrotask'
-import { notifyScheduleComplete } from './animationFrameTracking'
+import { notifyIdleCallback, notifyScheduleComplete } from './tracking'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
 import { createDeferred, isDeferredLast, nextDeferred, removeDeferred } from './deferred'
 
@@ -55,17 +55,20 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
             }
         }
     } else {
-        await waitCallback(requestLaterMicrotask)
+        await new Promise<void>((resolve) => {
+            requestIdleCallback((idleDeadline) => {
+                notifyScheduleComplete()
+                notifyIdleCallback(idleDeadline)
 
-        await waitCallback(requestIdleCallback)
-
-        notifyScheduleComplete()
+                resolve()
+            })
+        })
     }
 }
 
-async function waitCallback(callback: (callback: () => void) => void): Promise<void> {
+async function waitCallback(request: (callback: () => void) => void): Promise<void> {
     return await new Promise<void>((resolve) => {
-        callback(() => {
+        request(() => {
             resolve()
         })
     })
