@@ -107,9 +107,9 @@ async function doHeavyWork() {
 
 ### Priorities
 
-Currently there are only two priorities available: `background` and `user-visible`:
-- `background` – use this for background tasks. Every background task is run for 5ms.
+There are two priorities available: `user-visible` and `background`:
 - `user-visible` – use this for things that need to display to the user as fast as possible. Every `user-visible` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
+- `background` – use this for background tasks. Every background task is run for 5ms.
 
 If you have a use case for a third priority, you can write in [this issue](https://github.com/astoilkov/main-thread-scheduling/issues/1).
 
