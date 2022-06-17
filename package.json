@@ -33,7 +33,7 @@
     "scripts": {
         "build": "tsc",
         "lint": "eslint --cache --format=pretty --ext=.ts ./",
-        "test": "yarn run build && yarn run lint && [[ -z $CI ]] && jest --coverage --coverageReporters=text || jest --coverage",
+        "test": "yarn run build && yarn run lint && if [[ -z $CI ]]; then jest --coverage --coverageReporters=text; else jest --coverage; fi",
         "release": "yarn run build && np",
         "prettier": "prettier --write --config .prettierrc.yaml {*.ts,**/*.ts,*.json,**.json}"
     },
