@@ -15,7 +15,7 @@ export default function isTimeToYield(priority: 'background' | 'user-visible'): 
     // for our use case
     const now = Date.now()
 
-    if (now - lastCallTime === 0) {
+    if (!lastResult && now - lastCallTime === 0) {
         return lastResult
     }
 
