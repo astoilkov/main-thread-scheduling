@@ -1,7 +1,7 @@
 {
     "name": "main-thread-scheduling",
     "version": "6.0.0-0",
-    "description": "Consistently responsive apps while staying on the main thread",
+    "description": "Scheduling on the main thread — single function call instead of complex Web Workers",
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
     "funding": "https://github.com/sponsors/astoilkov",
@@ -14,6 +14,8 @@
     "keywords": [
         "postTask",
         "background",
+        "user-visible",
+        "task",
         "idle",
         "yield",
         "defer",
@@ -22,6 +24,9 @@
         "threads",
         "threading",
         "scheduling",
+        "scheduler",
+        "isInputPending",
+        "MessageChannel",
         "main-thread",
         "event loop",
         "worker",
