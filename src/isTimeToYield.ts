@@ -1,4 +1,4 @@
-import { getLastIdleDeadline, getPerFrameScheduleStartTime } from './tracking'
+import state from './state'
 
 // #performance
 // calling `isTimeToYield()` thousand of times is slow. `lastCall` helps to run logic inside of
@@ -22,13 +22,15 @@ export default function isTimeToYield(priority: 'background' | 'user-visible'): 
     lastResult =
         now >= calculateDeadline(priority) || navigator.scheduling?.isInputPending?.() === true
 
+    if (lastResult) {
+        state.frameTimeElapsed = true
+    }
+
     return lastResult
 }
 
 function calculateDeadline(priority: 'background' | 'user-visible'): number {
-    const perFrameScheduleStartTime = getPerFrameScheduleStartTime()
-
-    if (perFrameScheduleStartTime === undefined) {
+    if (state.frameWorkStartTime === undefined) {
         // silentError()
         return -1
     }
@@ -36,15 +38,14 @@ function calculateDeadline(priority: 'background' | 'user-visible'): number {
     switch (priority) {
         case 'user-visible': {
             // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
-            return perFrameScheduleStartTime + 83
+            return state.frameWorkStartTime + 83
         }
         case 'background': {
-            const lastIdleDeadline = getLastIdleDeadline()
             const idleDeadline =
-                lastIdleDeadline === undefined
+                state.idleDeadline === undefined
                     ? Number.MAX_SAFE_INTEGER
-                    : Date.now() + lastIdleDeadline.timeRemaining()
-            return Math.min(perFrameScheduleStartTime + 5, idleDeadline)
+                    : Date.now() + state.idleDeadline.timeRemaining()
+            return Math.min(state.frameWorkStartTime + 5, idleDeadline)
         }
         // istanbul ignore next
         default:

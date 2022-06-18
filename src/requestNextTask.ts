@@ -1,6 +1,6 @@
 const callbacks: (() => void)[] = []
 
-export default function nextTask(callback: () => void): void {
+export default function requestNextTask(callback: () => void): void {
     if (callbacks.length === 0) {
         const channel = new MessageChannel()
         channel.port2.postMessage(undefined)

@@ -1,9 +1,8 @@
-import nextTask from './nextTask'
+import state from './state'
 import isTimeToYield from './isTimeToYield'
-import requestLaterMicrotask from './requestLaterMicrotask'
-import { notifyIdleCallback, notifyScheduleComplete } from './tracking'
+import requestNextTask from './requestNextTask'
+import { createTask, nextTask, removeTask } from './tasks'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
-import { createDeferred, isDeferredLast, nextDeferred, removeDeferred } from './deferred'
 
 let promiseEscapeId: number | undefined
 
@@ -20,56 +19,48 @@ let promiseEscapeId: number | undefined
 export default async function yieldControl(priority: 'user-visible' | 'background'): Promise<void> {
     cancelPromiseEscape(promiseEscapeId)
 
-    const deferred = createDeferred(priority)
+    const task = createTask(priority)
 
     await schedule(priority)
 
-    if (!isDeferredLast(deferred)) {
-        await deferred.ready
+    if (state.tasks[0] !== task) {
+        await task.ready
 
         if (isTimeToYield(priority)) {
             await schedule(priority)
         }
     }
 
-    removeDeferred(deferred)
+    removeTask(task)
 
     cancelPromiseEscape(promiseEscapeId)
 
     promiseEscapeId = requestPromiseEscape(() => {
-        nextDeferred()
+        nextTask()
     })
 }
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
+    if (state.frameTimeElapsed) {
+        await state.onAnimationFrame.promise
+    }
+
     if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
-        await waitCallback(requestLaterMicrotask)
+        await new Promise<void>((resolve) => requestNextTask(resolve))
 
-        while (true) {
-            await waitCallback(nextTask)
-
-            notifyScheduleComplete()
-
-            if (!isTimeToYield(priority)) {
-                break
-            }
+        if (navigator.scheduling?.isInputPending?.() === true) {
+            await schedule(priority)
+        } else if (state.frameWorkStartTime === undefined) {
+            state.frameWorkStartTime = Date.now()
         }
     } else {
-        await new Promise<void>((resolve) => {
-            requestIdleCallback((idleDeadline) => {
-                notifyScheduleComplete()
-                notifyIdleCallback(idleDeadline)
+        await state.onIdleCallback.promise
 
-                resolve()
-            })
-        })
+        // not checking for `navigator.scheduling?.isInputPending?.()` here because idle callbacks
+        // ensure no input is pending
+
+        if (state.frameWorkStartTime === undefined) {
+            state.frameWorkStartTime = Date.now()
+        }
     }
-}
-
-async function waitCallback(request: (callback: () => void) => void): Promise<void> {
-    return await new Promise<void>((resolve) => {
-        request(() => {
-            resolve()
-        })
-    })
 }

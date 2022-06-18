@@ -1,52 +1,47 @@
-let lastIdleDeadline: IdleDeadline | undefined
-let perFrameScheduleStartTime: number | undefined
-let status: 'looping' | 'stopped' | 'stopping' = 'stopped'
+import state from './state'
+import whenReady from './whenReady'
+
+let isTracking = false
+let idleCallbackId: number | undefined
 
 export function startTracking(): void {
-    // istanbul ignore next
-    if (status === 'looping') {
-        // silentError()
+    if (isTracking) {
         return
     }
 
-    if (status === 'stopping') {
-        status = 'looping'
-        return
-    }
+    isTracking = true
 
+    const reset = (): void => {
+        state.idleDeadline = undefined
+        state.frameTimeElapsed = false
+        state.frameWorkStartTime = undefined
+    }
     const loop = (): void => {
-        requestAnimationFrame(() => {
-            perFrameScheduleStartTime = undefined
+        idleCallbackId = requestIdleCallback((deadline) => {
+            reset()
 
-            if (status === 'stopping') {
-                status = 'stopped'
+            state.idleDeadline = deadline
+
+            state.onIdleCallback.resolve()
+
+            state.onIdleCallback = whenReady()
+        })
+
+        requestAnimationFrame(() => {
+            reset()
+
+            state.onAnimationFrame.resolve()
+
+            state.onAnimationFrame = whenReady()
+
+            if (state.tasks.length === 0) {
+                isTracking = false
+                cancelIdleCallback(idleCallbackId)
             } else {
-                requestAnimationFrame(loop)
+                loop()
             }
         })
     }
 
     loop()
-}
-
-export function stopTracking(): void {
-    status = 'stopping'
-}
-
-export function notifyScheduleComplete(): void {
-    if (perFrameScheduleStartTime === undefined) {
-        perFrameScheduleStartTime = Date.now()
-    }
-}
-
-export function getPerFrameScheduleStartTime(): number | undefined {
-    return perFrameScheduleStartTime
-}
-
-export function notifyIdleCallback(idleDeadline: IdleDeadline): void {
-    lastIdleDeadline = idleDeadline
-}
-
-export function getLastIdleDeadline(): IdleDeadline | undefined {
-    return lastIdleDeadline
 }
