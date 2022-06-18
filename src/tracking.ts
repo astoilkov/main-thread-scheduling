@@ -5,6 +5,7 @@ let isTracking = false
 let idleCallbackId: number | undefined
 
 export function startTracking(): void {
+    // istanbul ignore next
     if (isTracking) {
         return
     }
@@ -17,15 +18,17 @@ export function startTracking(): void {
         state.frameWorkStartTime = undefined
     }
     const loop = (): void => {
-        idleCallbackId = requestIdleCallback((deadline) => {
-            reset()
+        if (typeof requestIdleCallback !== 'undefined') {
+            idleCallbackId = requestIdleCallback((deadline) => {
+                reset()
 
-            state.idleDeadline = deadline
+                state.idleDeadline = deadline
 
-            state.onIdleCallback.resolve()
+                state.onIdleCallback.resolve()
 
-            state.onIdleCallback = whenReady()
-        })
+                state.onIdleCallback = whenReady()
+            })
+        }
 
         requestAnimationFrame(() => {
             reset()
@@ -36,7 +39,10 @@ export function startTracking(): void {
 
             if (state.tasks.length === 0) {
                 isTracking = false
-                cancelIdleCallback(idleCallbackId)
+
+                if (typeof cancelIdleCallback !== 'undefined') {
+                    cancelIdleCallback(idleCallbackId)
+                }
             } else {
                 loop()
             }

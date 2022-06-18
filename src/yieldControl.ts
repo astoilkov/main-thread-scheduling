@@ -48,6 +48,7 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
     if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
         await new Promise<void>((resolve) => requestNextTask(resolve))
 
+        // istanbul ignore if
         if (navigator.scheduling?.isInputPending?.() === true) {
             await schedule(priority)
         } else if (state.frameWorkStartTime === undefined) {
