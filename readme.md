@@ -8,7 +8,7 @@
 <b>main-thread-scheduling</b>
 </h3>
 <p align="center">
-Scheduling on the main thread — single function call instead of complex Web Workers
+Faster apps with a single function call instead of complex Web Workers
 </p>
 
 <p align="center">
@@ -57,8 +57,8 @@ The library lets you run computationally heavy tasks on the main thread while en
 
 Why rely on some open-source library to ensure a good performance for my app?
 - **Not a weekend project.** I've already been using it for over a year in the core of two of my products — [Nota](https://nota.md) and [iBar](https://ibar.app).
-- **This is the future.** Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis). This library will still be relevant in the future — see [Alternatives](#alternatives) sections for explanation.
-- **Simple.** 90% of the time you only need `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
+- **This is the future.** Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis). This library will still be relevant in the future — [explanation](#scheduler-yield-alternative).
+- **Simple.** 90% of the time you only need the `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
 ## Example
@@ -116,6 +116,8 @@ If you have a use case for a third priority, you can write in [this issue](https
 ## Alternatives
 
 **Web Workers** are a great fit if you have: 1) heavy algorithm (e.g. image processing), 2) heavy process (runs for a long time, big part of the app lifecycle). However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language. This library can be used as a gateway before transitioning to Web Workers. In reality, a lot of the times, you would discover the doing it on the main thread is good enough.
+
+<div id="scheduler-yield-alternative"></div>
 
 **[`scheduler.yield()`](https://github.com/WICG/scheduling-apis/blob/main/explainers/yield-and-continuation.md)** will probably land in browsers at some point. However, is `scheduler.yield()` enough? The spec isn't very clear on how it will work exactly so I'm not sure. My guess is that it would be possible go without this library but you will need extra code to do so. That's because you will need to reimplement the `isTimeToYield()` method for which I don't see an alternative in the [spec](https://github.com/WICG/scheduling-apis).
 
