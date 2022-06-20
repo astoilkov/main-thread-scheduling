@@ -1,7 +1,7 @@
 {
     "name": "main-thread-scheduling",
     "version": "6.0.0-0",
-    "description": "Faster apps with a single function call instead of complex Web Workers",
+    "description": "Faster apps using a single function call instead of Web Workers",
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
     "funding": "https://github.com/sponsors/astoilkov",
