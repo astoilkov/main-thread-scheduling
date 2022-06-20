@@ -1,6 +1,6 @@
 {
     "name": "main-thread-scheduling",
-    "version": "6.0.0-0",
+    "version": "6.0.0",
     "description": "Faster apps using a simple API instead of Web Workers",
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
