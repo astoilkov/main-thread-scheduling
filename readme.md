@@ -13,7 +13,7 @@ Faster apps using a single function call instead of Web Workers
 
 <p align="center">
 <a href="https://bundlephobia.com/result?p=main-thread-scheduling">
-<img src="https://badgen.net/bundlephobia/minzip/main-thread-scheduling" alt="Gzipped Size" />
+<img src="https://img.shields.io/bundlephobia/minzip/main-thread-scheduling" alt="Gzipped Size" />
 </a>
 <a href="https://codeclimate.com/github/astoilkov/main-thread-scheduling/test_coverage">
 <img src="https://img.shields.io/codeclimate/coverage/astoilkov/main-thread-scheduling" alt="Test Coverage" />
