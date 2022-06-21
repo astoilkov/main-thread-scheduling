@@ -56,7 +56,7 @@ The library lets you run computationally heavy tasks on the main thread while en
 ## Why
 
 Why rely on some open-source library to ensure a good performance for my app?
-- **Not a weekend project.** I've already been using it for over a year in the core of two of my products — [Nota](https://nota.md) and [iBar](https://ibar.app).
+- **Not a weekend project.** I've already been using it for over a year in the core of two of my products — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits).
 - **This is the future.** Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis). This library will still be relevant in the future — [explanation](#scheduler-yield-alternative).
 - **Simple.** 90% of the time you only need the `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
