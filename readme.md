@@ -8,7 +8,7 @@
 <b>main-thread-scheduling</b>
 </h3>
 <p align="center">
-Consistently responsive apps while avoiding Web Workers complexity
+Consistently responsive apps while staying on the main thread
 </p>
 
 <p align="center">

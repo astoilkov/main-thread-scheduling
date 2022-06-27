@@ -1,7 +1,7 @@
 {
     "name": "main-thread-scheduling",
     "version": "6.0.0",
-    "description": "Consistently responsive apps while avoiding Web Workers complexity",
+    "description": "Consistently responsive apps while staying on the main thread",
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
     "funding": "https://github.com/sponsors/astoilkov",
