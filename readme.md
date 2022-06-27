@@ -8,7 +8,7 @@
 <b>main-thread-scheduling</b>
 </h3>
 <p align="center">
-Consistently responsive apps while staying on the main thread
+Fast and consistently responsive apps using a single function call
 </p>
 
 <p align="center">
