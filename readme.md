@@ -8,7 +8,7 @@
 <b>main-thread-scheduling</b>
 </h3>
 <p align="center">
-Faster apps using a simple API instead of Web Workers
+Consistently responsive apps while avoiding Web Workers complexity
 </p>
 
 <p align="center">
