@@ -17,6 +17,13 @@ let promiseEscapeId: number | undefined
  * @returns {Promise<void>} The promise that will be resolved when the queue
  */
 export default async function yieldControl(priority: 'user-visible' | 'background'): Promise<void> {
+    // - in Node.js context return immediately
+    // - this way we also support test environments (without jsdom added)
+    // - support for scheduling in Node.js is still under consideration for future versions
+    if (typeof requestAnimationFrame === 'undefined') {
+        return
+    }
+
     cancelPromiseEscape(promiseEscapeId)
 
     const task = createTask(priority)
