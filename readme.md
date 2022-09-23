@@ -38,6 +38,8 @@ The library lets you run computationally heavy tasks on the main thread while en
 - Your users' computer fans don't spin.
 - It can be easily integrated into your existing codebase.
 
+A real-world showcase of searching in 10k files and getting results instantly — https://twitter.com/antoniostoilkov/status/1539576912498118656.
+
 ## Use Cases
 
 - You want to turn a synchronous function into a non-blocking asynchronous function. **Avoids UI freezes.**
