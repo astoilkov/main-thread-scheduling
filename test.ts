@@ -40,10 +40,15 @@ describe('main-thread-scheduling', () => {
 
         ;(window as any).requestAnimationFrame = undefined
 
-        await yieldControl('user-visible')
-        await yieldOrContinue('user-visible')
-
-        window.requestAnimationFrame = originalRequestAnimationFrame
+        try {
+            expect(Promise.race([yieldControl('user-visible'), Promise.resolve(-1)])).not.toBe(-1)
+            expect(Promise.race([yieldOrContinue('user-visible'), Promise.resolve(-1)])).not.toBe(
+                -1,
+            )
+            expect(isTimeToYield('user-visible')).toBe(false)
+        } finally {
+            window.requestAnimationFrame = originalRequestAnimationFrame
+        }
     })
 
     describe('with requestIdleCallback() mock', () => {

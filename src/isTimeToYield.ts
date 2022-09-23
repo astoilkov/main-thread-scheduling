@@ -10,6 +10,13 @@ let lastResult = false
  * Determines if it's time to call `yieldControl()`.
  */
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
+    // - in Node.js context return immediately
+    // - this way we also support test environments (without jsdom added)
+    // - support for scheduling in Node.js is still under consideration for future versions
+    if (typeof requestAnimationFrame === 'undefined') {
+        return false
+    }
+
     // #performance, `performance.now()` is around 40% slower. also `Date.now()` is accurate enough
     // for our use case
     const now = Date.now()
