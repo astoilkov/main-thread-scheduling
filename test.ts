@@ -35,6 +35,17 @@ describe('main-thread-scheduling', () => {
         expect(isTimeToYieldMocked('background')).toBe(false)
     })
 
+    test(`check Node.js support`, async () => {
+        const originalRequestAnimationFrame = window.requestAnimationFrame
+
+        ;(window as any).requestAnimationFrame = undefined
+
+        await yieldControl('user-visible')
+        await yieldOrContinue('user-visible')
+
+        window.requestAnimationFrame = originalRequestAnimationFrame
+    })
+
     describe('with requestIdleCallback() mock', () => {
         beforeEach(() => {
             ;(window as any).requestIdleCallback = (callback: IdleRequestCallback) => {
