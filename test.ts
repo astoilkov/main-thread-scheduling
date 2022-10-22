@@ -1,5 +1,10 @@
 import { isTimeToYield, yieldControl, yieldOrContinue } from './index'
 
+let hasValidContext = true
+jest.mock('./src/hasValidContext', () => {
+    return jest.fn(() => hasValidContext)
+})
+
 describe('main-thread-scheduling', () => {
     beforeEach(() => {
         ;(window as any).MessageChannel = MessageChannelMock
@@ -35,19 +40,18 @@ describe('main-thread-scheduling', () => {
         expect(isTimeToYieldMocked('background')).toBe(false)
     })
 
+    // todo: move to a separate file without jsdom environment
     test(`check Node.js support`, async () => {
-        const originalRequestAnimationFrame = window.requestAnimationFrame
-
-        ;(window as any).requestAnimationFrame = undefined
+        hasValidContext = false
 
         try {
+            expect(isTimeToYield('user-visible')).toBe(false)
             expect(Promise.race([yieldControl('user-visible'), Promise.resolve(-1)])).not.toBe(-1)
             expect(Promise.race([yieldOrContinue('user-visible'), Promise.resolve(-1)])).not.toBe(
                 -1,
             )
-            expect(isTimeToYield('user-visible')).toBe(false)
         } finally {
-            window.requestAnimationFrame = originalRequestAnimationFrame
+            hasValidContext = true
         }
     })
 

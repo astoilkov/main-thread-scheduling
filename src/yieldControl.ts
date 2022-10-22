@@ -1,6 +1,7 @@
 import state from './state'
 import isTimeToYield from './isTimeToYield'
 import requestNextTask from './requestNextTask'
+import hasValidContext from './hasValidContext'
 import { createTask, nextTask, removeTask } from './tasks'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
 
@@ -17,10 +18,7 @@ let promiseEscapeId: number | undefined
  * @returns {Promise<void>} The promise that will be resolved when the queue
  */
 export default async function yieldControl(priority: 'user-visible' | 'background'): Promise<void> {
-    // - in Node.js context return immediately
-    // - this way we also support test environments (without jsdom added)
-    // - support for scheduling in Node.js is still under consideration for future versions
-    if (typeof requestAnimationFrame === 'undefined') {
+    if (!hasValidContext()) {
         return
     }
 

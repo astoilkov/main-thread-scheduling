@@ -1,4 +1,5 @@
 import state from './state'
+import hasValidContext from './hasValidContext'
 
 // #performance
 // calling `isTimeToYield()` thousand of times is slow. `lastCall` helps to run logic inside of
@@ -10,10 +11,7 @@ let lastResult = false
  * Determines if it's time to call `yieldControl()`.
  */
 export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
-    // - in Node.js context return immediately
-    // - this way we also support test environments (without jsdom added)
-    // - support for scheduling in Node.js is still under consideration for future versions
-    if (typeof requestAnimationFrame === 'undefined') {
+    if (!hasValidContext()) {
         return false
     }
 
