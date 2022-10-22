@@ -11,4 +11,7 @@ module.exports = {
         ]
     },
     testMatch: ['<rootDir>/test.ts'],
+
+    // https://jestjs.io/docs/configuration#restoremocks-boolean
+    restoreMocks: true,
 }
