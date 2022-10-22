@@ -4,5 +4,6 @@
 *.js
 *.d.ts
 !/typings/*.d.ts
-pnpm-lock.yaml
+yarn.lock
+yarn-error.log
 .eslintcache
