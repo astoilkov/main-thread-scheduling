@@ -19,7 +19,7 @@ Fast and consistently responsive apps using a single function call
 <img src="https://img.shields.io/codeclimate/coverage/astoilkov/main-thread-scheduling" alt="Test Coverage" />
 </a>
 <a href="https://github.com/astoilkov/main-thread-scheduling/actions/workflows/main.yml">
-<img src="https://img.shields.io/github/workflow/status/astoilkov/main-thread-scheduling/CI" alt="Build Status" />
+<img src="https://img.shields.io/github/actions/workflow/status/astoilkov/main-thread-scheduling/main.yml?branch=main" alt="Build Status" />
 </a>
 <p>
 
