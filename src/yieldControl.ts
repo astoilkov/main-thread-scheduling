@@ -29,7 +29,7 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
     await schedule(priority)
 
     if (state.tasks[0] !== task) {
-        await task.ready
+        await task.deferred
 
         if (isTimeToYield(priority)) {
             await schedule(priority)
@@ -47,7 +47,7 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
 
 async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
     if (state.frameTimeElapsed) {
-        await state.onAnimationFrame.promise
+        await state.onAnimationFrame
     }
 
     if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
@@ -60,7 +60,7 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
             state.frameWorkStartTime = Date.now()
         }
     } else {
-        await state.onIdleCallback.promise
+        await state.onIdleCallback
 
         // not checking for `navigator.scheduling?.isInputPending?.()` here because idle callbacks
         // ensure no input is pending

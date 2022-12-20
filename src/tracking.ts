@@ -1,5 +1,5 @@
 import state from './state'
-import whenReady from './whenReady'
+import Deferred from './Deferred'
 
 let isTracking = false
 let idleCallbackId: number | undefined
@@ -26,7 +26,7 @@ export function startTracking(): void {
 
                 state.onIdleCallback.resolve()
 
-                state.onIdleCallback = whenReady()
+                state.onIdleCallback = new Deferred()
             })
         }
 
@@ -35,7 +35,7 @@ export function startTracking(): void {
 
             state.onAnimationFrame.resolve()
 
-            state.onAnimationFrame = whenReady()
+            state.onAnimationFrame = new Deferred()
 
             if (state.tasks.length === 0) {
                 isTracking = false

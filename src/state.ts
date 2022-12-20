@@ -1,11 +1,11 @@
 import { Task } from './tasks'
-import whenReady, { WhenReady } from './whenReady'
+import Deferred from './Deferred'
 
 type State = {
     tasks: Task[]
     frameTimeElapsed: boolean
-    onIdleCallback: WhenReady<void>
-    onAnimationFrame: WhenReady<void>
+    onIdleCallback: Deferred
+    onAnimationFrame: Deferred
     frameWorkStartTime: number | undefined
     idleDeadline: IdleDeadline | undefined
 }
@@ -14,8 +14,8 @@ const state: State = {
     tasks: [],
     idleDeadline: undefined,
     frameTimeElapsed: false,
-    onIdleCallback: whenReady(),
-    onAnimationFrame: whenReady(),
+    onIdleCallback: new Deferred(),
+    onAnimationFrame: new Deferred(),
     frameWorkStartTime: undefined,
 }
 

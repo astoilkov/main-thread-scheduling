@@ -1,11 +1,10 @@
-import whenReady from './whenReady'
 import state from './state'
+import Deferred from './Deferred'
 import { startTracking } from './tracking'
 
 export type Task = {
     priority: 'background' | 'user-visible'
-    ready: Promise<void>
-    resolve: () => void
+    deferred: Deferred
 }
 
 /**
@@ -13,12 +12,11 @@ export type Task = {
  * @param priority {('background' | 'user-visible')} The priority of the new task.
  */
 export function createTask(priority: 'background' | 'user-visible'): Task {
-    const wr = whenReady()
-    const item = { priority, ready: wr.promise, resolve: wr.resolve }
+    const item = { priority, deferred: new Deferred() }
     const insertIndex =
         priority === 'user-visible'
             ? 0
-            : state.tasks.findIndex((deferred) => deferred.priority === 'user-visible')
+            : state.tasks.findIndex((task) => task.priority === 'user-visible')
 
     state.tasks.splice(insertIndex === -1 ? 0 : insertIndex, 0, item)
 
@@ -52,6 +50,6 @@ export function removeTask(task: Task): void {
 export function nextTask(): void {
     const task = state.tasks[0]
     if (task !== undefined) {
-        task.resolve()
+        task.deferred.resolve()
     }
 }
