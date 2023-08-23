@@ -7,3 +7,4 @@ export { default as isTimeToYield } from './src/isTimeToYield'
 
 // utility
 export { default as queueTask } from './src/queueTask'
+export { default as afterFrame } from './src/afterFrame'
