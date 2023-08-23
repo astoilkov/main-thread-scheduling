@@ -1,6 +1,6 @@
 import state from './state'
+import queueTask from './queueTask'
 import isTimeToYield from './isTimeToYield'
-import requestNextTask from './requestNextTask'
 import hasValidContext from './hasValidContext'
 import { createTask, nextTask, removeTask } from './tasks'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
@@ -51,7 +51,7 @@ async function schedule(priority: 'user-visible' | 'background'): Promise<void> 
     }
 
     if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
-        await new Promise<void>((resolve) => requestNextTask(resolve))
+        await new Promise<void>((resolve) => queueTask(resolve))
 
         // istanbul ignore if
         if (navigator.scheduling?.isInputPending?.() === true) {
