@@ -6,5 +6,6 @@ export { default as yieldControl } from './src/yieldControl'
 export { default as isTimeToYield } from './src/isTimeToYield'
 
 // utility
+export { default as Deferred } from './src/Deferred'
 export { default as queueTask } from './src/queueTask'
 export { default as afterFrame } from './src/afterFrame'
