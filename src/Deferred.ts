@@ -1,5 +1,16 @@
 // inspired by Deno's implementation: https://deno.land/std@0.170.0/async/deferred.ts?source
 
+/**
+ * Creates a Promise with additional `reject` and `resolve` methods.
+ * It also adds a `state` property.
+ *
+ * @example
+ * ```typescript
+ * const deferred = new Deferred<number>();
+ * // ...
+ * deferred.resolve(42);
+ * ```
+ */
 export default class Deferred<T = void> extends Promise<T> {
     #resolve: (value: T | PromiseLike<T>) => void
     #reject: (reason?: unknown) => void
