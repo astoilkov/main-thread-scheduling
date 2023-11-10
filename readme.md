@@ -113,6 +113,14 @@ There are two priorities available: `user-visible` and `background`:
 - `user-visible` – use this for things that need to display to the user as fast as possible. Every `user-visible` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
 - `background` – use this for background tasks. Every background task is run for 5ms.
 
+#### `requestAfterFrame(callback)`
+
+This is a utility function, most people don't need to use it. The same way `requestAnimationFrame()` queues a `callback` to be executed just before a frame is rendered `requestAfterFrame()` is called just after a frame is rendered.
+
+#### `queueTask(callback)`
+
+This is a utility function, most people don't need to use it. The same way `queueMicrotask()` queues a `callback` to be executed in the microtask queue `queueTask()` queues the task for the next task. You learn more at [here](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide#tasks_vs._microtasks).
+
 ## Alternatives
 
 <div id="scheduler-yield-alternative"></div>
