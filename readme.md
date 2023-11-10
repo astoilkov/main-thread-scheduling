@@ -119,7 +119,7 @@ There are two priorities available: `user-visible` and `background`:
 
 ### `scheduler.postTask()`
 
-[`scheduler.postTask()`](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask) is available in some browsers today. `postTask` is a great alternative, you just need to have a better understanding on its inner workings. `main-thread-scheduling` aims to be easier to use. For example, `main-thread-scheduling` uses the `isInputPending()` API to ensure the UI doesn't freeze when the user interacts with the page (if you use `scheduler.postTask()` you will need to do that manually). Also, if you have running animations when running your tasks, you will see `main-thread-scheduling` perform better.
+[`scheduler.postTask()`](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask) is available in some browsers today. `postTask` is a great alternative, you just need to have a better understanding on its inner workings. `main-thread-scheduling` aims to be easier to use. For example, `main-thread-scheduling` uses the `isInputPending()` API to ensure the UI doesn't freeze when the user interacts with the page (if you use `scheduler.postTask()` you will need to do that manually). Also, if you have running animations while running your tasks, you will see `main-thread-scheduling` perform better.
 
 ### Web Workers
 
