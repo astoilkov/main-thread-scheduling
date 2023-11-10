@@ -58,8 +58,8 @@ A real-world showcase of searching in 10k files and getting results instantly �
 ## Why
 
 Why rely on some open-source library to ensure a good performance for my app?
-- **Not a weekend project.** Actively maintained for over a year — see [contributors](https://github.com/astoilkov/main-thread-scheduling/graphs/contributors) page. I've been using it in my own products for over two years — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits).
-- **This is the future.** Browsers are probably going to support scheduling tasks on the main thread in the future. Here is the [spec](https://github.com/WICG/scheduling-apis). This library will still be relevant in the future — [explanation](#scheduler-yield-alternative).
+- **Not a weekend project.** Actively maintained for over a year — see [contributors](https://github.com/astoilkov/main-thread-scheduling/graphs/contributors) page. I've been using it in my own products for over two years — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits using web technologies).
+- **This is the future.** [Some browsers](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask#browser_compatibility) have already implemented support for scheduling tasks on the main thread. This library tries even harder to improve user perceived performance — see [explanation](#scheduler-yield-alternative) for details.
 - **Simple.** 90% of the time you only need the `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
@@ -113,14 +113,14 @@ There are two priorities available: `user-visible` and `background`:
 - `user-visible` – use this for things that need to display to the user as fast as possible. Every `user-visible` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
 - `background` – use this for background tasks. Every background task is run for 5ms.
 
-If you have a use case for a third priority, you can write in [this issue](https://github.com/astoilkov/main-thread-scheduling/issues/1).
-
 ## Alternatives
-
-**Web Workers** are a great fit if you have: 1) heavy algorithm (e.g. image processing), 2) heavy process (runs for a long time, big part of the app lifecycle). However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language. This library can be used as a gateway before transitioning to Web Workers. In most cases, you would discover the doing it on the main thread is good enough.
 
 <div id="scheduler-yield-alternative"></div>
 
-**[`scheduler.yield()`](https://github.com/WICG/scheduling-apis/blob/main/explainers/yield-and-continuation.md)** will probably land in browsers at some point. However, is `scheduler.yield()` enough? The spec isn't very clear on how it will work exactly so I'm not sure. My guess is that it would be possible go without this library but you will need extra code to do so. That's because you will need to reimplement the `isTimeToYield()` method for which I don't see an alternative in the [spec](https://github.com/WICG/scheduling-apis).
+### `scheduler.postTask()`
 
-**[React scheduler](https://github.com/facebook/react/blob/main/packages/scheduler/README.md)** is a similar implementation. They plan to make it more generic (for use outside of React) but there doesn't seem to be a public roadmap for that.
+[`scheduler.postTask()`](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask) is available in some browsers today. `postTask` is a great alternative, you just need to have a better understanding on its inner workings. `main-thread-scheduling` aims to be easier to use. For example, `main-thread-scheduling` uses the `isInputPending()` API to ensure the UI doesn't freeze when the user interacts with the page (if you use `scheduler.postTask()` you will need to do that manually).
+
+### Web Workers
+
+Web Workers are a great fit if you have: 1) heavy algorithm (e.g. image processing), 2) heavy process (runs for a long time, big part of the app lifecycle). However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language. This library can be used as a gateway before transitioning to Web Workers. In most cases, you would discover the doing it on the main thread is good enough.
