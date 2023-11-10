@@ -6,7 +6,7 @@ import queueTask from './queueTask'
  * Inspired by: https://github.com/andrewiggins/afterframe
  * @param callback
  */
-export default function afterFrame(callback: () => void): void {
+export default function requestAfterFrame(callback: () => void): void {
     requestAnimationFrame(() => {
         queueTask(callback)
     })
