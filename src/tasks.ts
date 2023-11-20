@@ -10,7 +10,7 @@ export type Task = {
 
 /**
  * Adds a task to the queue and returns the new task.
- * @param priority {('background' | 'user-visible')} The priority of the new task.
+ * @param priority {SchedulingPriority} The priority of the new task.
  */
 export function createTask(priority: SchedulingPriority): Task {
     const item = { priority, deferred: new Deferred() }

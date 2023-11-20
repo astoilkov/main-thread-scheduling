@@ -2,9 +2,9 @@ import state from './state'
 import queueTask from './queueTask'
 import isTimeToYield from './isTimeToYield'
 import hasValidContext from './hasValidContext'
+import SchedulingPriority from './SchedulingPriority'
 import { createTask, nextTask, removeTask } from './tasks'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
-import SchedulingPriority from './SchedulingPriority'
 
 let promiseEscapeId: number | undefined
 
@@ -13,7 +13,7 @@ let promiseEscapeId: number | undefined
  * multiple times will create a LIFO(last in, first out) queue – the last call to
  * `yieldControl()` will get resolved first.
  *
- * @param priority {('user-visible' | 'background')} The priority of the task being run.
+ * @param priority {SchedulingPriority} The priority of the task being run.
  * `user-visible` priority will always be resolved first. `background` priority will always be
  * resolved second.
  * @returns {Promise<void>} The promise that will be resolved when the queue
