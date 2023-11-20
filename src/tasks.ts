@@ -15,11 +15,19 @@ export type Task = {
 export function createTask(priority: SchedulingPriority): Task {
     const item = { priority, deferred: new Deferred() }
     const insertIndex =
-        priority === 'user-visible'
+        priority === 'user-blocking'
             ? 0
-            : state.tasks.findIndex((task) => task.priority === 'user-visible')
+            : priority === 'user-visible'
+            ? state.tasks.findIndex(
+                  (task) => task.priority === 'user-visible' || task.priority === 'background',
+              )
+            : state.tasks.findIndex((task) => task.priority === 'background')
 
-    state.tasks.splice(insertIndex === -1 ? 0 : insertIndex, 0, item)
+    if (insertIndex === -1) {
+        state.tasks.push(item)
+    } else {
+        state.tasks.splice(insertIndex, 0, item)
+    }
 
     if (state.tasks.length === 1) {
         startTracking()

@@ -18,7 +18,9 @@ let promiseEscapeId: number | undefined
  * resolved second.
  * @returns {Promise<void>} The promise that will be resolved when the queue
  */
-export default async function yieldControl(priority: SchedulingPriority): Promise<void> {
+export default async function yieldControl(
+    priority: SchedulingPriority = 'user-visible',
+): Promise<void> {
     if (!hasValidContext()) {
         return
     }
@@ -51,7 +53,11 @@ async function schedule(priority: SchedulingPriority): Promise<void> {
         await state.onAnimationFrame
     }
 
-    if (priority === 'user-visible' || typeof requestIdleCallback === 'undefined') {
+    if (
+        priority === 'user-visible' ||
+        priority === 'user-blocking' ||
+        typeof requestIdleCallback === 'undefined'
+    ) {
         await new Promise<void>((resolve) => queueTask(resolve))
 
         // istanbul ignore if

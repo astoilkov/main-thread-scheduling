@@ -1,3 +1,3 @@
-type SchedulingPriority = 'user-visible' | 'background'
+type SchedulingPriority = 'user-blocking' | 'user-visible' | 'background'
 
 export default SchedulingPriority

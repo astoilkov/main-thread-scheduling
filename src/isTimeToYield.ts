@@ -11,7 +11,7 @@ let lastResult = false
 /**
  * Determines if it's time to call `yieldControl()`.
  */
-export default function isTimeToYield(priority: SchedulingPriority): boolean {
+export default function isTimeToYield(priority: SchedulingPriority = 'user-visible'): boolean {
     if (!hasValidContext()) {
         return false
     }
@@ -42,9 +42,16 @@ function calculateDeadline(priority: SchedulingPriority): number {
     }
 
     switch (priority) {
-        case 'user-visible': {
-            // Math.round(100 - (1000/60)) = Math.round(83,333) = 83
+        case 'user-blocking': {
+            // spent the max recommended 100ms doing 'user-blocking' tasks minus 1 frame (16ms):
+            // - https://developer.mozilla.org/en-US/docs/Web/Performance/How_long_is_too_long#responsiveness_goal
+            // - Math.round(100 - (1000/60)) = Math.round(83,333) = 83
             return state.frameWorkStartTime + 83
+        }
+        case 'user-visible': {
+            // spent 80% percent of the frame's budget running 'user-visible' tasks:
+            // - Math.round((1000/60) * 0.8) = Math.round(13,333) = 13
+            return state.frameWorkStartTime + 4
         }
         case 'background': {
             const idleDeadline =
