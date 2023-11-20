@@ -36,10 +36,7 @@ export function createTask(priority: SchedulingPriority): Task {
 export function removeTask(task: Task): void {
     const index = state.tasks.indexOf(task)
 
-    // istanbul ignore if
-    if (index === -1) {
-        // silentError()
-    } else {
+    if (index !== -1) {
         state.tasks.splice(index, 1)
     }
 }
