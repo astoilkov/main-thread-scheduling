@@ -63,8 +63,8 @@ async function schedule(priority: SchedulingPriority): Promise<void> {
         // istanbul ignore if
         if (navigator.scheduling?.isInputPending?.() === true) {
             await schedule(priority)
-        } else if (state.frameWorkStartTime === undefined) {
-            state.frameWorkStartTime = Date.now()
+        } else if (state.workStartTimeThisFrame === undefined) {
+            state.workStartTimeThisFrame = Date.now()
         }
     } else {
         await state.onIdleCallback
@@ -72,8 +72,8 @@ async function schedule(priority: SchedulingPriority): Promise<void> {
         // not checking for `navigator.scheduling?.isInputPending?.()` here because idle callbacks
         // ensure no input is pending
 
-        if (state.frameWorkStartTime === undefined) {
-            state.frameWorkStartTime = Date.now()
+        if (state.workStartTimeThisFrame === undefined) {
+            state.workStartTimeThisFrame = Date.now()
         }
     }
 }

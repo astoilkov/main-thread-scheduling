@@ -6,8 +6,8 @@ type State = {
     frameTimeElapsed: boolean
     onIdleCallback: Deferred
     onAnimationFrame: Deferred
-    frameWorkStartTime: number | undefined
     idleDeadline: IdleDeadline | undefined
+    workStartTimeThisFrame: number | undefined
 }
 
 const state: State = {
@@ -16,7 +16,7 @@ const state: State = {
     frameTimeElapsed: false,
     onIdleCallback: new Deferred(),
     onAnimationFrame: new Deferred(),
-    frameWorkStartTime: undefined,
+    workStartTimeThisFrame: undefined,
 }
 
 export default state
