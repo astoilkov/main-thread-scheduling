@@ -4,6 +4,7 @@ import isTimeToYield from './isTimeToYield'
 import hasValidContext from './hasValidContext'
 import { createTask, nextTask, removeTask } from './tasks'
 import { cancelPromiseEscape, requestPromiseEscape } from './promiseEscape'
+import SchedulingPriority from './SchedulingPriority'
 
 let promiseEscapeId: number | undefined
 
@@ -17,7 +18,7 @@ let promiseEscapeId: number | undefined
  * resolved second.
  * @returns {Promise<void>} The promise that will be resolved when the queue
  */
-export default async function yieldControl(priority: 'user-visible' | 'background'): Promise<void> {
+export default async function yieldControl(priority: SchedulingPriority): Promise<void> {
     if (!hasValidContext()) {
         return
     }
@@ -45,7 +46,7 @@ export default async function yieldControl(priority: 'user-visible' | 'backgroun
     })
 }
 
-async function schedule(priority: 'user-visible' | 'background'): Promise<void> {
+async function schedule(priority: SchedulingPriority): Promise<void> {
     if (state.frameTimeElapsed) {
         await state.onAnimationFrame
     }

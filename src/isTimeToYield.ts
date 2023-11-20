@@ -1,5 +1,6 @@
 import state from './state'
 import hasValidContext from './hasValidContext'
+import SchedulingPriority from './SchedulingPriority'
 
 // #performance
 // calling `isTimeToYield()` thousand of times is slow. `lastCall` helps to run logic inside of
@@ -10,7 +11,7 @@ let lastResult = false
 /**
  * Determines if it's time to call `yieldControl()`.
  */
-export default function isTimeToYield(priority: 'background' | 'user-visible'): boolean {
+export default function isTimeToYield(priority: SchedulingPriority): boolean {
     if (!hasValidContext()) {
         return false
     }
@@ -34,7 +35,7 @@ export default function isTimeToYield(priority: 'background' | 'user-visible'): 
     return lastResult
 }
 
-function calculateDeadline(priority: 'background' | 'user-visible'): number {
+function calculateDeadline(priority: SchedulingPriority): number {
     if (state.frameWorkStartTime === undefined) {
         // silentError()
         return -1

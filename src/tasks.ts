@@ -1,9 +1,10 @@
 import state from './state'
 import Deferred from './Deferred'
 import { startTracking } from './tracking'
+import SchedulingPriority from './SchedulingPriority'
 
 export type Task = {
-    priority: 'background' | 'user-visible'
+    priority: SchedulingPriority
     deferred: Deferred
 }
 
@@ -11,7 +12,7 @@ export type Task = {
  * Adds a task to the queue and returns the new task.
  * @param priority {('background' | 'user-visible')} The priority of the new task.
  */
-export function createTask(priority: 'background' | 'user-visible'): Task {
+export function createTask(priority: SchedulingPriority): Task {
     const item = { priority, deferred: new Deferred() }
     const insertIndex =
         priority === 'user-visible'
