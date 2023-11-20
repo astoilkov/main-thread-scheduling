@@ -59,8 +59,5 @@ function calculateDeadline(priority: SchedulingPriority): number {
                     : Date.now() + state.idleDeadline.timeRemaining()
             return Math.min(state.workStartTimeThisFrame + 5, idleDeadline)
         }
-        // istanbul ignore next
-        default:
-            throw new Error('Unreachable code')
     }
 }
