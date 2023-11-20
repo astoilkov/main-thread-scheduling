@@ -16,7 +16,7 @@ let promiseEscapeId: number | undefined
  * @param priority {SchedulingPriority} The priority of the task being run.
  * `user-visible` priority will always be resolved first. `background` priority will always be
  * resolved second.
- * @returns {Promise<void>} The promise that will be resolved when the queue
+ * @returns {Promise<void>} A promise that gets resolved when the work can continue.
  */
 export default async function yieldControl(
     priority: SchedulingPriority = 'user-visible',
