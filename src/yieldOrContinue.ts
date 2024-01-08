@@ -18,8 +18,10 @@ import SchedulingPriority from './SchedulingPriority'
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 export default function yieldOrContinue(
     priority: SchedulingPriority = 'user-visible',
-): Promise<void> | void {
+): Promise<void> {
     if (isTimeToYield(priority)) {
         return yieldControl(priority)
     }
+
+    return Promise.resolve()
 }
