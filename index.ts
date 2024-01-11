@@ -7,6 +7,6 @@ export { default as isTimeToYield } from './src/isTimeToYield'
 export type { default as SchedulingPriority } from './src/SchedulingPriority'
 
 // utility
-export { default as Deferred } from './src/Deferred'
-export { default as queueTask } from './src/queueTask'
-export { default as afterFrame } from './src/requestAfterFrame'
+export { default as Deferred } from './src/utils/Deferred'
+export { default as queueTask } from './src/utils/queueTask'
+export { default as afterFrame } from './src/utils/requestAfterFrame'

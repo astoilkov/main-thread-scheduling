@@ -1,5 +1,5 @@
 import state from './state'
-import Deferred from './Deferred'
+import Deferred from './utils/Deferred'
 
 let isTracking = false
 let idleCallbackId: number | undefined

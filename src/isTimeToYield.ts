@@ -1,5 +1,5 @@
 import state from './state'
-import hasValidContext from './hasValidContext'
+import hasValidContext from './utils/hasValidContext'
 import SchedulingPriority from './SchedulingPriority'
 
 // #performance

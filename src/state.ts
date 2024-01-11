@@ -1,5 +1,5 @@
 import { Task } from './tasks'
-import Deferred from './Deferred'
+import Deferred from './utils/Deferred'
 
 type State = {
     tasks: Task[]

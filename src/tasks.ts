@@ -1,5 +1,5 @@
 import state from './state'
-import Deferred from './Deferred'
+import Deferred from './utils/Deferred'
 import { startTracking } from './tracking'
 import SchedulingPriority from './SchedulingPriority'
 
