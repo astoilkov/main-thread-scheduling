@@ -57,7 +57,6 @@ A real-world showcase of searching in 10k files and getting results instantly �
 
 ## Why
 
-Why rely on some open-source library to ensure a good performance for my app?
 - **Simple.** 90% of the time you only need the `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
 - **Not a weekend project.** Actively maintained for three years — see [contributors](https://github.com/astoilkov/main-thread-scheduling/graphs/contributors) page. I've been using it in my own products for over four years — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits using web technologies).
 - **This is the future.** [Some browsers](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask#browser_compatibility) have already implemented support for scheduling tasks on the main thread. This library tries even harder to improve user perceived performance — see [explanation](#scheduler-yield-alternative) for details.
