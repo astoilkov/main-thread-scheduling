@@ -129,6 +129,16 @@ There are two priorities available: `user-visible` and `background`:
 
 [`scheduler.postTask()`](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask) is available in some browsers today. `postTask` is a great alternative, you just need to have a better understanding on its inner workings. `main-thread-scheduling` aims to be easier to use. For example, `main-thread-scheduling` uses the `isInputPending()` API to ensure the UI doesn't freeze when the user interacts with the page (if you use `scheduler.postTask()` you will need to do that manually). Also, if you have running animations while running your tasks, you will see `main-thread-scheduling` perform better.
 
+If you want the benefits of `main-thread-scheduling`, but you prefer the `postTask()` API/thinking model, then here is an implementation of `postTask()` using `yieldOrContinue()`:
+```ts
+async function postTask(callback: () => void | Promise<void>, options?: {
+    priority: SchedulingPriority
+}) {
+    await yieldOrContinue(options?.priority ?? 'user-visible')
+    await callback()
+}
+```
+
 ### Web Workers
 
 Web Workers are a great fit if you have: 1) heavy algorithm (e.g. image processing), 2) heavy process (runs for a long time, big part of the app lifecycle). However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language. This library can be used as a gateway before transitioning to Web Workers. In most cases, you would discover the doing it on the main thread is good enough.
