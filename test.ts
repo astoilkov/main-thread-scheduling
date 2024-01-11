@@ -2,7 +2,7 @@ import { isTimeToYield, yieldControl, yieldOrContinue } from './index'
 import Deferred from './src/utils/Deferred'
 
 let hasValidContext = true
-jest.mock('./src/hasValidContext', () => {
+jest.mock('./src/utils/hasValidContext', () => {
     return jest.fn(() => hasValidContext)
 })
 
