@@ -3,8 +3,10 @@ import queueTask from './utils/queueTask'
 import isTimeToYield from './isTimeToYield'
 import hasValidContext from './utils/hasValidContext'
 import SchedulingPriority from './SchedulingPriority'
-import { createTask, nextTask, removeTask } from './tasks'
 import { cancelPromiseEscape, requestPromiseEscape } from './utils/promiseEscape'
+import createTask from './tasks/createTask'
+import removeTask from './tasks/removeTask'
+import { nextTask } from './tasks/nextTask'
 
 let promiseEscapeId: number | undefined
 

@@ -1,4 +1,4 @@
-import { Task } from './tasks'
+import Task from './tasks/Task'
 import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 
 type SchedulingState = {
