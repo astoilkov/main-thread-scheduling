@@ -29,14 +29,14 @@ export default function isTimeToYield(priority: SchedulingPriority = 'user-visib
         now >= calculateDeadline(priority) || navigator.scheduling?.isInputPending?.() === true
 
     if (lastResult) {
-        schedulingState.frameTimeElapsed = true
+        schedulingState.isThisFrameBudgetSpent = true
     }
 
     return lastResult
 }
 
 function calculateDeadline(priority: SchedulingPriority): number {
-    if (schedulingState.workStartTimeThisFrame === undefined) {
+    if (schedulingState.thisFrameWorkStartTime === undefined) {
         return -1
     }
 
@@ -45,19 +45,19 @@ function calculateDeadline(priority: SchedulingPriority): number {
             // spent the max recommended 100ms doing 'user-blocking' tasks minus 1 frame (16ms):
             // - https://developer.mozilla.org/en-US/docs/Web/Performance/How_long_is_too_long#responsiveness_goal
             // - Math.round(100 - (1000/60)) = Math.round(83,333) = 83
-            return schedulingState.workStartTimeThisFrame + 83
+            return schedulingState.thisFrameWorkStartTime + 83
         }
         case 'user-visible': {
             // spent 80% percent of the frame's budget running 'user-visible' tasks:
             // - Math.round((1000/60) * 0.8) = Math.round(13,333) = 13
-            return schedulingState.workStartTimeThisFrame + 4
+            return schedulingState.thisFrameWorkStartTime + 4
         }
         case 'background': {
             const idleDeadline =
                 schedulingState.idleDeadline === undefined
                     ? Number.MAX_SAFE_INTEGER
                     : Date.now() + schedulingState.idleDeadline.timeRemaining()
-            return Math.min(schedulingState.workStartTimeThisFrame + 5, idleDeadline)
+            return Math.min(schedulingState.thisFrameWorkStartTime + 5, idleDeadline)
         }
     }
 }

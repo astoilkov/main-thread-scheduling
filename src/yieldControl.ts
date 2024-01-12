@@ -51,7 +51,7 @@ export default async function yieldControl(
 }
 
 async function schedule(priority: SchedulingPriority): Promise<void> {
-    if (schedulingState.frameTimeElapsed) {
+    if (schedulingState.isThisFrameBudgetSpent) {
         await schedulingState.onAnimationFrame.promise
     }
 
@@ -65,8 +65,8 @@ async function schedule(priority: SchedulingPriority): Promise<void> {
         // istanbul ignore if
         if (navigator.scheduling?.isInputPending?.() === true) {
             await schedule(priority)
-        } else if (schedulingState.workStartTimeThisFrame === undefined) {
-            schedulingState.workStartTimeThisFrame = Date.now()
+        } else if (schedulingState.thisFrameWorkStartTime === undefined) {
+            schedulingState.thisFrameWorkStartTime = Date.now()
         }
     } else {
         await schedulingState.onIdleCallback.promise
@@ -74,8 +74,8 @@ async function schedule(priority: SchedulingPriority): Promise<void> {
         // not checking for `navigator.scheduling?.isInputPending?.()` here because idle callbacks
         // ensure no input is pending
 
-        if (schedulingState.workStartTimeThisFrame === undefined) {
-            schedulingState.workStartTimeThisFrame = Date.now()
+        if (schedulingState.thisFrameWorkStartTime === undefined) {
+            schedulingState.thisFrameWorkStartTime = Date.now()
         }
     }
 }

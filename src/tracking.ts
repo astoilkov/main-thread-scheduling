@@ -14,8 +14,8 @@ export function startTracking(): void {
 
     const reset = (): void => {
         schedulingState.idleDeadline = undefined
-        schedulingState.frameTimeElapsed = false
-        schedulingState.workStartTimeThisFrame = undefined
+        schedulingState.isThisFrameBudgetSpent = false
+        schedulingState.thisFrameWorkStartTime = undefined
     }
     const loop = (): void => {
         if (typeof requestIdleCallback !== 'undefined') {

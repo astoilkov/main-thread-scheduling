@@ -3,20 +3,20 @@ import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 
 type SchedulingState = {
     tasks: Task[]
-    frameTimeElapsed: boolean
+    isThisFrameBudgetSpent: boolean
+    thisFrameWorkStartTime: number | undefined
     onIdleCallback: PromiseWithResolvers
     onAnimationFrame: PromiseWithResolvers
     idleDeadline: IdleDeadline | undefined
-    workStartTimeThisFrame: number | undefined
 }
 
 const schedulingState: SchedulingState = {
     tasks: [],
     idleDeadline: undefined,
-    frameTimeElapsed: false,
+    isThisFrameBudgetSpent: false,
     onIdleCallback: withResolvers(),
     onAnimationFrame: withResolvers(),
-    workStartTimeThisFrame: undefined,
+    thisFrameWorkStartTime: undefined,
 }
 
 export default schedulingState
