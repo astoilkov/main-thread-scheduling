@@ -1,5 +1,4 @@
-import { isTimeToYield, yieldControl, yieldOrContinue } from './index'
-import Deferred from './src/utils/Deferred'
+import { isTimeToYield, withResolvers, yieldControl, yieldOrContinue } from './index'
 
 let hasValidContext = true
 jest.mock('./src/utils/hasValidContext', () => {
@@ -132,28 +131,21 @@ describe('main-thread-scheduling', () => {
         })
     })
 
-    describe('Deferred', () => {
+    describe('withResolvers()', () => {
         test('async resolve()', async () => {
-            const deferred = new Deferred<number>()
+            const { promise, resolve } = withResolvers<number>()
 
-            await deferred.resolve(Promise.resolve(1))
+            await resolve(1)
 
-            expect(await deferred).toBe(1)
-        })
-
-        test('initially, state property is "pending"', () => {
-            const deferred = new Deferred()
-            expect(deferred.state).toBe('pending')
+            expect(await promise).toBe(1)
         })
 
         test('reject()', async () => {
-            const deferred = new Deferred()
+            const { promise, reject } = withResolvers()
 
-            deferred.reject(new Error('dummy'))
+            reject(new Error('dummy'))
 
-            expect(deferred.state).toBe('rejected')
-
-            await expect(deferred).rejects.toThrow('dummy')
+            await expect(promise).rejects.toThrow('dummy')
         })
     })
 })
