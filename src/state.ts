@@ -1,11 +1,11 @@
 import { Task } from './tasks'
-import Deferred from './utils/Deferred'
+import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 
 type State = {
     tasks: Task[]
     frameTimeElapsed: boolean
-    onIdleCallback: Deferred
-    onAnimationFrame: Deferred
+    onIdleCallback: PromiseWithResolvers
+    onAnimationFrame: PromiseWithResolvers
     idleDeadline: IdleDeadline | undefined
     workStartTimeThisFrame: number | undefined
 }
@@ -14,8 +14,8 @@ const state: State = {
     tasks: [],
     idleDeadline: undefined,
     frameTimeElapsed: false,
-    onIdleCallback: new Deferred(),
-    onAnimationFrame: new Deferred(),
+    onIdleCallback: withResolvers(),
+    onAnimationFrame: withResolvers(),
     workStartTimeThisFrame: undefined,
 }
 

@@ -1,11 +1,10 @@
 import state from './state'
-import Deferred from './utils/Deferred'
 import { startTracking } from './tracking'
 import SchedulingPriority from './SchedulingPriority'
+import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 
-export type Task = {
+export type Task = PromiseWithResolvers & {
     priority: SchedulingPriority
-    deferred: Deferred
 }
 
 /**
@@ -13,7 +12,7 @@ export type Task = {
  * @param priority {SchedulingPriority} The priority of the new task.
  */
 export function createTask(priority: SchedulingPriority): Task {
-    const item = { priority, deferred: new Deferred() }
+    const item = { ...withResolvers(), priority }
     const insertIndex =
         priority === 'user-blocking'
             ? 0
@@ -56,6 +55,6 @@ export function removeTask(task: Task): void {
 export function nextTask(): void {
     const task = state.tasks[0]
     if (task !== undefined) {
-        task.deferred.resolve()
+        task.resolve()
     }
 }

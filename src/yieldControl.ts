@@ -32,7 +32,7 @@ export default async function yieldControl(
     await schedule(priority)
 
     if (state.tasks[0] !== task) {
-        await task.deferred
+        await task.promise
 
         if (isTimeToYield(priority)) {
             await schedule(priority)
@@ -50,7 +50,7 @@ export default async function yieldControl(
 
 async function schedule(priority: SchedulingPriority): Promise<void> {
     if (state.frameTimeElapsed) {
-        await state.onAnimationFrame
+        await state.onAnimationFrame.promise
     }
 
     if (
@@ -67,7 +67,7 @@ async function schedule(priority: SchedulingPriority): Promise<void> {
             state.workStartTimeThisFrame = Date.now()
         }
     } else {
-        await state.onIdleCallback
+        await state.onIdleCallback.promise
 
         // not checking for `navigator.scheduling?.isInputPending?.()` here because idle callbacks
         // ensure no input is pending
