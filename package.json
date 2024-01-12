@@ -37,8 +37,7 @@
     "sideEffects": false,
     "scripts": {
         "build": "tsc",
-        "lint": "eslint --cache --format=pretty --ext=.ts ./",
-        "test": "yarn run build && yarn run lint && if [[ -z $CI ]]; then jest --coverage --coverageReporters=text; else jest --coverage; fi",
+        "test": "yarn run build && if [[ -z $CI ]]; then jest --coverage --coverageReporters=text; else jest --coverage; fi",
         "release": "yarn run build && np",
         "prettier": "prettier --write --config .prettierrc.yaml {*.ts,**/*.ts,*.json,**.json}"
     },
@@ -53,14 +52,6 @@
     ],
     "devDependencies": {
         "@types/jest": "^28.1.1",
-        "@typescript-eslint/eslint-plugin": "^5.28.0",
-        "@typescript-eslint/parser": "^5.28.0",
-        "confusing-browser-globals": "^1.0.10",
-        "eslint": "^8.17.0",
-        "eslint-config-strictest": "^0.5.0",
-        "eslint-formatter-pretty": "^4.0.0",
-        "eslint-plugin-promise": "^6.0.0",
-        "eslint-plugin-unicorn": "^42.0.0",
         "jest": "^28.1.1",
         "jest-environment-jsdom": "^28.1.1",
         "np": "^7.6.1",
