@@ -1,4 +1,4 @@
-import state from './state'
+import schedulingState from './schedulingState'
 import { startTracking } from './tracking'
 import SchedulingPriority from './SchedulingPriority'
 import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
@@ -17,18 +17,18 @@ export function createTask(priority: SchedulingPriority): Task {
         priority === 'user-blocking'
             ? 0
             : priority === 'user-visible'
-            ? state.tasks.findIndex(
+            ? schedulingState.tasks.findIndex(
                   (task) => task.priority === 'user-visible' || task.priority === 'background',
               )
-            : state.tasks.findIndex((task) => task.priority === 'background')
+            : schedulingState.tasks.findIndex((task) => task.priority === 'background')
 
     if (insertIndex === -1) {
-        state.tasks.push(item)
+        schedulingState.tasks.push(item)
     } else {
-        state.tasks.splice(insertIndex, 0, item)
+        schedulingState.tasks.splice(insertIndex, 0, item)
     }
 
-    if (state.tasks.length === 1) {
+    if (schedulingState.tasks.length === 1) {
         startTracking()
     }
 
@@ -41,10 +41,10 @@ export function createTask(priority: SchedulingPriority): Task {
  * @param task {Task}
  */
 export function removeTask(task: Task): void {
-    const index = state.tasks.indexOf(task)
+    const index = schedulingState.tasks.indexOf(task)
 
     if (index !== -1) {
-        state.tasks.splice(index, 1)
+        schedulingState.tasks.splice(index, 1)
     }
 }
 
@@ -53,7 +53,7 @@ export function removeTask(task: Task): void {
  * inside `yieldControl()` function.
  */
 export function nextTask(): void {
-    const task = state.tasks[0]
+    const task = schedulingState.tasks[0]
     if (task !== undefined) {
         task.resolve()
     }

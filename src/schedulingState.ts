@@ -1,7 +1,7 @@
 import { Task } from './tasks'
 import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 
-type State = {
+type SchedulingState = {
     tasks: Task[]
     frameTimeElapsed: boolean
     onIdleCallback: PromiseWithResolvers
@@ -10,7 +10,7 @@ type State = {
     workStartTimeThisFrame: number | undefined
 }
 
-const state: State = {
+const schedulingState: SchedulingState = {
     tasks: [],
     idleDeadline: undefined,
     frameTimeElapsed: false,
@@ -19,4 +19,4 @@ const state: State = {
     workStartTimeThisFrame: undefined,
 }
 
-export default state
+export default schedulingState

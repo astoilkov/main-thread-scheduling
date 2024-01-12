@@ -1,4 +1,4 @@
-import state from './state'
+import schedulingState from './schedulingState'
 import queueTask from './utils/queueTask'
 import isTimeToYield from './isTimeToYield'
 import hasValidContext from './utils/hasValidContext'
@@ -31,7 +31,7 @@ export default async function yieldControl(
 
     await schedule(priority)
 
-    if (state.tasks[0] !== task) {
+    if (schedulingState.tasks[0] !== task) {
         await task.promise
 
         if (isTimeToYield(priority)) {
@@ -49,8 +49,8 @@ export default async function yieldControl(
 }
 
 async function schedule(priority: SchedulingPriority): Promise<void> {
-    if (state.frameTimeElapsed) {
-        await state.onAnimationFrame.promise
+    if (schedulingState.frameTimeElapsed) {
+        await schedulingState.onAnimationFrame.promise
     }
 
     if (
@@ -63,17 +63,17 @@ async function schedule(priority: SchedulingPriority): Promise<void> {
         // istanbul ignore if
         if (navigator.scheduling?.isInputPending?.() === true) {
             await schedule(priority)
-        } else if (state.workStartTimeThisFrame === undefined) {
-            state.workStartTimeThisFrame = Date.now()
+        } else if (schedulingState.workStartTimeThisFrame === undefined) {
+            schedulingState.workStartTimeThisFrame = Date.now()
         }
     } else {
-        await state.onIdleCallback.promise
+        await schedulingState.onIdleCallback.promise
 
         // not checking for `navigator.scheduling?.isInputPending?.()` here because idle callbacks
         // ensure no input is pending
 
-        if (state.workStartTimeThisFrame === undefined) {
-            state.workStartTimeThisFrame = Date.now()
+        if (schedulingState.workStartTimeThisFrame === undefined) {
+            schedulingState.workStartTimeThisFrame = Date.now()
         }
     }
 }
