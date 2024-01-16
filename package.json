@@ -39,7 +39,8 @@
         "build": "tsc",
         "test": "yarn run build && if [[ -z $CI ]]; then jest --coverage --coverageReporters=text; else jest --coverage; fi",
         "release": "yarn run build && np",
-        "prettier": "prettier --write --config .prettierrc.yaml {*.ts,**/*.ts,*.json,**.json}"
+        "prettier": "prettier --write --config .prettierrc.yaml {*.ts,**/*.ts,*.json,**.json}",
+        "pg": "vite ./playground --open"
     },
     "engines": {
         "node": ">=10"
@@ -57,7 +58,8 @@
         "np": "^7.6.1",
         "prettier": "^2.7.0",
         "ts-jest": "^28.0.5",
-        "typescript": "^4.7.3"
+        "typescript": "^4.7.3",
+        "vite": "^5.0.11"
     },
     "dependencies": {
         "p-is-promise": "^4.0.0"
