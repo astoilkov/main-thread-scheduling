@@ -50,7 +50,7 @@ function calculateDeadline(priority: SchedulingPriority): number {
         case 'user-visible': {
             // spent 80% percent of the frame's budget running 'user-visible' tasks:
             // - Math.round((1000/60) * 0.8) = Math.round(13,333) = 13
-            return schedulingState.thisFrameWorkStartTime + 4
+            return schedulingState.thisFrameWorkStartTime + 13
         }
         case 'background': {
             const idleDeadline =
