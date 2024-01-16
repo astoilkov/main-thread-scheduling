@@ -3,16 +3,22 @@ import hasValidContext from './utils/hasValidContext'
 import SchedulingPriority from './SchedulingPriority'
 
 // #performance
-// calling `isTimeToYield()` thousand of times is slow. `lastCall` helps to run logic inside of
-// `isTimeToYield()` at most 1 per millisecond.
-let lastCallTime = 0
-let lastResult = false
+// calling `isTimeToYield()` thousand of times is slow. `cache` helps isTimeToYield() run faster
+const cache = {
+    lastCallTime: 0,
+    lastResult: false,
+    hasValidContext: undefined as boolean | undefined,
+}
 
 /**
  * Determines if it's time to call `yieldControl()`.
  */
 export default function isTimeToYield(priority: SchedulingPriority = 'user-visible'): boolean {
-    if (!hasValidContext()) {
+    if (cache.hasValidContext === undefined) {
+        cache.hasValidContext = hasValidContext()
+    }
+
+    if (!cache.hasValidContext) {
         return false
     }
 
@@ -20,19 +26,20 @@ export default function isTimeToYield(priority: SchedulingPriority = 'user-visib
     // for our use case
     const now = Date.now()
 
-    if (!lastResult && now - lastCallTime === 0) {
-        return lastResult
+    // #performance, call the slow logic of `isTimeToYield` at most 1 per millisecond
+    if (!cache.lastResult && now - cache.lastCallTime === 0) {
+        return cache.lastResult
     }
 
-    lastCallTime = now
-    lastResult =
+    cache.lastCallTime = now
+    cache.lastResult =
         now >= calculateDeadline(priority) || navigator.scheduling?.isInputPending?.() === true
 
-    if (lastResult) {
+    if (cache.lastResult) {
         schedulingState.isThisFrameBudgetSpent = true
     }
 
-    return lastResult
+    return cache.lastResult
 }
 
 function calculateDeadline(priority: SchedulingPriority): number {
