@@ -3,7 +3,8 @@ import hasValidContext from './utils/hasValidContext'
 import SchedulingPriority from './SchedulingPriority'
 
 // #performance
-// calling `isTimeToYield()` thousand of times is slow. `cache` helps isTimeToYield() run faster
+// calling `isTimeToYield()` thousand of times is slow
+// `cache` helps isTimeToYield() run faster
 const cache = {
     lastCallTime: 0,
     lastResult: false,
