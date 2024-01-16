@@ -40,21 +40,6 @@ describe('main-thread-scheduling', () => {
         expect(isTimeToYieldMocked('background')).toBe(false)
     })
 
-    // todo: move to a separate file without jsdom environment
-    test(`check Node.js support`, async () => {
-        hasValidContext = false
-
-        try {
-            expect(isTimeToYield('user-visible')).toBe(false)
-            expect(Promise.race([yieldControl('user-visible'), Promise.resolve(-1)])).not.toBe(-1)
-            expect(Promise.race([yieldOrContinue('user-visible'), Promise.resolve(-1)])).not.toBe(
-                -1,
-            )
-        } finally {
-            hasValidContext = true
-        }
-    })
-
     describe('with requestIdleCallback() mock', () => {
         beforeEach(() => {
             ;(window as any).requestIdleCallback = (callback: IdleRequestCallback) => {
