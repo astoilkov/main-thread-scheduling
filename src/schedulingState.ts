@@ -1,8 +1,8 @@
-import Task from './tasks/Task'
+import ScheduledTask from './tasks/ScheduledTask'
 import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 
 type SchedulingState = {
-    tasks: Task[]
+    tasks: ScheduledTask[]
     isThisFrameBudgetSpent: boolean
     thisFrameWorkStartTime: number | undefined
     onIdleCallback: PromiseWithResolvers

@@ -1,5 +1,5 @@
 import SchedulingPriority from '../SchedulingPriority'
-import Task from './Task'
+import ScheduledTask from './ScheduledTask'
 import withResolvers from '../utils/withResolvers'
 import schedulingState from '../schedulingState'
 import { startTracking } from '../tracking'
@@ -8,7 +8,7 @@ import { startTracking } from '../tracking'
  * Adds a task to the queue and returns the new task.
  * @param priority {SchedulingPriority} The priority of the new task.
  */
-export default function createTask(priority: SchedulingPriority): Task {
+export default function createTask(priority: SchedulingPriority): ScheduledTask {
     const item = { ...withResolvers(), priority }
     const insertIndex =
         priority === 'user-blocking'

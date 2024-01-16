@@ -1,8 +1,8 @@
 import SchedulingPriority from '../SchedulingPriority'
 import { PromiseWithResolvers } from '../utils/withResolvers'
 
-type Task = PromiseWithResolvers & {
+type ScheduledTask = PromiseWithResolvers & {
     priority: SchedulingPriority
 }
 
-export default Task
+export default ScheduledTask
