@@ -68,14 +68,14 @@ You can see the library in action in [this CodeSandbox](https://codesandbox.io/s
 
 ## API
 
-#### `yieldOrContinue(priority: 'background' | 'user-visible')`
+#### `yieldOrContinue(priority: 'user-blocking' | 'user-visible' | 'background')`
 
 The complexity of the entire library is hidden behind this method. You can have great app performance by calling a single method.
 
 ```ts
 async function findInFiles(query: string) {  
     for (const file of files) {
-        await yieldOrContinue('user-visible')
+        await yieldOrContinue('user-blocking')
         
         for (const line of file.lines) {
             fuzzySearchLine(line, query)
@@ -95,8 +95,8 @@ _This is a utility function, most people don't need to use it._ The same way `qu
 ### More complex scenarios
 
 The library has two more functions available:
-- `yieldControl(priority: 'background' | 'user-visible')`
-- `isTimeToYield(priority: 'background' | 'user-visible')`
+- `yieldControl(priority: 'user-blocking' | 'user-visible' | 'background')`
+- `isTimeToYield(priority: 'user-blocking' | 'user-visible' | 'background')`
 
 These two functions are used together to handle more advanced use cases.
 
@@ -104,9 +104,9 @@ A simple use case where you will need those two functions is when you want to re
 ```ts
 async function doHeavyWork() {
     for (const value of values) {
-        if (isTimeToYield('user-visible')) {
+        if (isTimeToYield('user-blocking')) {
             render()
-            await yieldControl('user-visible')
+            await yieldControl('user-blocking')
         }
         
         computeHeavyWorkOnValue(value)
@@ -116,8 +116,9 @@ async function doHeavyWork() {
 
 ### Priorities
 
-There are two priorities available: `user-visible` and `background`:
-- `user-visible` – use this for things that need to display to the user as fast as possible. Every `user-visible` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
+There are three priorities available `user-blocking`, `user-visible`, and `background`:
+- `user-blocking` – use this for things that need to display to the user as fast as possible. Every `user-blocking` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
+- `user-visible` — use this for things you want to display to the user quickly but you still want for animations to run smoothly for example. `user-visible` runs for `13ms` and then gives around `3ms` to render the frame.
 - `background` – use this for background tasks. Every background task is run for 5ms.
 
 ## Alternatives
