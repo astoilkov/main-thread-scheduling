@@ -23,3 +23,27 @@ async function run(priority: SchedulingPriority) {
         }
     }
 }
+
+document.querySelector('#post-task-blocking')!.addEventListener('click', () => {
+    runPostTask('user-blocking')
+})
+document.querySelector('#post-task-visible')!.addEventListener('click', () => {
+    runPostTask('user-visible')
+})
+document.querySelector('#post-task-background')!.addEventListener('click', () => {
+    runPostTask('background')
+})
+
+async function runPostTask(priority: SchedulingPriority) {
+    for (let i = 0; i < 5; i++) {
+        scheduler.postTask(
+            () => {
+                const start = Date.now()
+                while (Date.now() - start < 200) {}
+            },
+            {
+                priority,
+            },
+        )
+    }
+}

@@ -8,28 +8,39 @@
         <style>
             @keyframes moveText {
                 0% {
-                    transform: translateX(0);
+                    color: black;
+                }
+                50% {
+                    color: white;
                 }
                 100% {
-                    transform: translateX(calc(100vw - 100%));
+                    color: black;
                 }
             }
 
             #animation {
+                color: black;
                 position: relative;
                 display: inline-block;
                 margin-top: 100px;
                 font-size: 24px;
                 left: 0;
-                animation: moveText 5s linear infinite;
+                animation: moveText 0.5s linear infinite;
             }
         </style>
     </head>
     <body>
-        <button id="run-user-blocking">user-blocking</button>
-        <button id="run-user-visible">user-visible</button>
-        <button id="run-background">background</button>
-        <button id="run-all">run all</button>
+        <div>
+            <button id="run-user-blocking">user-blocking</button>
+            <button id="run-user-visible">user-visible</button>
+            <button id="run-background">background</button>
+            <button id="run-all">run all</button>
+        </div>
+        <div>
+            <button id="post-task-blocking">postTask('user-blocking')</button>
+            <button id="post-task-visible">postTask('user-visible')</button>
+            <button id="post-task-background">postTask('background')</button>
+        </div>
         <div>
             <span id="animation">animation</span>
         </div>
