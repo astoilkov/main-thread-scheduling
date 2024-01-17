@@ -52,12 +52,13 @@ A real-world showcase of searching in 10k files and getting results instantly �
 - Uses `MessageChannel.postMessage()` and `requestIdleCallback()` for scheduling.
 - Stops task execution when user interacts with the UI (if `navigator.scheduling.isInputPending()` API is available).
 - Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
-- Sorts tasks by importance. Sorts by [priority](#priorities) and gives priority to tasks requested later.
-- Considerate about your existing code. Tasks with `background` priority are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
+- Sorts tasks by importance. Sorts by [strategy](#scheduling-strategies) and gives priority to tasks requested 
+  later.
+- Considerate about your existing code. Tasks with strategy `idle` are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
 
 ## Why
 
-- **Simple.** 90% of the time you only need the `yieldOrContinue(priority)` function. The API has two more functions for more advanced cases.
+- **Simple.** 90% of the time you only need the `yieldOrContinue(strategy)` function. The API has two more functions for more advanced cases.
 - **Not a weekend project.** Actively maintained for three years — see [contributors](https://github.com/astoilkov/main-thread-scheduling/graphs/contributors) page. I've been using it in my own products for over four years — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits using web technologies).
 - **This is the future.** [Some browsers](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask#browser_compatibility) have already implemented support for scheduling tasks on the main thread. This library tries even harder to improve user perceived performance — see [explanation](#scheduler-yield-alternative) for details.
 - **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
@@ -68,7 +69,7 @@ You can see the library in action in [this CodeSandbox](https://codesandbox.io/s
 
 ## API
 
-#### `yieldOrContinue(priority: 'interactive' | 'smooth' | 'idle')`
+#### `yieldOrContinue(strategy: 'interactive' | 'smooth' | 'idle')`
 
 The complexity of the entire library is hidden behind this method. You can have great app performance by calling a single method.
 
@@ -95,8 +96,8 @@ _This is a utility function, most people don't need to use it._ The same way `qu
 ### More complex scenarios
 
 The library has two more functions available:
-- `yieldControl(priority: 'interactive' | 'smooth' | 'idle')`
-- `isTimeToYield(priority: 'interactive' | 'smooth' | 'idle')`
+- `yieldControl(strategy: 'interactive' | 'smooth' | 'idle')`
+- `isTimeToYield(strategy: 'interactive' | 'smooth' | 'idle')`
 
 These two functions are used together to handle more advanced use cases.
 
@@ -114,12 +115,13 @@ async function doHeavyWork() {
 }
 ```
 
-### Priorities
+### Scheduling strategies
 
-There are three priorities available `user-blocking`, `user-visible`, and `background`:
-- `user-blocking` – use this for things that need to display to the user as fast as possible. Every `user-blocking` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
-- `user-visible` — use this for things you want to display to the user quickly but you still want for animations to run smoothly for example. `user-visible` runs for `13ms` and then gives around `3ms` to render the frame.
-- `background` – use this for background tasks. Every background task is run for 5ms.
+There are three scheduling strategies available. You can think about them more easily by completing the sentence with one of the three words: "Schedule the task while keeping the page _interactive_/_smooth_/_idle_."
+
+- `interactive` – use this for things that need to display to the user as fast as possible. Every `interactive` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
+- `smooth` — use this for things you want to display to the user quickly but you still want for animations to run smoothly for example. `smooth` runs for 13ms and then gives around 3ms to render the frame.
+- `idle` – use this for background tasks. Every background task is run for 5ms.
 
 ## Alternatives
 
@@ -131,10 +133,8 @@ There are three priorities available `user-blocking`, `user-visible`, and `backg
 
 If you want the benefits of `main-thread-scheduling`, but you prefer the `postTask()` API/thinking model, then here is an implementation of `postTask()` using `yieldOrContinue()`:
 ```ts
-async function postTask(callback: () => void | Promise<void>, options?: {
-    priority: SchedulingPriority
-}) {
-    await yieldOrContinue(options?.priority ?? 'smooth')
+async function postTask(callback: () => void | Promise<void>) {
+    await yieldOrContinue('interactive')
     await callback()
 }
 ```

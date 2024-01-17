@@ -16,7 +16,7 @@ let promiseEscapeId: number | undefined
  * `yieldControl()` will get resolved first.
  *
  * @param priority {SchedulingStrategy} The priority of the task being run.
- * `user-visible` priority will always be resolved first. `background` priority will always be
+ * `smooth` priority will always be resolved first. `background` priority will always be
  * resolved second.
  * @returns {Promise<void>} A promise that gets resolved when the work can continue.
  */

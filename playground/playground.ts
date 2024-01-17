@@ -1,6 +1,6 @@
-import { isTimeToYield, SchedulingPriority, yieldOrContinue } from '../index'
+import { isTimeToYield, SchedulingStrategy, yieldOrContinue } from '../index'
 
-document.querySelector('#run-user-visible')!.addEventListener('click', () => {
+document.querySelector('#run-smooth')!.addEventListener('click', () => {
     run('smooth')
 })
 document.querySelector('#run-user-blocking')!.addEventListener('click', () => {
@@ -15,7 +15,7 @@ document.querySelector('#run-all')!.addEventListener('click', async () => {
     await run('idle')
 })
 
-async function run(priority: SchedulingPriority) {
+async function run(priority: SchedulingStrategy) {
     const start = Date.now()
     while (Date.now() - start < 1000) {
         if (isTimeToYield(priority)) {
@@ -25,16 +25,16 @@ async function run(priority: SchedulingPriority) {
 }
 
 document.querySelector('#post-task-blocking')!.addEventListener('click', () => {
-    runPostTask('interactive')
+    runPostTask('user-blocking')
 })
 document.querySelector('#post-task-visible')!.addEventListener('click', () => {
-    runPostTask('smooth')
+    runPostTask('user-visible')
 })
 document.querySelector('#post-task-background')!.addEventListener('click', () => {
-    runPostTask('idle')
+    runPostTask('background')
 })
 
-async function runPostTask(priority: SchedulingPriority) {
+async function runPostTask(priority: 'user-blocking' | 'user-visible' | 'background') {
     for (let i = 0; i < 5; i++) {
         scheduler.postTask(
             () => {

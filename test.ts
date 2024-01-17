@@ -1,4 +1,10 @@
-import { isTimeToYield, withResolvers, yieldControl, yieldOrContinue } from './index'
+import {
+    isTimeToYield,
+    SchedulingStrategy,
+    withResolvers,
+    yieldControl,
+    yieldOrContinue,
+} from './index'
 
 let hasValidContext = true
 jest.mock('./src/utils/hasValidContext', () => {
@@ -139,12 +145,12 @@ async function watest(milliseconds: number): Promise<void> {
     return await new Promise<void>((resolve) => setTimeout(resolve, milliseconds))
 }
 
-function isTimeToYieldMocked(priority: 'idle' | 'smooth'): boolean {
+function isTimeToYieldMocked(strategy: SchedulingStrategy): boolean {
     const originalDateNow = Date.now
 
     Date.now = () => Math.random()
 
-    const result = isTimeToYield(priority)
+    const result = isTimeToYield(strategy)
 
     Date.now = originalDateNow
 

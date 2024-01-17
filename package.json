@@ -13,8 +13,10 @@
     },
     "keywords": [
         "postTask",
-        "background",
+        "user-blocking",
         "user-visible",
+        "background",
+        "smooth",
         "task",
         "idle",
         "yield",

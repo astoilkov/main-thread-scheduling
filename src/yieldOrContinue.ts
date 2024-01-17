@@ -9,7 +9,7 @@ import SchedulingStrategy from './SchedulingStrategy'
  * to `yieldOrContinue()` will get resolved first.
  *
  * @param priority {SchedulingStrategy} The priority of the task being run.
- * `user-visible` priority will always be resolved first. `background` priority will always be
+ * `smooth` priority will always be resolved first. `background` priority will always be
  * resolved second.
  * @returns {Promise<void>} A promise either immediately resolved or when the browser is ready to
  * do work again.
