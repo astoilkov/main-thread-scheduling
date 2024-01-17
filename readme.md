@@ -49,7 +49,7 @@ A real-world showcase of searching in 10k files and getting results instantly â€
 
 ## How It Works
 
-- Uses `MessageChannel.postMessage()` and `requestIdleCallback()` for scheduling.
+- Uses `requestAfterFrame()` and `requestIdleCallback()` for scheduling.
 - Stops task execution when user interacts with the UI (if `navigator.scheduling.isInputPending()` API is available).
 - Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [strategy](#scheduling-strategies) and gives priority to tasks requested 
