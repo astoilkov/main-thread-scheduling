@@ -68,14 +68,14 @@ You can see the library in action in [this CodeSandbox](https://codesandbox.io/s
 
 ## API
 
-#### `yieldOrContinue(priority: 'user-blocking' | 'user-visible' | 'background')`
+#### `yieldOrContinue(priority: 'interactive' | 'smooth' | 'idle')`
 
 The complexity of the entire library is hidden behind this method. You can have great app performance by calling a single method.
 
 ```ts
 async function findInFiles(query: string) {  
     for (const file of files) {
-        await yieldOrContinue('user-blocking')
+        await yieldOrContinue('interactive')
         
         for (const line of file.lines) {
             fuzzySearchLine(line, query)
@@ -95,8 +95,8 @@ _This is a utility function, most people don't need to use it._ The same way `qu
 ### More complex scenarios
 
 The library has two more functions available:
-- `yieldControl(priority: 'user-blocking' | 'user-visible' | 'background')`
-- `isTimeToYield(priority: 'user-blocking' | 'user-visible' | 'background')`
+- `yieldControl(priority: 'interactive' | 'smooth' | 'idle')`
+- `isTimeToYield(priority: 'interactive' | 'smooth' | 'idle')`
 
 These two functions are used together to handle more advanced use cases.
 
@@ -104,9 +104,9 @@ A simple use case where you will need those two functions is when you want to re
 ```ts
 async function doHeavyWork() {
     for (const value of values) {
-        if (isTimeToYield('user-blocking')) {
+        if (isTimeToYield('interactive')) {
             render()
-            await yieldControl('user-blocking')
+            await yieldControl('interactive')
         }
         
         computeHeavyWorkOnValue(value)
@@ -134,7 +134,7 @@ If you want the benefits of `main-thread-scheduling`, but you prefer the `postTa
 async function postTask(callback: () => void | Promise<void>, options?: {
     priority: SchedulingPriority
 }) {
-    await yieldOrContinue(options?.priority ?? 'user-visible')
+    await yieldOrContinue(options?.priority ?? 'smooth')
     await callback()
 }
 ```

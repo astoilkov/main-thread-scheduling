@@ -16,28 +16,28 @@ describe('main-thread-scheduling', () => {
         ;(window as any).MessageChannel = undefined
     })
 
-    test(`isTimeToYield('user-visible') is true by default`, () => {
-        expect(isTimeToYieldMocked('user-visible')).toBe(true)
+    test(`isTimeToYield('smooth') is true by default`, () => {
+        expect(isTimeToYieldMocked('smooth')).toBe(true)
     })
 
-    test(`yieldControl('user-visible')`, async () => {
-        await yieldControl('user-visible')
+    test(`yieldControl('smooth')`, async () => {
+        await yieldControl('smooth')
 
-        expect(isTimeToYieldMocked('user-visible')).toBe(false)
+        expect(isTimeToYieldMocked('smooth')).toBe(false)
     })
 
-    test(`yieldOrContinue('user-visible') in a loop`, async () => {
+    test(`yieldOrContinue('smooth') in a loop`, async () => {
         const now = Date.now()
 
         while (Date.now() - now < 20) {
-            await yieldOrContinue('user-visible')
+            await yieldOrContinue('smooth')
         }
     })
 
-    test(`yieldControl('background')`, async () => {
-        await yieldControl('background')
+    test(`yieldControl('idle')`, async () => {
+        await yieldControl('idle')
 
-        expect(isTimeToYieldMocked('background')).toBe(false)
+        expect(isTimeToYieldMocked('idle')).toBe(false)
     })
 
     describe('with requestIdleCallback() mock', () => {
@@ -65,21 +65,21 @@ describe('main-thread-scheduling', () => {
             ;(window as any).cancelIdleCallback = undefined
         })
 
-        test(`isTimeToYield('background') is true by default`, () => {
-            expect(isTimeToYieldMocked('background')).toBe(true)
+        test(`isTimeToYield('idle') is true by default`, () => {
+            expect(isTimeToYieldMocked('idle')).toBe(true)
         })
 
-        test(`yieldControl('background')`, async () => {
-            await yieldControl('background')
+        test(`yieldControl('idle')`, async () => {
+            await yieldControl('idle')
 
-            expect(isTimeToYieldMocked('background')).toBe(false)
+            expect(isTimeToYieldMocked('idle')).toBe(false)
         })
 
-        test(`yieldOrContinue('background') in a loop`, async () => {
+        test(`yieldOrContinue('idle') in a loop`, async () => {
             const now = Date.now()
 
             while (Date.now() - now < 20) {
-                await yieldOrContinue('background')
+                await yieldOrContinue('idle')
             }
         })
 
@@ -88,7 +88,7 @@ describe('main-thread-scheduling', () => {
                 isInputPending: () => true,
             }
 
-            await Promise.all([yieldControl('background'), yieldControl('background')])
+            await Promise.all([yieldControl('idle'), yieldControl('idle')])
             ;(navigator as any).scheduling = undefined
         })
     })
@@ -108,11 +108,11 @@ describe('main-thread-scheduling', () => {
         })
 
         test(`isTimeToYield() returns true when isInputPending() returns true`, async () => {
-            await yieldOrContinue('user-visible')
+            await yieldOrContinue('smooth')
 
             isInputPending = true
 
-            expect(isTimeToYieldMocked('user-visible')).toBe(true)
+            expect(isTimeToYieldMocked('smooth')).toBe(true)
         })
     })
 
@@ -139,7 +139,7 @@ async function watest(milliseconds: number): Promise<void> {
     return await new Promise<void>((resolve) => setTimeout(resolve, milliseconds))
 }
 
-function isTimeToYieldMocked(priority: 'background' | 'user-visible'): boolean {
+function isTimeToYieldMocked(priority: 'idle' | 'smooth'): boolean {
     const originalDateNow = Date.now
 
     Date.now = () => Math.random()

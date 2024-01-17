@@ -2,7 +2,7 @@ import schedulingState from './schedulingState'
 import queueTask from './utils/queueTask'
 import isTimeToYield from './isTimeToYield'
 import hasValidContext from './utils/hasValidContext'
-import SchedulingPriority from './SchedulingPriority'
+import SchedulingStrategy from './SchedulingStrategy'
 import { cancelPromiseEscape, requestPromiseEscape } from './utils/promiseEscape'
 import createTask from './tasks/createTask'
 import removeTask from './tasks/removeTask'
@@ -15,14 +15,12 @@ let promiseEscapeId: number | undefined
  * multiple times will create a LIFO(last in, first out) queue – the last call to
  * `yieldControl()` will get resolved first.
  *
- * @param priority {SchedulingPriority} The priority of the task being run.
+ * @param priority {SchedulingStrategy} The priority of the task being run.
  * `user-visible` priority will always be resolved first. `background` priority will always be
  * resolved second.
  * @returns {Promise<void>} A promise that gets resolved when the work can continue.
  */
-export default async function yieldControl(
-    priority: SchedulingPriority = 'user-visible',
-): Promise<void> {
+export default async function yieldControl(priority: SchedulingStrategy = 'smooth'): Promise<void> {
     if (!hasValidContext()) {
         return
     }
@@ -50,14 +48,14 @@ export default async function yieldControl(
     })
 }
 
-async function schedule(priority: SchedulingPriority): Promise<void> {
+async function schedule(priority: SchedulingStrategy): Promise<void> {
     if (schedulingState.isThisFrameBudgetSpent) {
         await schedulingState.onAnimationFrame.promise
     }
 
     if (
-        priority === 'user-visible' ||
-        priority === 'user-blocking' ||
+        priority === 'smooth' ||
+        priority === 'interactive' ||
         typeof requestIdleCallback === 'undefined'
     ) {
         await new Promise<void>((resolve) => queueTask(resolve))

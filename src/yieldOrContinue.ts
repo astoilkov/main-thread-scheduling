@@ -1,6 +1,6 @@
 import yieldControl from './yieldControl'
 import isTimeToYield from './isTimeToYield'
-import SchedulingPriority from './SchedulingPriority'
+import SchedulingStrategy from './SchedulingStrategy'
 
 /**
  * If there is more time left — immediately returns so the task can continue. If no more time left,
@@ -8,7 +8,7 @@ import SchedulingPriority from './SchedulingPriority'
  * `yieldOrContinue()` multiple times will create a LIFO(last in, first out) queue – the last call
  * to `yieldOrContinue()` will get resolved first.
  *
- * @param priority {SchedulingPriority} The priority of the task being run.
+ * @param priority {SchedulingStrategy} The priority of the task being run.
  * `user-visible` priority will always be resolved first. `background` priority will always be
  * resolved second.
  * @returns {Promise<void>} A promise either immediately resolved or when the browser is ready to
@@ -16,9 +16,7 @@ import SchedulingPriority from './SchedulingPriority'
  */
 // disabling ESLint otherwise `requestPromiseEscape()` in `yieldControl()` won't work
 // eslint-disable-next-line @typescript-eslint/promise-function-async
-export default function yieldOrContinue(
-    priority: SchedulingPriority = 'user-visible',
-): Promise<void> {
+export default function yieldOrContinue(priority: SchedulingStrategy = 'smooth'): Promise<void> {
     if (isTimeToYield(priority)) {
         return yieldControl(priority)
     }
