@@ -5,11 +5,33 @@
         <title>Title</title>
         <script type="module" src="playground.ts"></script>
         <!--        <script type="module" src="testSingle.ts"></script>-->
+        <style>
+            @keyframes moveText {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(calc(100vw - 100%));
+                }
+            }
+
+            #animation {
+                position: relative;
+                display: inline-block;
+                margin-top: 100px;
+                font-size: 24px;
+                left: 0;
+                animation: moveText 5s linear infinite;
+            }
+        </style>
     </head>
     <body>
         <button id="run-user-blocking">user-blocking</button>
         <button id="run-user-visible">user-visible</button>
         <button id="run-background">background</button>
         <button id="run-all">run all</button>
+        <div>
+            <span id="animation">animation</span>
+        </div>
     </body>
 </html>
