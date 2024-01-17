@@ -15,9 +15,9 @@ export default function createTask(priority: SchedulingStrategy): ScheduledTask 
             ? 0
             : priority === 'smooth'
             ? schedulingState.tasks.findIndex(
-                  (task) => task.priority === 'smooth' || task.priority === 'idle',
+                  (task) => task.strategy === 'smooth' || task.strategy === 'idle',
               )
-            : schedulingState.tasks.findIndex((task) => task.priority === 'idle')
+            : schedulingState.tasks.findIndex((task) => task.strategy === 'idle')
 
     if (insertIndex === -1) {
         schedulingState.tasks.push(item)
