@@ -36,7 +36,7 @@ npm install main-thread-scheduling
 The library lets you run computationally heavy tasks on the main thread while ensuring:
 - Your app's UI doesn't freeze.
 - Your users' computer fans don't spin.
-- It can be easily integrated into your existing codebase.
+- It's easy to plug it into your existing codebase.
 
 A real-world showcase of searching in 10k files and getting results instantly — https://twitter.com/antoniostoilkov/status/1539576912498118656.
 
