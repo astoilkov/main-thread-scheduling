@@ -54,13 +54,14 @@ A real-world showcase of searching in 10k files and getting results instantly �
 - Global queue. Multiple tasks are executed one by one so increasing the number of tasks doesn't degrade performance linearly.
 - Sorts tasks by importance. Sorts by [strategy](#scheduling-strategies) and gives priority to tasks requested 
   later.
-- Considerate about your existing code. Tasks with strategy `idle` are executed last so there isn't some unexpected work that slows down the main thread after the background task is finished.
+- Considerate about your existing code. Tasks with `idle` strategy are executed last so there 
+  isn't some unexpected work that slows down the main thread after the background task is finished.
 
 ## Why
 
 - **Simple.** 90% of the time you only need the `yieldOrContinue(strategy)` function. The API has two more functions for more advanced cases.
 - **Not a weekend project.** Actively maintained for three years — see [contributors](https://github.com/astoilkov/main-thread-scheduling/graphs/contributors) page. I've been using it in my own products for over four years — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits using web technologies).
-- **This is the future.** [Some browsers](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask#browser_compatibility) have already implemented support for scheduling tasks on the main thread. This library tries even harder to improve user perceived performance — see [explanation](#scheduler-yield-alternative) for details.
+- **This is the future.** [Some browsers](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask#browser_compatibility) have already implemented support for scheduling tasks on the main thread. This library tries even harder to improve user perceived performance — see [explanation](#alternatives) for details.
 - **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
 ## Example
@@ -117,15 +118,13 @@ async function doHeavyWork() {
 
 ### Scheduling strategies
 
-There are three scheduling strategies available. You can think about them more easily by completing the sentence with one of the three words: "Schedule the task while keeping the page _interactive_/_smooth_/_idle_."
+There are three scheduling strategies available. You can think about them more easily by completing the sentence with one of the three words: "Scheduling the task keeps the page `interactive`/`smooth`/`idle`."
 
 - `interactive` – use this for things that need to display to the user as fast as possible. Every `interactive` task is run for 83ms – this gives you a nice cycle of doing heavy work and letting the browser render pending changes.
 - `smooth` — use this for things you want to display to the user quickly but you still want for animations to run smoothly for example. `smooth` runs for 13ms and then gives around 3ms to render the frame.
-- `idle` – use this for background tasks. Every background task is run for 5ms.
+- `idle` – use this for background tasks. Every idle task is run for 5ms.
 
 ## Alternatives
-
-<div id="scheduler-yield-alternative"></div>
 
 ### `scheduler.postTask()`
 
