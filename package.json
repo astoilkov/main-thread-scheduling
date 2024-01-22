@@ -49,9 +49,9 @@
     },
     "files": [
         "index.js",
-        "src/*.js",
         "index.d.ts",
-        "src/*.d.ts"
+        "src/**/*.js",
+        "src/**/*.d.ts"
     ],
     "devDependencies": {
         "@types/jest": "^28.1.1",
