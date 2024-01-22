@@ -6,14 +6,14 @@ import { startTracking } from '../tracking'
 
 /**
  * Adds a task to the queue and returns the new task.
- * @param priority {SchedulingStrategy} The priority of the new task.
+ * @param strategy {SchedulingStrategy} The priority of the new task.
  */
-export default function createTask(priority: SchedulingStrategy): ScheduledTask {
-    const item = { ...withResolvers(), priority }
+export default function createTask(strategy: SchedulingStrategy): ScheduledTask {
+    const item = { ...withResolvers(), strategy }
     const insertIndex =
-        priority === 'interactive'
+        strategy === 'interactive'
             ? 0
-            : priority === 'smooth'
+            : strategy === 'smooth'
             ? schedulingState.tasks.findIndex(
                   (task) => task.strategy === 'smooth' || task.strategy === 'idle',
               )
