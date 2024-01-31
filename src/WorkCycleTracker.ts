@@ -29,7 +29,7 @@ export default class WorkCycleTracker {
             if (ricTracker.available) {
                 await ricTracker.waitIdleCallback()
             } else {
-                await frameTracker.waitAnimationFrame()
+                await frameTracker.waitAfterFrame()
             }
         }
 
