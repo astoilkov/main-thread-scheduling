@@ -21,6 +21,7 @@ export default function hasValidContext(): boolean {
 }
 
 function hasTestContext(): boolean {
+    // @ts-ignore
     return typeof process !== 'undefined' && process.env.NODE_ENV === 'test'
 }
 

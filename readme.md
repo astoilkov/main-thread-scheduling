@@ -15,9 +15,6 @@ Fast and consistently responsive apps using a single function call
 <a href="https://bundlephobia.com/result?p=main-thread-scheduling">
 <img src="https://img.shields.io/bundlephobia/minzip/main-thread-scheduling" alt="Gzipped Size" />
 </a>
-<a href="https://codeclimate.com/github/astoilkov/main-thread-scheduling/test_coverage">
-<img src="https://img.shields.io/codeclimate/coverage/astoilkov/main-thread-scheduling" alt="Test Coverage" />
-</a>
 <a href="https://github.com/astoilkov/main-thread-scheduling/actions/workflows/main.yml">
 <img src="https://img.shields.io/github/actions/workflow/status/astoilkov/main-thread-scheduling/main.yml?branch=main" alt="Build Status" />
 </a>

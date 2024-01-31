@@ -10,18 +10,23 @@ document.querySelector('#run-background')!.addEventListener('click', () => {
     run('idle')
 })
 document.querySelector('#run-all')!.addEventListener('click', async () => {
-    await run('interactive')
-    await run('smooth')
-    await run('idle')
+    run('interactive')
+    run('smooth')
+    run('idle')
 })
 
-async function run(priority: SchedulingStrategy) {
+async function run(strategy: SchedulingStrategy) {
     const start = Date.now()
     while (Date.now() - start < 1000) {
-        if (isTimeToYield(priority)) {
-            await yieldOrContinue(priority)
+        if (isTimeToYield(strategy)) {
+            await yieldOrContinue(strategy)
         }
     }
+    performance.measure(strategy, {
+        start: start,
+        end: Date.now(),
+        detail: 'awesome',
+    })
 }
 
 document.querySelector('#post-task-blocking')!.addEventListener('click', () => {
