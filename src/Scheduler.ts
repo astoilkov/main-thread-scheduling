@@ -6,9 +6,9 @@ import { requestPromiseEscape } from './utils/promiseEscape'
 import ReactiveTask from './utils/ReactiveTask'
 
 const strategyPriorities = {
-    interactive: 0,
-    smooth: 1,
-    idle: 2,
+    interactive: 30,
+    smooth: 20,
+    idle: 10,
 }
 
 class Scheduler {
@@ -76,8 +76,9 @@ class Scheduler {
         if (index !== -1) {
             this.#tasks.splice(index, 1)
         }
-
-        this.#topTask.set(this.#tasks[0])
+        if (index === 0) {
+            this.#topTask.set(this.#tasks[0])
+        }
     }
 }
 

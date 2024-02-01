@@ -8,14 +8,14 @@ export default class ReactiveTask {
     #effect: (task: ScheduledTask, signal: AbortSignal) => void = () => {}
 
     set(task: ScheduledTask | undefined): void {
-        if (this.#task !== task) {
+        if (task === undefined) {
+            this.#task = undefined
+            this.#controller.abort()
+        } else if (this.#task !== task) {
             this.#task = task
             this.#controller.abort()
-            if (this.#task !== undefined) {
-                this.#controller = new AbortController()
-
-                this.#effect(this.#task, this.#controller.signal)
-            }
+            this.#controller = new AbortController()
+            this.#effect(this.#task, this.#controller.signal)
         }
     }
 

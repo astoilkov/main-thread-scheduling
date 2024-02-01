@@ -1,15 +1,12 @@
-import withResolvers from './utils/withResolvers'
+import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 
 class RicTracker {
-    #promise: Promise<IdleDeadline>
-    #resolve: (deadline: IdleDeadline) => void
     #idleCallbackId?: number
     #idleDeadline?: IdleDeadline
+    #deferred: PromiseWithResolvers<IdleDeadline>
 
     constructor() {
-        const { promise, resolve } = withResolvers<IdleDeadline>()
-        this.#promise = promise
-        this.#resolve = resolve
+        this.#deferred = withResolvers<IdleDeadline>()
     }
 
     get available() {
@@ -21,7 +18,7 @@ class RicTracker {
     }
 
     async waitIdleCallback(): Promise<IdleDeadline> {
-        return this.#promise
+        return this.#deferred.promise
     }
 
     start(): void {
@@ -33,18 +30,17 @@ class RicTracker {
             this.#idleDeadline = deadline
             this.#idleCallbackId = undefined
 
-            this.#resolve?.(deadline)
+            this.#deferred.resolve(deadline)
 
-            const { promise, resolve } = withResolvers<IdleDeadline>()
-            this.#promise = promise
-            this.#resolve = resolve
+            this.#deferred = withResolvers<IdleDeadline>()
+
+            this.start()
         })
     }
 
     stop() {
-        if (this.#idleCallbackId !== undefined) {
-            cancelIdleCallback(this.#idleCallbackId)
-        }
+        cancelIdleCallback(this.#idleCallbackId)
+        this.#idleCallbackId = undefined
     }
 }
 

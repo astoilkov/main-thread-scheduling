@@ -1,59 +1,49 @@
-import withResolvers from './utils/withResolvers'
+import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
 import { queueTask } from '../index'
 
 class FrameTracker {
-    #resolve: () => void
-    #promise: Promise<void>
     #timeoutId?: number
     #requestAnimationId?: number
+    #deferred: PromiseWithResolvers
 
     constructor() {
-        const { promise, resolve } = withResolvers()
-        this.#promise = promise
-        this.#resolve = resolve
+        this.#deferred = withResolvers()
     }
 
     async waitAnimationFrame(): Promise<void> {
-        return this.#promise
+        return this.#deferred.promise
     }
 
     async waitAfterFrame(): Promise<void> {
-        await this.#promise
+        await this.#deferred.promise
         await new Promise<void>((resolve) => queueTask(resolve))
     }
 
     start(): void {
-        if (this.#requestAnimationId !== undefined) {
-            return
-        }
-
-        this.#loop()
         clearTimeout(this.#timeoutId)
-
         this.#timeoutId = undefined
+
+        if (this.#requestAnimationId === undefined) {
+            this.#requestAnimationId = requestAnimationFrame(() => {
+                this.#requestAnimationId = undefined
+
+                this.#deferred.resolve()
+
+                this.#deferred = withResolvers()
+
+                this.start()
+            })
+        }
     }
 
     requestStop(): void {
         if (this.#timeoutId === undefined) {
             this.#timeoutId = setTimeout(() => {
                 this.#timeoutId = undefined
-                if (this.#requestAnimationId !== undefined) {
-                    cancelAnimationFrame(this.#requestAnimationId)
-                }
+                cancelAnimationFrame(this.#requestAnimationId)
+                this.#requestAnimationId = undefined
             }, 200)
         }
-    }
-
-    #loop(): void {
-        this.#requestAnimationId = requestAnimationFrame(() => {
-            this.#resolve()
-
-            const { promise, resolve } = withResolvers()
-            this.#promise = promise
-            this.#resolve = resolve
-
-            this.#loop()
-        })
     }
 }
 
