@@ -1,8 +1,10 @@
-import { isTimeToYield, SchedulingStrategy, yieldOrContinue } from '../index'
-import threadScheduler from '../src/ThreadScheduler'
+import { isTimeToYield, SchedulingStrategy, withResolvers, yieldOrContinue } from '../index'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
+})
+document.querySelector('#run-interactive-5s')!.addEventListener('click', () => {
+    run('interactive', 5000)
 })
 document.querySelector('#run-smooth')!.addEventListener('click', () => {
     run('smooth')
@@ -23,6 +25,18 @@ document.querySelector('#run-all-parallel')!.addEventListener('click', async () 
 document.querySelector('#simulate-work')!.addEventListener('click', async () => {
     simulateWork()
 })
+document.querySelector('#post-task-blocking')!.addEventListener('click', () => {
+    runPostTask('user-blocking')
+})
+document.querySelector('#post-task-visible')!.addEventListener('click', () => {
+    runPostTask('user-visible')
+})
+document.querySelector('#post-task-background')!.addEventListener('click', () => {
+    runPostTask('background')
+})
+document.querySelector('#post-task-vs-yield-or-continue')!.addEventListener('click', () => {
+    postTaskVsYieldOrContinue()
+})
 
 async function run(strategy: SchedulingStrategy, time: number = 1000) {
     const start = Date.now()
@@ -39,23 +53,13 @@ async function run(strategy: SchedulingStrategy, time: number = 1000) {
     })
 }
 
-document.querySelector('#post-task-blocking')!.addEventListener('click', () => {
-    runPostTask('user-blocking')
-})
-document.querySelector('#post-task-visible')!.addEventListener('click', () => {
-    runPostTask('user-visible')
-})
-document.querySelector('#post-task-background')!.addEventListener('click', () => {
-    runPostTask('background')
-})
-
 async function runPostTask(priority: 'user-blocking' | 'user-visible' | 'background') {
     const totalTime = 1000
     const singleTaskTime = 2
     const iterations = Math.round(totalTime / singleTaskTime)
     for (let i = 0; i < iterations; i++) {
         // @ts-ignore
-        threadScheduler.postTask(
+        scheduler.postTask(
             () => {
                 const start = Date.now()
                 while (Date.now() - start < singleTaskTime) {}
@@ -109,11 +113,32 @@ function matrixMultiplication(matrix1: number[][], matrix2: number[][]) {
     return result
 }
 
-// function postTask(): Promise<void> {
-//     const { promise, resolve } = withResolvers()
-//     // @ts-ignore
-//     scheduler.postTask(() => {
-//         resolve()
-//     })
-//     return promise
-// }
+function postTask(): Promise<void> {
+    const { promise, resolve } = withResolvers()
+    // @ts-ignore
+    scheduler.postTask(() => {
+        resolve()
+    })
+    return promise
+}
+
+async function postTaskVsYieldOrContinue() {
+    {
+        const start = performance.now()
+        let count = 0
+        while (performance.now() - start < 1000) {
+            await postTask()
+            count++
+        }
+        console.log('count', count)
+    }
+    {
+        const start = performance.now()
+        let count = 0
+        while (performance.now() - start < 1000) {
+            await yieldOrContinue('smooth')
+            count++
+        }
+        console.log('count', count)
+    }
+}

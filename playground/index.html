@@ -6,6 +6,10 @@
         <script type="module" src="playground.ts"></script>
         <!--        <script type="module" src="testSingle.ts"></script>-->
         <style>
+            * {
+                font-family: monospace;
+            }
+
             @keyframes moveText {
                 0% {
                     color: black;
@@ -32,18 +36,22 @@
     <body>
         <div>
             <button id="run-interactive">interactive</button>
+            <button id="run-interactive-5s">interactive (5s)</button>
             <button id="run-smooth">smooth</button>
             <button id="run-idle">idle</button>
             <button id="run-all-sequential">run all (sequential)</button>
             <button id="run-all-parallel">run all (parallel)</button>
         </div>
+        <br />
         <div>
             <button id="post-task-blocking">postTask('user-blocking')</button>
             <button id="post-task-visible">postTask('user-visible')</button>
             <button id="post-task-background">postTask('background')</button>
         </div>
+        <br />
         <div>
             <button id="simulate-work">simulateWork()</button>
+            <button id="post-task-vs-yield-or-continue">postTask() vs yieldOrContinue()</button>
         </div>
         <div>
             <span id="animation">animation</span>
