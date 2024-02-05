@@ -46,12 +46,15 @@ document.querySelector('#post-task-background')!.addEventListener('click', () =>
 })
 
 async function runPostTask(priority: 'user-blocking' | 'user-visible' | 'background') {
-    for (let i = 0; i < 5; i++) {
+    const totalTime = 1000
+    const singleTaskTime = 2
+    const iterations = Math.round(totalTime / singleTaskTime)
+    for (let i = 0; i < iterations; i++) {
         // @ts-ignore
         scheduler.postTask(
             () => {
                 const start = Date.now()
-                while (Date.now() - start < 200) {}
+                while (Date.now() - start < singleTaskTime) {}
             },
             {
                 priority,
