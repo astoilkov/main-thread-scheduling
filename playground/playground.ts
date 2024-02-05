@@ -19,6 +19,9 @@ document.querySelector('#run-all-parallel')!.addEventListener('click', async () 
     run('smooth', 2000)
     run('idle', 3000)
 })
+document.querySelector('#simulate-work')!.addEventListener('click', async () => {
+    simulateWork()
+})
 
 async function run(strategy: SchedulingStrategy, time: number = 1000) {
     const start = Date.now()
