@@ -107,3 +107,12 @@ function matrixMultiplication(matrix1: number[][], matrix2: number[][]) {
 
     return result
 }
+
+// function postTask(): Promise<void> {
+//     const { promise, resolve } = withResolvers()
+//     // @ts-ignore
+//     scheduler.postTask(() => {
+//         resolve()
+//     })
+//     return promise
+// }
