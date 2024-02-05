@@ -22,18 +22,7 @@ class FrameTracker {
     start(): void {
         clearTimeout(this.#timeoutId)
         this.#timeoutId = undefined
-
-        if (this.#requestAnimationId === undefined) {
-            this.#requestAnimationId = requestAnimationFrame(() => {
-                this.#requestAnimationId = undefined
-
-                this.#deferred.resolve()
-
-                this.#deferred = withResolvers()
-
-                this.start()
-            })
-        }
+        this.#loop()
     }
 
     requestStop(): void {
@@ -43,6 +32,20 @@ class FrameTracker {
                 cancelAnimationFrame(this.#requestAnimationId)
                 this.#requestAnimationId = undefined
             }, 200)
+        }
+    }
+
+    #loop(): void {
+        if (this.#requestAnimationId === undefined) {
+            this.#requestAnimationId = requestAnimationFrame(() => {
+                this.#requestAnimationId = undefined
+
+                this.#deferred.resolve()
+
+                this.#deferred = withResolvers()
+
+                this.#loop()
+            })
         }
     }
 }
