@@ -1,4 +1,5 @@
-import { isTimeToYield, SchedulingStrategy, yieldOrContinue } from '../index'
+import { isTimeToYield, SchedulingStrategy, withResolvers, yieldOrContinue } from '../index'
+import scheduler from '../src/Scheduler'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
@@ -93,12 +94,12 @@ function matrixMultiplication(matrix1: number[][], matrix2: number[][]) {
     const cols1 = matrix1[0]!.length
     const cols2 = matrix2[0]!.length
 
-    for (var i = 0; i < rows1; i++) {
+    for (let i = 0; i < rows1; i++) {
         result[i] = []
-        for (var j = 0; j < cols2; j++) {
+        for (let j = 0; j < cols2; j++) {
             // @ts-ignore
             result[i][j] = 0
-            for (var k = 0; k < cols1; k++) {
+            for (let k = 0; k < cols1; k++) {
                 // @ts-ignore
                 result[i][j] += matrix1[i][k] * matrix2[k][j]
             }
