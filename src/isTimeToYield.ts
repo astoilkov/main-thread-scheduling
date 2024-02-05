@@ -1,6 +1,6 @@
 import hasValidContext from './utils/hasValidContext'
 import SchedulingStrategy from './SchedulingStrategy'
-import scheduler from './Scheduler'
+import threadScheduler from './ThreadScheduler'
 
 // #performance
 // calling `isTimeToYield()` thousand of times is slow
@@ -33,7 +33,7 @@ export default function isTimeToYield(strategy: SchedulingStrategy = 'smooth'): 
     }
 
     cache.lastCallTime = now
-    cache.lastResult = scheduler.isTimeToYield(strategy)
+    cache.lastResult = threadScheduler.isTimeToYield(strategy)
 
     return cache.lastResult
 }

@@ -11,7 +11,7 @@ const strategyPriorities = {
     idle: 10,
 }
 
-class Scheduler {
+class ThreadScheduler {
     #tasks: ScheduledTask[] = []
     #topTask: ReactiveTask = new ReactiveTask()
     #workCycleTracker = new WorkCycleTracker()
@@ -82,6 +82,6 @@ class Scheduler {
     }
 }
 
-const scheduler = new Scheduler()
+const threadScheduler = new ThreadScheduler()
 
-export default scheduler
+export default threadScheduler

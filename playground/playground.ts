@@ -1,5 +1,5 @@
-import { isTimeToYield, SchedulingStrategy, withResolvers, yieldOrContinue } from '../index'
-import scheduler from '../src/Scheduler'
+import { isTimeToYield, SchedulingStrategy, yieldOrContinue } from '../index'
+import threadScheduler from '../src/ThreadScheduler'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
@@ -55,7 +55,7 @@ async function runPostTask(priority: 'user-blocking' | 'user-visible' | 'backgro
     const iterations = Math.round(totalTime / singleTaskTime)
     for (let i = 0; i < iterations; i++) {
         // @ts-ignore
-        scheduler.postTask(
+        threadScheduler.postTask(
             () => {
                 const start = Date.now()
                 while (Date.now() - start < singleTaskTime) {}
