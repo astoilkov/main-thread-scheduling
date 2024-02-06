@@ -43,6 +43,9 @@ document.querySelector('#post-task-background')!.addEventListener('click', () =>
 document.querySelector('#post-task-vs-yield-or-continue')!.addEventListener('click', () => {
     postTaskVsYieldOrContinue()
 })
+document.querySelector('#queue-task')!.addEventListener('click', () => {
+    runQueueTask()
+})
 
 async function run(strategy: SchedulingStrategy, time: number = 1000) {
     const start = Date.now()
@@ -60,7 +63,7 @@ async function run(strategy: SchedulingStrategy, time: number = 1000) {
 }
 
 async function runPostTask(priority: 'user-blocking' | 'user-visible' | 'background') {
-    const totalTime = 1000
+    const totalTime = 5000
     const singleTaskTime = 2
     const iterations = Math.round(totalTime / singleTaskTime)
     for (let i = 0; i < iterations; i++) {
@@ -74,6 +77,14 @@ async function runPostTask(priority: 'user-blocking' | 'user-visible' | 'backgro
                 priority,
             },
         )
+    }
+}
+
+async function runQueueTask(time: number = 1000) {
+    const start = Date.now()
+    while (Date.now() - start < time) {
+        await new Promise<void>((resolve) => queueTask(resolve))
+        simulateWork()
     }
 }
 
@@ -119,15 +130,6 @@ function matrixMultiplication(matrix1: number[][], matrix2: number[][]) {
     return result
 }
 
-function postTask(): Promise<void> {
-    const { promise, resolve } = withResolvers()
-    // @ts-ignore
-    scheduler.postTask(() => {
-        resolve()
-    })
-    return promise
-}
-
 async function postTaskVsYieldOrContinue() {
     {
         const start = performance.now()
@@ -156,4 +158,16 @@ async function postTaskVsYieldOrContinue() {
         }
         console.log(count.toString(), '→ yieldOrContinue()')
     }
+}
+
+async function postTask(priority?: 'user-blocking' | 'user-visible' | 'background'): Promise<void> {
+    const { promise, resolve } = withResolvers()
+    // @ts-ignore
+    scheduler.postTask(
+        () => {
+            resolve()
+        },
+        { priority },
+    )
+    return promise
 }
