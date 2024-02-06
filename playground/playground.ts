@@ -1,4 +1,10 @@
-import { isTimeToYield, SchedulingStrategy, withResolvers, yieldOrContinue } from '../index'
+import {
+    isTimeToYield,
+    queueTask,
+    SchedulingStrategy,
+    withResolvers,
+    yieldOrContinue,
+} from '../index'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
@@ -130,7 +136,16 @@ async function postTaskVsYieldOrContinue() {
             await postTask()
             count++
         }
-        console.log('count', count)
+        console.log(count.toString(), '→ postTask()')
+    }
+    {
+        const start = performance.now()
+        let count = 0
+        while (performance.now() - start < 1000) {
+            await new Promise<void>((resolve) => queueTask(resolve))
+            count++
+        }
+        console.log(count.toString(), '→ queueTask()')
     }
     {
         const start = performance.now()
@@ -139,6 +154,6 @@ async function postTaskVsYieldOrContinue() {
             await yieldOrContinue('smooth')
             count++
         }
-        console.log('count', count)
+        console.log(count.toString(), '→ yieldOrContinue()')
     }
 }
