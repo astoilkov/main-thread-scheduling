@@ -9,4 +9,4 @@ export type { default as SchedulingStrategy } from './src/SchedulingStrategy'
 // utility
 export { default as queueTask } from './src/utils/queueTask'
 export { default as withResolvers } from './src/utils/withResolvers'
-export { default as afterFrame } from './src/utils/requestAfterFrame'
+export { default as requestAfterFrame } from './src/utils/requestAfterFrame'
