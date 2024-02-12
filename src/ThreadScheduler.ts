@@ -2,7 +2,6 @@ import ScheduledTask from './ScheduledTask'
 import WorkCycleTracker from './WorkCycleTracker'
 import SchedulingStrategy from './SchedulingStrategy'
 import withResolvers from './utils/withResolvers'
-import { requestPromiseEscape } from './utils/promiseEscape'
 import ReactiveTask from './utils/ReactiveTask'
 
 const strategyPriorities = {
@@ -51,9 +50,17 @@ class ThreadScheduler {
 
         task.resolve()
 
-        // wait for the user code to continue running the code to see if he will add more work to
-        // be done. we prefer this, other than continuing to the next task immediately
-        await new Promise<void>((resolve) => requestPromiseEscape(resolve))
+        // - wait for the user code to continue running to see if it will add more work to
+        //   be done. we prefer this, over continuing to the next task immediately
+        // - if called at the end of an async method, it will wait for the async to get resolved in the
+        //   parent method that called it and will execute the provided callback in the next microtask.
+        await new Promise<void>((resolve) => {
+            queueMicrotask(() => {
+                queueMicrotask(() => {
+                    resolve()
+                })
+            })
+        })
 
         this.#removeTask(task)
     }

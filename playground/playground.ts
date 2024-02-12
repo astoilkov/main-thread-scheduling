@@ -1,6 +1,7 @@
-import { isTimeToYield, SchedulingStrategy, withResolvers, yieldOrContinue } from '../index'
+import { isTimeToYield, SchedulingStrategy, yieldOrContinue } from '../index'
 import simulateWork from './utils/simulateWork'
 import waitNextTask from '../src/utils/waitNextTask'
+import withResolvers from '../src/utils/withResolvers'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
