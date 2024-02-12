@@ -2,6 +2,7 @@ import { isTimeToYield, SchedulingStrategy, yieldOrContinue } from '../index'
 import simulateWork from './utils/simulateWork'
 import waitNextTask from '../src/utils/waitNextTask'
 import withResolvers from '../src/utils/withResolvers'
+import fps from './utils/fps'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
@@ -43,6 +44,12 @@ document.querySelector('#post-task-vs-yield-or-continue')!.addEventListener('cli
 document.querySelector('#queue-task')!.addEventListener('click', () => {
     runWaitNextTask()
 })
+
+setInterval(() => {
+    document.querySelector(
+        '.fps',
+    )!.textContent = `frameRate: ${fps.guessRefreshRate()}, fps: ${fps.fps()}`
+}, 20)
 
 async function run(strategy: SchedulingStrategy, time: number = 1000) {
     const start = performance.now()
