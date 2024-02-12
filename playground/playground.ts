@@ -1,11 +1,6 @@
-import {
-    isTimeToYield,
-    queueTask,
-    SchedulingStrategy,
-    withResolvers,
-    yieldOrContinue,
-} from '../index'
+import { isTimeToYield, SchedulingStrategy, withResolvers, yieldOrContinue } from '../index'
 import simulateWork from './utils/simulateWork'
+import waitNextTask from '../src/utils/waitNextTask'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
@@ -45,7 +40,7 @@ document.querySelector('#post-task-vs-yield-or-continue')!.addEventListener('cli
     postTaskVsYieldOrContinue()
 })
 document.querySelector('#queue-task')!.addEventListener('click', () => {
-    runQueueTask()
+    runWaitNextTask()
 })
 
 async function run(strategy: SchedulingStrategy, time: number = 1000) {
@@ -80,10 +75,10 @@ async function runPostTask(priority: 'user-blocking' | 'user-visible' | 'backgro
     }
 }
 
-async function runQueueTask(time: number = 1000) {
+async function runWaitNextTask(time: number = 1000) {
     const start = Date.now()
     while (Date.now() - start < time) {
-        await new Promise<void>((resolve) => queueTask(resolve))
+        await waitNextTask()
         simulateWork()
     }
 }
@@ -102,10 +97,10 @@ async function postTaskVsYieldOrContinue() {
         const start = performance.now()
         let count = 0
         while (performance.now() - start < 1000) {
-            await new Promise<void>((resolve) => queueTask(resolve))
+            await waitNextTask()
             count++
         }
-        console.log(count.toString(), '→ queueTask()')
+        console.log(count.toString(), '→ waitNextTask()')
     }
     {
         const start = performance.now()

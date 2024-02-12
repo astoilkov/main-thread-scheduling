@@ -83,14 +83,6 @@ async function findInFiles(query: string) {
 }
 ```
 
-#### `requestAfterFrame(callback)`
-
-_This is a utility function, most people don't need to use it._ The same way `requestAnimationFrame()` queues a `callback` to be executed just before a frame is rendered `requestAfterFrame()` is called just after a frame is rendered.
-
-#### `queueTask(callback)`
-
-_This is a utility function, most people don't need to use it._ The same way `queueMicrotask()` queues a `callback` to be executed in the end of the current microtask, `queueTask()` queues the task for the next task. You learn more at [here](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide#tasks_vs._microtasks).
-
 ### More complex scenarios
 
 The library has two more functions available:

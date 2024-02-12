@@ -1,5 +1,5 @@
 import withResolvers, { PromiseWithResolvers } from './utils/withResolvers'
-import { queueTask } from '../index'
+import waitNextTask from './utils/waitNextTask'
 
 class FrameTracker {
     #timeoutId?: number
@@ -10,13 +10,9 @@ class FrameTracker {
         this.#deferred = withResolvers()
     }
 
-    async waitAnimationFrame(): Promise<void> {
-        return this.#deferred.promise
-    }
-
     async waitAfterFrame(): Promise<void> {
         await this.#deferred.promise
-        await new Promise<void>((resolve) => queueTask(resolve))
+        await waitNextTask()
     }
 
     start(): void {
