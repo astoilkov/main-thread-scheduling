@@ -1,10 +1,7 @@
 {
     "compilerOptions": {
-        // - 😃 otherwise async/await will be transpiled
-        // - 😡 try/catch without an (err) isn't supported in Edge. see:
-        //   https://github.com/astoilkov/use-local-storage-state/issues/7
-        "target": "ES2019",
-        "module": "ES2020",
+        "target": "ES2022",
+        "module": "ES2022",
 
         // From what I understand while reading the docs "classic" was introduced first and "classic" is by
         // default(except when "module": "commonjs") because of backwards compatibility.
