@@ -1,16 +1,17 @@
 import ricTracker from './ricTracker'
 import frameTracker from './frameTracker'
 import SchedulingStrategy from './SchedulingStrategy'
+import waitHiddenTask from './utils/waitHiddenTask'
 
 export default class WorkCycleTracker {
     #workCycleStart: number = -1
 
-    startTracking() {
+    startTracking(): void {
         ricTracker.start()
         frameTracker.start()
     }
 
-    requestStopTracking() {
+    requestStopTracking(): void {
         ricTracker.stop()
         frameTracker.requestStop()
     }
@@ -20,15 +21,14 @@ export default class WorkCycleTracker {
         return !isInputPending && this.#calculateDeadline(strategy) - Date.now() > 0
     }
 
-    async nextWorkCycle(strategy: SchedulingStrategy) {
-        if (strategy === 'interactive') {
-            await frameTracker.waitAfterFrame()
-        } else if (strategy === 'smooth') {
-            await frameTracker.waitAfterFrame()
+    async nextWorkCycle(strategy: SchedulingStrategy): Promise<void> {
+        if (strategy === 'interactive' || strategy === 'smooth') {
+            await Promise.race([frameTracker.waitAfterFrame(), waitHiddenTask()])
         } else if (strategy === 'idle') {
             if (ricTracker.available) {
                 await ricTracker.waitIdleCallback()
             } else {
+                // todo: use waitHiddenTask() with a timeout
                 await frameTracker.waitAfterFrame()
             }
         }
