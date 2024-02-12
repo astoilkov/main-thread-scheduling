@@ -49,17 +49,16 @@ document.querySelector('#queue-task')!.addEventListener('click', () => {
 })
 
 async function run(strategy: SchedulingStrategy, time: number = 1000) {
-    const start = Date.now()
-    while (Date.now() - start < time) {
+    const start = performance.now()
+    while (performance.now() - start < time) {
         if (isTimeToYield(strategy)) {
             await yieldOrContinue(strategy)
         }
         simulateWork()
     }
-    performance.measure(strategy, {
+    performance.measure(`${strategy} (${Math.round(time / 1000)}s)`, {
         start: start,
-        end: Date.now(),
-        detail: 'awesome',
+        end: performance.now(),
     })
 }
 

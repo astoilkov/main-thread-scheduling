@@ -35,6 +35,7 @@
     </head>
     <body>
         <div>
+            <code>main-thread-scheduling:</code>
             <button id="run-interactive">interactive</button>
             <button id="run-interactive-5s">interactive (5s)</button>
             <button id="run-smooth">smooth</button>
@@ -44,12 +45,14 @@
         </div>
         <br />
         <div>
+            <code>scheduler.postTask():</code>
             <button id="post-task-blocking">postTask('user-blocking')</button>
             <button id="post-task-visible">postTask('user-visible')</button>
             <button id="post-task-background">postTask('background')</button>
         </div>
         <br />
         <div>
+            <code>others:</code>
             <button id="queue-task">queueTask()</button>
             <button id="simulate-work">simulateWork()</button>
             <button id="post-task-vs-yield-or-continue">postTask() vs yieldOrContinue()</button>
