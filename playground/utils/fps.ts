@@ -6,6 +6,10 @@ class FPS {
         this.#loop()
     }
 
+    timePerFrame(): number {
+        return 1000 / this.fps()
+    }
+
     fps(): number {
         if (this.#fps === 61) {
             return 60
