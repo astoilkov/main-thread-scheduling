@@ -1,4 +1,4 @@
-import ScheduledTask from '../ScheduledTask'
+import type ScheduledTask from '../ScheduledTask'
 
 // - reactivity for ScheduledTask
 // - otherwise, we would have to use something heavier like solid-js

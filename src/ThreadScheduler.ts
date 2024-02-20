@@ -1,14 +1,8 @@
-import ScheduledTask from './ScheduledTask'
 import WorkCycleTracker from './WorkCycleTracker'
-import SchedulingStrategy from './SchedulingStrategy'
-import withResolvers from './utils/withResolvers'
 import ReactiveTask from './utils/ReactiveTask'
-
-const strategyPriorities = {
-    interactive: 30,
-    smooth: 20,
-    idle: 10,
-}
+import type ScheduledTask from './ScheduledTask'
+import type SchedulingTask from './SchedulingTask'
+import withResolvers from './utils/withResolvers'
 
 class ThreadScheduler {
     #tasks: ScheduledTask[] = []
@@ -27,21 +21,19 @@ class ThreadScheduler {
         })
     }
 
-    createTask(strategy: SchedulingStrategy): ScheduledTask {
-        const task = { ...withResolvers(), strategy }
-
-        this.#insertTask(task)
-
-        return task
+    schedule(task: SchedulingTask): ScheduledTask {
+        const scheduled = { ...task, ...withResolvers() }
+        this.#insertTask(scheduled)
+        return scheduled
     }
 
-    isTimeToYield(strategy: SchedulingStrategy): boolean {
-        return !this.#workCycleTracker.canWorkMore(strategy)
+    isTimeToYield(task: SchedulingTask): boolean {
+        return !this.#workCycleTracker.canWorkMore(task)
     }
 
     async #completeTask(task: ScheduledTask, signal: AbortSignal): Promise<void> {
-        while (!this.#workCycleTracker.canWorkMore(task.strategy)) {
-            await this.#workCycleTracker.nextWorkCycle(task.strategy)
+        while (!this.#workCycleTracker.canWorkMore(task)) {
+            await this.#workCycleTracker.nextWorkCycle(task)
 
             if (signal.aborted) {
                 return
@@ -66,9 +58,9 @@ class ThreadScheduler {
     }
 
     #insertTask(task: ScheduledTask): void {
-        const priority = strategyPriorities[task.strategy]
+        const priority = task.priority
         for (let i = 0; i < this.#tasks.length; i++) {
-            if (priority >= strategyPriorities[this.#tasks[i]!.strategy]) {
+            if (priority >= this.#tasks[i]!.priority) {
                 this.#tasks.splice(i, 0, task)
                 this.#topTask.set(this.#tasks[0])
                 return

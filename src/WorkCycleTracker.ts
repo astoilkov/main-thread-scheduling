@@ -1,7 +1,7 @@
 import ricTracker from './ricTracker'
 import frameTracker from './frameTracker'
-import SchedulingStrategy from './SchedulingStrategy'
 import waitHiddenTask from './utils/waitHiddenTask'
+import type SchedulingTask from './SchedulingTask'
 
 export default class WorkCycleTracker {
     #workCycleStart: number = -1
@@ -16,15 +16,15 @@ export default class WorkCycleTracker {
         frameTracker.requestStop()
     }
 
-    canWorkMore(strategy: SchedulingStrategy): boolean {
+    canWorkMore(task: SchedulingTask): boolean {
         const isInputPending = navigator.scheduling?.isInputPending?.() === true
-        return !isInputPending && this.#calculateDeadline(strategy) - Date.now() > 0
+        return !isInputPending && this.#calculateDeadline(task) - Date.now() > 0
     }
 
-    async nextWorkCycle(strategy: SchedulingStrategy): Promise<void> {
-        if (strategy === 'interactive' || strategy === 'smooth') {
+    async nextWorkCycle(task: SchedulingTask): Promise<void> {
+        if (task.type === 'frame-based') {
             await Promise.race([frameTracker.waitAfterFrame(), waitHiddenTask()])
-        } else if (strategy === 'idle') {
+        } else if (task.type === 'idle-based') {
             if (ricTracker.available) {
                 await ricTracker.waitIdleCallback()
             } else {
@@ -36,17 +36,19 @@ export default class WorkCycleTracker {
         this.#workCycleStart = Date.now()
     }
 
-    #calculateDeadline(strategy: SchedulingStrategy): number {
-        if (strategy === 'interactive') {
-            return this.#workCycleStart + 83
-        } else if (strategy === 'smooth') {
-            return this.#workCycleStart + 13
-        } else if (strategy === 'idle') {
+    #calculateDeadline(task: SchedulingTask): number {
+        if (task.type === 'frame-based') {
+            // const timePerFrame = 1000 / fps.guessRefreshRate()
+            // const multiplier = timePerFrame / fps.guessRefreshRate()
+            // const maxWorkTime = fps.fps() * multiplier
+            // return this.#workCycleStart + maxWorkTime
+            return this.#workCycleStart + task.workTime
+        } else if (task.type === 'idle-based') {
             const idleDeadline =
                 ricTracker.deadline === undefined
                     ? Number.MAX_SAFE_INTEGER
                     : Date.now() + ricTracker.deadline.timeRemaining()
-            return Math.min(this.#workCycleStart + 5, idleDeadline)
+            return Math.min(this.#workCycleStart + task.workTime, idleDeadline)
         }
         return -1
     }

@@ -1,8 +1,8 @@
-import SchedulingStrategy from './SchedulingStrategy'
-import { PromiseWithResolvers } from './utils/withResolvers'
+import type SchedulingTask from './SchedulingTask'
 
-type ScheduledTask = PromiseWithResolvers & {
-    strategy: SchedulingStrategy
+type ScheduledTask = SchedulingTask & {
+    promise: Promise<void>
+    resolve: () => void
 }
 
 export default ScheduledTask
