@@ -67,7 +67,7 @@ You can see the library in action in [this CodeSandbox](https://codesandbox.io/s
 
 ## API
 
-#### `yieldOrContinue(strategy: 'interactive' | 'smooth' | 'idle')`
+#### `yieldOrContinue(strategy: 'interactive' | 'smooth' | 'idle', signal?: AbortSignal)`
 
 The complexity of the entire library is hidden behind this method. You can have great app performance by calling a single method.
 
@@ -86,8 +86,8 @@ async function findInFiles(query: string) {
 ### More complex scenarios
 
 The library has two more functions available:
-- `yieldControl(strategy: 'interactive' | 'smooth' | 'idle')`
-- `isTimeToYield(strategy: 'interactive' | 'smooth' | 'idle')`
+- `yieldControl(strategy: 'interactive' | 'smooth' | 'idle', signal?: AbortSignal)`
+- `isTimeToYield(strategy: 'interactive' | 'smooth' | 'idle', signal?: AbortSignal)`
 
 These two functions are used together to handle more advanced use cases.
 
