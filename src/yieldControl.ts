@@ -1,7 +1,7 @@
 import hasValidContext from './utils/hasValidContext'
 import SchedulingStrategy from './SchedulingStrategy'
 import threadScheduler from './ThreadScheduler'
-import strategyToTask from './utils/strategyToTask'
+import toTask from './utils/toTask'
 
 /**
  * Waits for the browser to become idle again in order to resume work. Calling `yieldControl()`
@@ -13,10 +13,13 @@ import strategyToTask from './utils/strategyToTask'
  * resolved second.
  * @returns {Promise<void>} A promise that gets resolved when the work can continue.
  */
-export default async function yieldControl(strategy: SchedulingStrategy = 'smooth'): Promise<void> {
+export default async function yieldControl(
+    strategy: SchedulingStrategy = 'smooth',
+    signal?: AbortSignal,
+): Promise<void> {
     if (!hasValidContext()) {
         return
     }
 
-    return threadScheduler.schedule(strategyToTask(strategy)).promise
+    return threadScheduler.schedule(toTask(strategy, signal)).promise
 }

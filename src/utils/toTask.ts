@@ -1,7 +1,10 @@
 import type SchedulingStrategy from '../SchedulingStrategy'
 import type SchedulingTask from '../SchedulingTask'
 
-export default function strategyToTask(schedulingStrategy: SchedulingStrategy): SchedulingTask {
+export default function toTask(
+    schedulingStrategy: SchedulingStrategy,
+    signal?: AbortSignal,
+): SchedulingTask {
     const options: Record<SchedulingStrategy, SchedulingTask> = {
         interactive: {
             type: 'frame-based',
@@ -19,5 +22,7 @@ export default function strategyToTask(schedulingStrategy: SchedulingStrategy): 
             priority: 10,
         },
     }
-    return options[schedulingStrategy]
+    const task = options[schedulingStrategy]
+    task.signal = signal
+    return task
 }

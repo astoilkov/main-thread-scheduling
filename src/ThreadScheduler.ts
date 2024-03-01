@@ -23,7 +23,17 @@ class ThreadScheduler {
 
     schedule(task: SchedulingTask): ScheduledTask {
         const scheduled = { ...task, ...withResolvers() }
+
         this.#insertTask(scheduled)
+        task.signal?.addEventListener(
+            'abort',
+            () => {
+                this.#removeTask(scheduled)
+                scheduled.reject(new DOMException('The operation was aborted.', 'AbortError'))
+            },
+            { once: true },
+        )
+
         return scheduled
     }
 

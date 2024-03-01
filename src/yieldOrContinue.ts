@@ -16,9 +16,12 @@ import SchedulingStrategy from './SchedulingStrategy'
  */
 // disabling ESLint otherwise `requestPromiseEscape()` in `yieldControl()` won't work
 // eslint-disable-next-line @typescript-eslint/promise-function-async
-export default function yieldOrContinue(priority: SchedulingStrategy = 'smooth'): Promise<void> {
-    if (isTimeToYield(priority)) {
-        return yieldControl(priority)
+export default function yieldOrContinue(
+    priority: SchedulingStrategy = 'smooth',
+    signal?: AbortSignal,
+): Promise<void> {
+    if (signal?.aborted !== true && isTimeToYield(priority)) {
+        return yieldControl(priority, signal)
     }
 
     return Promise.resolve()
