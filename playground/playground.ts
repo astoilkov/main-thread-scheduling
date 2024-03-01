@@ -22,7 +22,8 @@ document.querySelector('#run-all-sequential')!.addEventListener('click', async (
     await run('idle')
 })
 document.querySelector('#run-all-parallel')!.addEventListener('click', async () => {
-    run('interactive')
+    const signal = AbortSignal.timeout(500)
+    run('interactive', 1000, signal)
     run('smooth', 2000)
     run('idle', 3000)
 })
@@ -51,15 +52,22 @@ setInterval(() => {
     )!.textContent = `frameRate: ${fps.guessRefreshRate()}, fps: ${fps.fps()}`
 }, 20)
 
-async function run(strategy: SchedulingStrategy, time: number = 1000) {
+async function run(strategy: SchedulingStrategy, time: number = 1000, signal?: AbortSignal) {
     const start = performance.now()
     while (performance.now() - start < time) {
         if (isTimeToYield(strategy)) {
-            await yieldOrContinue(strategy)
+            try {
+                await yieldOrContinue(strategy, signal)
+            } catch {
+                break
+            }
         }
         simulateWork()
     }
-    performance.measure(`${strategy} (${Math.round(time / 1000)}s)`, {
+    const secs = ((performance.now() - start) / 1000).toFixed(2)
+    const label = `${strategy} (${secs}s)`
+    console.log(label)
+    performance.measure(label, {
         start: start,
         end: performance.now(),
     })
