@@ -35,7 +35,7 @@ The library lets you run computationally heavy tasks on the main thread while en
 - Your users' computer fans don't spin.
 - It's easy to plug it into your existing codebase.
 
-A real-world showcase of searching in 10k files and getting results instantly — https://twitter.com/antoniostoilkov/status/1539576912498118656.
+[A real world showcase of searching in a folder with 10k notes, 200k+ lines of text, that take 50MB on disk and getting results instantly.](https://twitter.com/antoniostoilkov/status/1539576912498118656)
 
 ## Use Cases
 
