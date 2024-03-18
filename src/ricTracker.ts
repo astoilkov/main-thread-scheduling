@@ -26,16 +26,26 @@ class RicTracker {
             return
         }
 
-        this.#idleCallbackId = requestIdleCallback((deadline) => {
-            this.#idleDeadline = deadline
-            this.#idleCallbackId = undefined
+        this.#idleCallbackId = requestIdleCallback(
+            (deadline) => {
+                this.#idleDeadline = deadline
+                this.#idleCallbackId = undefined
 
-            this.#deferred.resolve(deadline)
+                this.#deferred.resolve(deadline)
 
-            this.#deferred = withResolvers<IdleDeadline>()
+                this.#deferred = withResolvers<IdleDeadline>()
 
-            this.start()
-        })
+                this.start()
+            },
+            {
+                // wait 3 seconds max to call the next idle callback:
+                // - if the browser is actually busy for 3 seconds, we can at least call
+                //   rarely and probably the `deadline` will have very little time left
+                // - previously Chromium had a bug where it wouldn't fire the idle
+                //   callback. the timeout just in case some browser has such a problem.
+                timeout: 3000,
+            },
+        )
     }
 
     stop() {
