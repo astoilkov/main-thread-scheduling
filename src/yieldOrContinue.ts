@@ -8,7 +8,7 @@ import SchedulingStrategy from './SchedulingStrategy'
  * `yieldOrContinue()` multiple times will create a LIFO(last in, first out) queue – the last call
  * to `yieldOrContinue()` will get resolved first.
  *
- * @param priority {SchedulingStrategy} The priority of the task being run.
+ * @param strategy {SchedulingStrategy} The priority of the task being run.
  * `smooth` priority will always be resolved first. `background` priority will always be
  * resolved second.
  * @returns {Promise<void>} A promise either immediately resolved or when the browser is ready to
@@ -17,11 +17,11 @@ import SchedulingStrategy from './SchedulingStrategy'
 // disabling ESLint otherwise `requestPromiseEscape()` in `yieldControl()` won't work
 // eslint-disable-next-line @typescript-eslint/promise-function-async
 export default function yieldOrContinue(
-    priority: SchedulingStrategy = 'smooth',
+    strategy: SchedulingStrategy = 'smooth',
     signal?: AbortSignal,
 ): Promise<void> {
-    if (signal?.aborted !== true && isTimeToYield(priority)) {
-        return yieldControl(priority, signal)
+    if (signal?.aborted !== true && isTimeToYield(strategy)) {
+        return yieldControl(strategy, signal)
     }
 
     return Promise.resolve()
