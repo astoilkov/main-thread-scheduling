@@ -3,6 +3,7 @@ import simulateWork from './utils/simulateWork'
 import waitNextTask from '../src/utils/waitNextTask'
 import withResolvers from '../src/utils/withResolvers'
 import fps from './utils/fps'
+import scheduleTask from '../src/scheduleTask'
 
 document.querySelector('#run-interactive')!.addEventListener('click', () => {
     run('interactive')
@@ -26,6 +27,13 @@ document.querySelector('#run-all-parallel')!.addEventListener('click', async () 
     run('interactive', 1000, signal)
     run('smooth', 2000)
     run('idle', 3000)
+})
+document.querySelector('#schedule-task')!.addEventListener('click', async () => {
+    const result = await scheduleTask(() => {
+        simulateWork()
+        return 'scheduleTask() completed'
+    })
+    console.log(result)
 })
 document.querySelector('#simulate-work')!.addEventListener('click', async () => {
     simulateWork()
