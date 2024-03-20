@@ -49,6 +49,10 @@ class RicTracker {
     }
 
     stop() {
+        if (!this.available) {
+            return
+        }
+
         cancelIdleCallback(this.#idleCallbackId)
         this.#idleCallbackId = undefined
     }
