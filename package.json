@@ -1,6 +1,6 @@
 {
     "name": "main-thread-scheduling",
-    "version": "14.1.0",
+    "version": "14.1.1",
     "description": "Fast and consistently responsive apps using a single function call",
     "license": "MIT",
     "repository": "astoilkov/main-thread-scheduling",
