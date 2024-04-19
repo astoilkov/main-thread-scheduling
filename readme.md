@@ -33,6 +33,7 @@ npm install main-thread-scheduling
 The library lets you run computationally heavy tasks on the main thread while ensuring:
 - Your app's UI doesn't freeze.
 - Your users' computer fans don't spin.
+- Your [INP (Interaction to Next Paint)](https://web.dev/articles/inp) is in green.
 - It's easy to plug it into your existing codebase.
 
 A real world showcase of [searching in a folder with 10k notes, 200k+ lines of text, that take 50MB on disk](https://twitter.com/antoniostoilkov/status/1539576912498118656) and getting results instantly.
