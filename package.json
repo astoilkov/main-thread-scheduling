@@ -32,7 +32,10 @@
         "main-thread",
         "event loop",
         "worker",
-        "web worker"
+        "web worker",
+        "Core Web Vitals",
+        "INP",
+        "Interaction to Next Paint"
     ],
     "module": "index.js",
     "jsnext:main": "index.js",
