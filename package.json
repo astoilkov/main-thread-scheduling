@@ -35,7 +35,8 @@
         "web worker",
         "Core Web Vitals",
         "INP",
-        "Interaction to Next Paint"
+        "Interaction to Next Paint",
+        "performance"
     ],
     "module": "index.js",
     "jsnext:main": "index.js",
