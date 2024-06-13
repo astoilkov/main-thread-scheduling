@@ -17,21 +17,22 @@ export default class WorkCycleTracker {
     }
 
     canWorkMore(task: SchedulingTask): boolean {
-        const isInputPending = navigator.scheduling?.isInputPending?.() === true
-        return !isInputPending && this.#calculateDeadline(task) - Date.now() > 0
+        return !this.#isInputPending() && this.#calculateDeadline(task) - Date.now() > 0
     }
 
     async nextWorkCycle(task: SchedulingTask): Promise<void> {
-        if (task.type === 'frame-based') {
-            await Promise.race([frameTracker.waitAfterFrame(), waitHiddenTask()])
-        } else if (task.type === 'idle-based') {
-            if (ricTracker.available) {
-                await ricTracker.waitIdleCallback()
-            } else {
-                // todo: use waitHiddenTask() with a timeout
-                await frameTracker.waitAfterFrame()
+        do {
+            if (task.type === 'frame-based') {
+                await Promise.race([frameTracker.waitAfterFrame(), waitHiddenTask()])
+            } else if (task.type === 'idle-based') {
+                if (ricTracker.available) {
+                    await ricTracker.waitIdleCallback()
+                } else {
+                    // todo: use waitHiddenTask() with a timeout
+                    await frameTracker.waitAfterFrame()
+                }
             }
-        }
+        } while (this.#isInputPending())
 
         this.#workCycleStart = Date.now()
     }
@@ -51,5 +52,9 @@ export default class WorkCycleTracker {
             return Math.min(this.#workCycleStart + task.workTime, idleDeadline)
         }
         return -1
+    }
+
+    #isInputPending(): boolean {
+        return navigator.scheduling?.isInputPending?.() === true
     }
 }
