@@ -9,7 +9,6 @@ const state = {
 export default async function waitNextTaskWhileHidden(): Promise<void> {
     if (document.visibilityState === 'hidden') {
         await waitNextTask()
-
         // in theory, here the page could have been hidden again,
         // but we ignore this case on purpose
     } else {
