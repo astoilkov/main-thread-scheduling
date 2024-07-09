@@ -1,5 +1,5 @@
 import frameTracker from './frameTracker'
-import waitHiddenTask from './utils/waitHiddenTask'
+import waitNextTaskWhileHidden from './utils/waitNextTaskWhileHidden'
 import type SchedulingTask from './SchedulingTask'
 
 export default class WorkCycleTracker {
@@ -23,7 +23,7 @@ export default class WorkCycleTracker {
             if (task.type === 'frame-based') {
                 // we use waitHiddenTask() because requestAnimationFrame() doesn't
                 // fire when page is hidden
-                await Promise.race([frameTracker.waitAfterFrame(), waitHiddenTask()])
+                await Promise.race([frameTracker.waitAfterFrame(), waitNextTaskWhileHidden()])
             } else if (task.type === 'idle-based') {
                 if (typeof requestIdleCallback === 'undefined') {
                     // todo: use waitHiddenTask() with a timeout

@@ -6,7 +6,7 @@ const state = {
     hiddenTask: withResolvers(),
 }
 
-export default async function waitHiddenTask(): Promise<void> {
+export default async function waitNextTaskWhileHidden(): Promise<void> {
     if (document.visibilityState === 'hidden') {
         await waitNextTask()
 
