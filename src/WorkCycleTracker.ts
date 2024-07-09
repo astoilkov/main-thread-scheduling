@@ -1,18 +1,16 @@
-import ricTracker from './ricTracker'
 import frameTracker from './frameTracker'
 import waitHiddenTask from './utils/waitHiddenTask'
 import type SchedulingTask from './SchedulingTask'
 
 export default class WorkCycleTracker {
     #workCycleStart: number = -1
+    #idleDeadline?: IdleDeadline
 
     startTracking(): void {
-        ricTracker.start()
         frameTracker.start()
     }
 
     requestStopTracking(): void {
-        ricTracker.stop()
         frameTracker.requestStop()
     }
 
@@ -23,13 +21,15 @@ export default class WorkCycleTracker {
     async nextWorkCycle(task: SchedulingTask): Promise<void> {
         do {
             if (task.type === 'frame-based') {
+                // we use waitHiddenTask() because requestAnimationFrame() doesn't
+                // fire when page is hidden
                 await Promise.race([frameTracker.waitAfterFrame(), waitHiddenTask()])
             } else if (task.type === 'idle-based') {
-                if (ricTracker.available) {
-                    await ricTracker.waitIdleCallback()
-                } else {
+                if (typeof requestIdleCallback === 'undefined') {
                     // todo: use waitHiddenTask() with a timeout
                     await frameTracker.waitAfterFrame()
+                } else {
+                    this.#idleDeadline = await this.#idleCallback()
                 }
             }
         } while (this.#isInputPending())
@@ -46,9 +46,9 @@ export default class WorkCycleTracker {
             return this.#workCycleStart + task.workTime
         } else if (task.type === 'idle-based') {
             const idleDeadline =
-                ricTracker.deadline === undefined
+                this.#idleDeadline === undefined
                     ? Number.MAX_SAFE_INTEGER
-                    : Date.now() + ricTracker.deadline.timeRemaining()
+                    : Date.now() + this.#idleDeadline.timeRemaining()
             return Math.min(this.#workCycleStart + task.workTime, idleDeadline)
         }
         return -1
@@ -56,5 +56,13 @@ export default class WorkCycleTracker {
 
     #isInputPending(): boolean {
         return navigator.scheduling?.isInputPending?.() === true
+    }
+
+    #idleCallback(): Promise<IdleDeadline> {
+        return new Promise((resolve) => {
+            requestIdleCallback((deadline) => {
+                resolve(deadline)
+            })
+        })
     }
 }
