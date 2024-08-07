@@ -84,6 +84,20 @@ async function findInFiles(query: string) {
 }
 ```
 
+#### `scheduleTask(callback: () => T, { strategy, signal }): T`
+
+This mimics the API style of `scheduler.postTask()` while providing the extra benefits of `main-thread-scheduling`.
+
+```ts
+const controller = new AbortController()
+const result = await scheduleTask(() => {
+    return computeHeavyCalculation()
+}, {
+    strategy: 'smooth',
+    signal: controller.signal,
+})
+```
+
 ### More complex scenarios
 
 The library has two more functions available:
