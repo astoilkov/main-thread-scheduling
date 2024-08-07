@@ -138,7 +138,7 @@ Web Workers are a great fit if you have: 1) heavy algorithm (e.g. image processi
 
 [`scheduler.postTask()`](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask) is available in some browsers today. `postTask()` and `main-thread-scheduling` do similar things. You can think of `postTask()` as a lower level API — it might be the right choice in specific scenarios. Library owners might be interested in exploring the nuanced differences between the two. For most cases, `main-thread-scheduling` provides a `scheduleTask()` method that mimics that API of `postTask()` while providing the extra benefits of the library.
 
-## Need consulting help?
+## Need help?
 
 Need help with performance or consulting on how to integrate `main-thread-scheduling` in your project? Write to me at [hello@astoilkov.com](mailto:hello@astoilkov.com).
 
