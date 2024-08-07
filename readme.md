@@ -126,7 +126,7 @@ Web Workers are a great fit if you have: 1) heavy algorithm (e.g. image processi
 
 ## Need consulting help?
 
-Need help with your performance or consulting on how to integrate `main-thread-scheduling` in your project? Write to me at [hello@astoilkov.com](hello@astoilkov.com).
+Need help with performance or consulting on how to integrate `main-thread-scheduling` in your project? Write to me at [hello@astoilkov.com](hello@astoilkov.com).
 
 <!--
 
