@@ -58,7 +58,7 @@ A real world showcase of [searching in a folder with 10k notes, 200k+ lines of t
 ## Why
 
 - **Simple.** 90% of the time you only need the `yieldOrContinue(strategy)` function. The API has two more functions for more advanced cases.
-- **Not a weekend project.** Actively maintained for three years — see [contributors](https://github.com/astoilkov/main-thread-scheduling/graphs/contributors) page. I've been using it in my own products for over four years — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits using web technologies).
+- **Production ready.** Actively maintained for three years — see [contributors](https://github.com/astoilkov/main-thread-scheduling/graphs/contributors) page. I've been using it in my own products for over four years — [Nota](https://nota.md) and [iBar](https://ibar.app). [Flux.ai](https://flux.ai/) are also using it in their product (software for designing hardware circuits using web technologies).
 - **This is the future.** [Some browsers](https://developer.mozilla.org/en-US/docs/Web/API/Scheduler/postTask#browser_compatibility) have already implemented support for scheduling tasks on the main thread. This library tries even harder to improve user perceived performance — see [explanation](#alternatives) for details.
 - **High quality.** Aiming for high-quality with [my open-source principles](https://astoilkov.com/my-open-source-principles).
 
@@ -133,6 +133,12 @@ There are three scheduling strategies available. You can think about them more e
 ### Web Workers
 
 Web Workers are a great fit if you have: 1) heavy algorithm (e.g. image processing), 2) heavy process (runs for a long time, big part of the app lifecycle). However, in reality, it's rare to see people using them. That's because they require significant investment of time due to the complexity that can't be avoided when working with CPU threads regardless of the programming language. This library can be used as a gateway before transitioning to Web Workers. In most cases, you would discover the doing it on the main thread is good enough.
+
+- The calculation requires a lot state/data. Transferring that data takes too much time and the tradeoff isn't worth it.
+- A lot of tiny calculations in between code that can't run in a web worker. Running the tiny calculation alone doesn't provide a benefit. You still want to not block the UI.
+- Already existing features that need restructuring to accommodate a web worker implementation might not be worth it for now. However, a quick toss in of `yieldOrContinue()` in an async function might a quick gain until the product is ready to adopt a more complicated solution.
+- Web Workers are harder to maintain (why)?
+- ![[CleanShot 2024-08-14 at 16.14.47@2x.png]]
 
 ### `scheduler.postTask()`
 
