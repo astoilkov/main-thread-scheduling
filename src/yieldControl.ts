@@ -1,7 +1,7 @@
 import hasValidContext from './utils/hasValidContext'
 import SchedulingStrategy from './SchedulingStrategy'
 import threadScheduler from './ThreadScheduler'
-import toTask from './utils/toTask'
+import makeTask from './utils/makeTask'
 
 /**
  * Waits for the browser to become idle again in order to resume work. Calling `yieldControl()`
@@ -21,5 +21,5 @@ export default async function yieldControl(
         return
     }
 
-    return threadScheduler.schedule(toTask(strategy, signal)).promise
+    return threadScheduler.schedule(makeTask(strategy, signal)).promise
 }

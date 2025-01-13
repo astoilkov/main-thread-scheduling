@@ -1,7 +1,7 @@
 import type SchedulingStrategy from '../SchedulingStrategy'
 import type SchedulingTask from '../SchedulingTask'
 
-export default function toTask(
+export default function makeTask(
     schedulingStrategy: SchedulingStrategy,
     signal?: AbortSignal,
 ): SchedulingTask {
